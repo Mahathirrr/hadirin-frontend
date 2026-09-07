@@ -30,6 +30,7 @@ const summary = ref<DashboardSummary | null>(null)
 const workStart = ref('08:00')
 const workEnd = ref('17:00')
 const lateThreshold = ref(15)
+const settingsInterval = ref(20)
 
 const isAdmin = computed(() =>
   auth.activeMembership?.role === 'owner' || auth.activeMembership?.role === 'admin',
@@ -70,6 +71,7 @@ async function loadAll() {
     workStart.value = settingsRes.data.work_start_time ?? '08:00'
     workEnd.value = settingsRes.data.work_end_time ?? '17:00'
     lateThreshold.value = settingsRes.data.late_threshold_minutes ?? 15
+    settingsInterval.value = settingsRes.data.location_interval_minutes ?? 20
     if (invite.invite_code) inviteCode.value = invite.invite_code
   } catch (e) {
     toast.error(e instanceof Error ? e.message : 'Gagal memuat workspace')
@@ -161,19 +163,19 @@ async function deleteWorkspace() {
     <template v-else>
       <div class="grid gap-3 sm:grid-cols-3">
         <Card class="rounded-xl shadow-none">
-          <CardContent class="px-4 py-4">
+          <CardContent class="py-3.5">
             <p class="text-xs text-muted-foreground">Paket</p>
             <p class="mt-1 text-lg font-bold uppercase">{{ workspace?.plan ?? 'free' }}</p>
           </CardContent>
         </Card>
         <Card class="rounded-xl shadow-none">
-          <CardContent class="px-4 py-4">
+          <CardContent class="py-3.5">
             <p class="text-xs text-muted-foreground">Karyawan aktif</p>
             <p class="mt-1 text-lg font-bold">{{ summary?.active_employees ?? 0 }} / {{ summary?.total_employees ?? 0 }}</p>
           </CardContent>
         </Card>
         <Card class="rounded-xl shadow-none">
-          <CardContent class="px-4 py-4">
+          <CardContent class="py-3.5">
             <p class="text-xs text-muted-foreground">Member workspace</p>
             <p class="mt-1 text-lg font-bold">{{ members.length }}</p>
           </CardContent>
@@ -182,10 +184,10 @@ async function deleteWorkspace() {
 
       <div class="grid gap-3 lg:grid-cols-2">
         <Card v-if="isAdmin" class="rounded-xl shadow-none">
-          <CardHeader class="px-4 pt-4 pb-2">
+          <CardHeader>
             <CardTitle class="text-base">Kode undangan</CardTitle>
           </CardHeader>
-          <CardContent class="space-y-2 px-4 pb-4">
+          <CardContent class="space-y-2">
             <div class="flex flex-col gap-2 sm:flex-row">
               <Input :model-value="inviteCode || '—'" readonly class="min-w-0 font-mono text-sm" />
               <div class="flex gap-2">
@@ -198,10 +200,10 @@ async function deleteWorkspace() {
         </Card>
 
         <Card class="rounded-xl shadow-none">
-          <CardHeader class="px-4 pt-4 pb-2">
+          <CardHeader>
             <CardTitle class="text-base">Profil workspace</CardTitle>
           </CardHeader>
-          <CardContent class="space-y-3 px-4 pb-4">
+          <CardContent class="space-y-3">
             <div class="grid gap-1.5">
               <Label for="workspace-name">Nama workspace</Label>
               <Input id="workspace-name" v-model="workspaceName" :disabled="!isAdmin" />
@@ -210,6 +212,7 @@ async function deleteWorkspace() {
               <p>Slug: {{ workspace?.slug }}</p>
               <p>Device QR aktif: {{ summary?.active_qr_devices ?? 0 }}</p>
               <p>Geofence aktif: {{ summary?.active_geofences ?? 0 }}</p>
+              <p>Interval lokasi: {{ settingsInterval }} menit</p>
             </div>
             <Button v-if="isAdmin" size="sm" :disabled="savingName" @click="saveWorkspaceName">
               {{ savingName ? 'Menyimpan...' : 'Simpan nama workspace' }}
@@ -219,7 +222,7 @@ async function deleteWorkspace() {
       </div>
 
       <Card class="rounded-xl shadow-none">
-        <CardHeader class="flex flex-row items-center justify-between px-4 pt-4 pb-2">
+        <CardHeader class="flex flex-row items-center justify-between">
           <div>
             <CardTitle class="text-base">Jadwal jam kerja</CardTitle>
             <p class="mt-0.5 text-sm text-muted-foreground">Senin–Jumat mengikuti jam di bawah. Sabtu/Minggu libur.</p>
@@ -228,7 +231,7 @@ async function deleteWorkspace() {
             {{ savingSchedule ? 'Menyimpan...' : 'Simpan jadwal' }}
           </Button>
         </CardHeader>
-        <CardContent class="space-y-3 px-4 pb-4">
+        <CardContent class="space-y-3">
           <div v-if="isAdmin" class="grid gap-3 sm:grid-cols-3">
             <div class="grid gap-1.5">
               <Label for="work-start">Jam masuk</Label>
@@ -267,11 +270,11 @@ async function deleteWorkspace() {
       </Card>
 
       <Card class="rounded-xl shadow-none">
-        <CardHeader class="flex flex-row items-center justify-between px-4 pt-4 pb-2">
+        <CardHeader class="flex flex-row items-center justify-between">
           <CardTitle class="text-base">Manajemen member</CardTitle>
           <Button variant="outline" size="sm" @click="loadAll">Refresh</Button>
         </CardHeader>
-        <CardContent class="px-4 pb-4">
+        <CardContent>
           <TableEmpty v-if="members.length === 0" message="Belum ada member." />
           <Table v-else>
             <TableHeader>
@@ -299,7 +302,7 @@ async function deleteWorkspace() {
       </Card>
 
       <Card v-if="isOwner" class="rounded-xl border-red-200 bg-red-50/40 shadow-none">
-        <CardHeader class="flex flex-row items-start justify-between gap-3 px-4 pt-4 pb-2">
+        <CardHeader class="flex flex-row items-start justify-between gap-3">
           <div>
             <CardTitle class="text-base text-red-900">Zona risiko</CardTitle>
             <p class="mt-1 text-sm text-red-800/80">
@@ -310,7 +313,7 @@ async function deleteWorkspace() {
             {{ deleting ? 'Menghapus...' : 'Hapus workspace' }}
           </Button>
         </CardHeader>
-        <CardContent class="grid gap-2 px-4 pb-4 sm:grid-cols-3">
+        <CardContent class="grid gap-2 sm:grid-cols-3">
           <div class="rounded border border-red-200 bg-background p-2 text-sm">
             <p class="text-muted-foreground">Total member</p>
             <p class="font-bold">{{ members.length }}</p>

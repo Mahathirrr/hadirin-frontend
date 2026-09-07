@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { LogOut, Settings } from 'lucide-vue-next'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import UserAvatar from '@/components/app/user-avatar.vue'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { deferDialogAction } from '@/lib/defer-open'
-import { initials, usernameFromEmail } from '@/lib/display'
+import { usernameFromEmail } from '@/lib/display'
 import { useAuthStore } from '@/stores/auth'
 
 const emit = defineEmits<{ 'open-account': [] }>()
@@ -22,7 +22,7 @@ const auth = useAuthStore()
 const router = useRouter()
 
 const displayName = computed(() => auth.user?.name || 'Admin')
-const handle = computed(() => usernameFromEmail(auth.user?.email || 'admin@hadirin.id'))
+const handle = computed(() => usernameFromEmail(auth.user?.email || 'admin@admin.com'))
 
 function openAccount(event: Event) {
   deferDialogAction(() => emit('open-account'), event)
@@ -40,21 +40,13 @@ function signOut() {
       class="cursor-pointer rounded-full transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
       aria-label="Menu akun"
     >
-      <Avatar class="size-8 border border-white/20">
-        <AvatarFallback class="bg-violet-500 text-xs font-medium text-white">
-          {{ initials(displayName) }}
-        </AvatarFallback>
-      </Avatar>
+      <UserAvatar :user="auth.user" class="size-8" />
     </DropdownMenuTrigger>
 
     <DropdownMenuContent align="end" class="z-[120] w-64 border-zinc-200 bg-white text-zinc-950">
       <DropdownMenuLabel class="p-0 font-normal">
         <div class="flex items-center gap-3 px-2 py-2">
-          <Avatar class="size-10">
-            <AvatarFallback class="bg-violet-500 text-sm font-medium text-white">
-              {{ initials(displayName) }}
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar :user="auth.user" class="size-10 border-border/60" />
           <div class="min-w-0">
             <p class="truncate text-sm font-medium">{{ displayName }}</p>
             <p class="truncate text-xs text-muted-foreground">{{ handle }}</p>

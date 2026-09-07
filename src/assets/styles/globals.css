@@ -165,3 +165,13 @@ html {
 .animate-logo-scroll:hover {
   animation-play-state: paused;
 }
+
+/* Auth forms: never show browser autofill highlight */
+[data-auth-form] input:-webkit-autofill,
+[data-auth-form] input:-webkit-autofill:hover,
+[data-auth-form] input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--background) inset !important;
+  box-shadow: 0 0 0 1000px var(--background) inset !important;
+  -webkit-text-fill-color: var(--foreground) !important;
+  transition: background-color 99999s ease-out 0s;
+}

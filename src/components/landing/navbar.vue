@@ -62,7 +62,7 @@ const ctx = useTheme()
       <div class="flex items-center space-x-2">
         <RouterLink to="/" class="flex cursor-pointer items-center space-x-2">
           <Logo :size="28" class="text-foreground" />
-          <span class="font-bold">Hadirin.id</span>
+          <span class="font-bold tracking-tight">Hadirin</span>
         </RouterLink>
       </div>
 
@@ -101,7 +101,7 @@ const ctx = useTheme()
             <SheetHeader class="space-y-0 p-4 pb-2">
               <div class="flex items-center gap-2">
                 <Logo :size="20" class="text-foreground" />
-                <SheetTitle class="text-lg font-semibold">Hadirin.id</SheetTitle>
+                <SheetTitle class="text-lg font-semibold">Hadirin</SheetTitle>
                 <div class="ml-auto flex items-center gap-2">
                   <Button
                     variant="ghost"

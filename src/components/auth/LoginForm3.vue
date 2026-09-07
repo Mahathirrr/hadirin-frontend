@@ -33,10 +33,10 @@ import { Label } from '@/components/ui/label'
             <div class="grid gap-3">
               <Label for="email">Email</Label>
               <Input
-                id="email"
+                id="login-email-3"
                 type="email"
-                placeholder="test@example.com"
-                defaultValue="test@example.com"
+                placeholder="admin@admin.com"
+                autocomplete="off"
                 required
               />
             </div>
@@ -50,7 +50,12 @@ import { Label } from '@/components/ui/label'
                   Forgot your password?
                 </RouterLink>
               </div>
-              <Input id="password" type="password" defaultValue="password" required />
+              <Input
+                id="login-password-3"
+                type="password"
+                autocomplete="new-password"
+                required
+              />
             </div>
             <Button type="submit" class="w-full cursor-pointer">
               Login

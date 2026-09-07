@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
+import {
+  CalendarCheck,
+  CheckCircle2,
+  ClipboardList,
+  Download,
+  FileSpreadsheet,
+  ScanLine,
+} from 'lucide-vue-next'
 
+import EmptyState from '@/components/app/empty-state.vue'
 import PageShell from '@/components/app/page-shell.vue'
 import StatCard from '@/components/app/stat-card.vue'
-import TableEmpty from '@/components/app/table-empty.vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -13,21 +22,131 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWorkspaceLoader } from '@/composables/useWorkspaceData'
 import { api } from '@/lib/api'
+import { useAuthStore } from '@/stores/auth'
 
+const auth = useAuthStore()
 const activeDate = ref(new Date().toISOString().slice(0, 10))
+const nameFilter = ref('')
+const statusFilter = ref('all')
 const attendanceOpen = ref(true)
 const scanOpen = ref(true)
 const reportOpen = ref(true)
+const generating = ref(false)
 
-const { data: records, loading, load } = useWorkspaceLoader(async (token, workspaceId) =>
+const { data: records, loading, load: reloadAttendance } = useWorkspaceLoader(async (token, workspaceId) =>
   api.listAttendance(token, workspaceId, activeDate.value) as Promise<Array<Record<string, unknown>>>,
 )
 
-watch(activeDate, () => { void load() })
+const { data: auditLogs, load: reloadAudit } = useWorkspaceLoader(async (token, workspaceId) =>
+  api.listAuditLogs(token, workspaceId) as Promise<Array<Record<string, unknown>>>,
+)
+
+const { data: weeklyReports, load: reloadWeekly } = useWorkspaceLoader(async (token, workspaceId) =>
+  api.listWeeklyReports(token, workspaceId) as Promise<Array<Record<string, unknown>>>,
+)
+
+watch(activeDate, () => { void reloadAttendance() })
+
+const filteredRecords = computed(() => {
+  let list = records.value ?? []
+  const q = nameFilter.value.trim().toLowerCase()
+  if (q) {
+    list = list.filter((r) =>
+      String((r.employee as { name?: string })?.name ?? '').toLowerCase().includes(q),
+    )
+  }
+  if (statusFilter.value !== 'all') {
+    list = list.filter((r) => String(r.status) === statusFilter.value)
+  }
+  return list
+})
 
 const presentCount = computed(() =>
-  (records.value ?? []).filter((r) => r.status === 'present').length,
+  (records.value ?? []).filter((r) => r.status === 'present' || r.status === 'late').length,
 )
+
+const checkoutCount = computed(() =>
+  (records.value ?? []).filter((r) => r.check_out).length,
+)
+
+const editedCount = computed(() =>
+  (records.value ?? []).filter((r) => {
+    const created = String(r.created_at ?? '')
+    const updated = String(r.updated_at ?? '')
+    return updated && created && updated !== created
+  }).length,
+)
+
+const scanEvents = computed(() => {
+  const date = activeDate.value
+  return (auditLogs.value ?? []).filter((log) => {
+    if (String(log.entity_type) !== 'attendance') return false
+    return String(log.created_at ?? '').slice(0, 10) === date
+  })
+})
+
+const scanSuccess = computed(() =>
+  scanEvents.value.filter((e) => String(e.action) === 'create').length,
+)
+
+function formatTime(value: unknown) {
+  if (!value) return '—'
+  const s = String(value)
+  if (s.includes('T')) return s.slice(11, 16)
+  return s.slice(0, 5)
+}
+
+function employeeName(row: Record<string, unknown>) {
+  return (row.employee as { name?: string })?.name ?? `#${row.employee_id}`
+}
+
+function statusLabel(status: unknown) {
+  const map: Record<string, string> = {
+    present: 'Hadir',
+    late: 'Terlambat',
+    absent: 'Tidak hadir',
+  }
+  return map[String(status)] ?? String(status)
+}
+
+function resetFilters() {
+  nameFilter.value = ''
+  statusFilter.value = 'all'
+}
+
+async function refreshAll() {
+  await Promise.all([reloadAttendance(), reloadAudit(), reloadWeekly()])
+}
+
+async function generateWeekly() {
+  if (!auth.token || !auth.workspaceId) return
+  generating.value = true
+  try {
+    const res = await api.generateWeeklyReport(auth.token, auth.workspaceId)
+    toast.success(res.message || 'Report mingguan berhasil dibuat')
+    await reloadWeekly()
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : 'Gagal membuat report mingguan')
+  } finally {
+    generating.value = false
+  }
+}
+
+async function downloadWeekly(id: number) {
+  if (!auth.token) return
+  try {
+    await api.downloadWeeklyReportById(auth.token, id)
+    toast.success('Report diunduh')
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : 'Gagal mengunduh report')
+  }
+}
+
+const dataCondition = computed(() => {
+  const n = records.value?.length ?? 0
+  if (n === 0) return 'Belum ada data absensi untuk tanggal ini'
+  return `${n} catatan absensi untuk ${activeDate.value}`
+})
 </script>
 
 <template>
@@ -37,133 +156,205 @@ const presentCount = computed(() =>
         <div class="space-y-0.5">
           <h1 class="text-2xl font-bold tracking-tight md:text-3xl">Laporan & Audit Kehadiran</h1>
           <p class="text-sm text-muted-foreground">
-            Tinjau dan audit catatan kehadiran harian karyawan, scan event, dan riwayat report mingguan.
+            Tinjau catatan kehadiran harian, event scan, dan riwayat report mingguan workspace.
           </p>
         </div>
-        <Badge variant="outline" class="shrink-0">Tanggal aktif: {{ activeDate }}</Badge>
+        <Badge variant="outline" class="shrink-0 tabular-nums">Tanggal: {{ activeDate }}</Badge>
       </div>
     </template>
 
-    <Card class="rounded-xl shadow-none">
-      <CardHeader class="px-4 pt-4 pb-2">
-        <CardTitle class="text-base">Ringkasan absensi</CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-3 px-4 pb-4">
-        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <StatCard title="Total data" :value="records?.length ?? 0" />
-          <StatCard title="Check-in" :value="presentCount" />
-          <StatCard title="Check-out" :value="(records ?? []).filter((r) => r.check_out).length" />
-          <StatCard title="Diedit" :value="0" />
-        </div>
-        <div class="grid gap-3 md:grid-cols-3">
-          <div class="rounded-lg border bg-muted/20 p-3 text-sm">
-            <p class="font-medium">Kondisi data</p>
-            <p class="mt-1 text-muted-foreground">Ubah tanggal jika belum ada data absensi untuk hari ini.</p>
-          </div>
-          <div class="rounded-lg border bg-muted/20 p-3 text-sm">
-            <p class="font-medium">Scan harian</p>
-            <p class="mt-1 text-muted-foreground">Event scan QR/device akan tercatat di bawah setelah ada aktivitas.</p>
-          </div>
-          <div class="rounded-lg border bg-muted/20 p-3 text-sm">
-            <p class="font-medium">Riwayat report</p>
-            <p class="mt-1 text-muted-foreground">Report mingguan otomatis muncul setelah generate pertama.</p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <StatCard label="Total data" :value="records?.length ?? 0" :icon="ClipboardList" />
+      <StatCard label="Check-in" :value="presentCount" :icon="CheckCircle2" />
+      <StatCard label="Check-out" :value="checkoutCount" :icon="CalendarCheck" />
+      <StatCard label="Diedit" :value="editedCount" :icon="FileSpreadsheet" hint="Record dengan perubahan" />
+    </div>
 
-    <Card class="rounded-xl shadow-none">
-      <CardHeader class="px-4 pt-4 pb-2">
+    <Card class="rounded-xl border-border/60 shadow-none">
+      <CardHeader>
         <CardTitle class="text-base">Filter absensi harian</CardTitle>
       </CardHeader>
-      <CardContent class="space-y-3 px-4 pb-4">
+      <CardContent class="space-y-3">
         <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <div class="grid gap-1.5">
             <Label>Tanggal</Label>
-            <Input type="date" v-model="activeDate" />
+            <Input v-model="activeDate" type="date" />
           </div>
           <div class="grid gap-1.5">
             <Label>Nama karyawan</Label>
-            <Input placeholder="Cari nama" />
+            <Input v-model="nameFilter" placeholder="Cari nama karyawan" />
           </div>
-          <div class="grid gap-1.5">
-            <Label>Status edit</Label>
-            <Select default-value="all">
-              <SelectTrigger><SelectValue placeholder="Semua" /></SelectTrigger>
-              <SelectContent><SelectItem value="all">Semua</SelectItem></SelectContent>
-            </Select>
-          </div>
-          <div class="grid gap-1.5">
-            <Label>Status attendance</Label>
-            <Select default-value="all">
-              <SelectTrigger><SelectValue placeholder="Semua" /></SelectTrigger>
-              <SelectContent><SelectItem value="all">Semua</SelectItem></SelectContent>
+          <div class="grid gap-1.5 xl:col-span-2">
+            <Label>Status kehadiran</Label>
+            <Select v-model="statusFilter">
+              <SelectTrigger><SelectValue placeholder="Semua status" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Semua</SelectItem>
+                <SelectItem value="present">Hadir</SelectItem>
+                <SelectItem value="late">Terlambat</SelectItem>
+                <SelectItem value="absent">Tidak hadir</SelectItem>
+              </SelectContent>
             </Select>
           </div>
         </div>
-        <div class="flex flex-wrap items-center gap-2 border-t pt-3">
-          <span class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Aksi cepat</span>
-          <Button size="sm">Terapkan filter</Button>
-          <Button variant="outline" size="sm">Reset filter</Button>
-          <Button variant="outline" size="sm">Sinkronkan attendance</Button>
-        </div>
-      </CardContent>
-    </Card>
-
-    <Card class="rounded-xl shadow-none">
-      <CardHeader class="flex flex-row items-center justify-between gap-3 px-4 pt-4 pb-2">
-        <CardTitle class="text-base">Data attendance</CardTitle>
-        <div class="flex gap-2">
-          <Button variant="outline" size="sm" @click="attendanceOpen = !attendanceOpen">
-            {{ attendanceOpen ? 'Sembunyikan' : 'Tampilkan' }}
+        <div class="flex flex-wrap items-center gap-2 border-t border-border/60 pt-3">
+          <Button size="sm" variant="outline" :disabled="loading" @click="refreshAll">
+            {{ loading ? 'Memuat…' : 'Muat ulang data' }}
           </Button>
-          <Button variant="outline" size="sm">Sinkronkan attendance</Button>
+          <Button size="sm" variant="ghost" @click="resetFilters">Reset filter</Button>
+          <span class="text-xs text-muted-foreground">{{ dataCondition }}</span>
         </div>
-      </CardHeader>
-      <CardContent v-if="attendanceOpen" class="px-4 pb-4">
-        <TableEmpty message="Tidak ada data absensi untuk filter saat ini." compact />
       </CardContent>
     </Card>
 
-    <Card class="rounded-xl shadow-none">
-      <CardHeader class="flex flex-row flex-wrap items-center justify-between gap-3 px-4 pt-4 pb-2">
-        <CardTitle class="text-base">Scan events</CardTitle>
-        <div class="flex flex-wrap gap-2">
-          <Select default-value="all">
-            <SelectTrigger class="w-36"><SelectValue placeholder="Status scan" /></SelectTrigger>
-            <SelectContent><SelectItem value="all">Semua</SelectItem></SelectContent>
-          </Select>
-          <Button variant="outline" size="sm">Sinkronkan scan event</Button>
-        </div>
+    <Card class="rounded-xl border-border/60 shadow-none">
+      <CardHeader class="flex flex-row items-center justify-between gap-3">
+        <CardTitle class="text-base">Data absensi</CardTitle>
+        <Button variant="outline" size="sm" @click="attendanceOpen = !attendanceOpen">
+          {{ attendanceOpen ? 'Sembunyikan' : 'Tampilkan' }}
+        </Button>
       </CardHeader>
-      <CardContent v-if="scanOpen" class="space-y-3 px-4 pb-4">
+      <CardContent v-if="attendanceOpen">
+        <EmptyState
+          v-if="filteredRecords.length === 0"
+          :icon="ClipboardList"
+          title="Tidak ada data absensi"
+          :description="`Belum ada catatan kehadiran untuk ${activeDate}. Pilih tanggal lain atau pastikan karyawan sudah check-in.`"
+          compact
+        />
+        <div v-else class="overflow-x-auto rounded-lg border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Karyawan</TableHead>
+                <TableHead>Tanggal</TableHead>
+                <TableHead>Jam datang</TableHead>
+                <TableHead>Jam pulang</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Metode</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="row in filteredRecords" :key="String(row.id)">
+                <TableCell class="font-medium">{{ employeeName(row) }}</TableCell>
+                <TableCell class="tabular-nums">{{ String(row.created_at).slice(0, 10) }}</TableCell>
+                <TableCell class="tabular-nums">{{ formatTime(row.check_in) }}</TableCell>
+                <TableCell class="tabular-nums">{{ formatTime(row.check_out) }}</TableCell>
+                <TableCell>
+                  <Badge variant="secondary">{{ statusLabel(row.status) }}</Badge>
+                </TableCell>
+                <TableCell class="text-muted-foreground">{{ row.check_in_method || 'manual' }}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
+
+    <Card class="rounded-xl border-border/60 shadow-none">
+      <CardHeader class="flex flex-row flex-wrap items-center justify-between gap-3">
+        <CardTitle class="text-base">Event scan & absensi</CardTitle>
+        <Button variant="outline" size="sm" @click="scanOpen = !scanOpen">
+          {{ scanOpen ? 'Sembunyikan' : 'Tampilkan' }}
+        </Button>
+      </CardHeader>
+      <CardContent v-if="scanOpen" class="space-y-3">
         <div class="grid gap-2 sm:grid-cols-3">
-          <div class="rounded-lg border bg-foreground px-3 py-2 text-sm text-background">Total: 0</div>
-          <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">Berhasil: 0</div>
-          <div class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">Ditolak: 0</div>
+          <StatCard label="Total event" :value="scanEvents.length" :icon="ScanLine" class="!shadow-none" />
+          <StatCard label="Check-in tercatat" :value="scanSuccess" class="!shadow-none" />
+          <StatCard label="Hari aktif" :value="activeDate" class="!shadow-none" />
         </div>
-        <TableEmpty message="Belum ada scan event untuk tanggal aktif." compact />
+        <EmptyState
+          v-if="scanEvents.length === 0"
+          :icon="ScanLine"
+          title="Belum ada event scan"
+          description="Event check-in via QR atau manual akan tercatat otomatis di log audit."
+          compact
+        />
+        <div v-else class="overflow-x-auto rounded-lg border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Waktu</TableHead>
+                <TableHead>Aksi</TableHead>
+                <TableHead>Detail</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="(ev, i) in scanEvents" :key="i">
+                <TableCell class="tabular-nums">{{ String(ev.created_at).slice(11, 19) }}</TableCell>
+                <TableCell>{{ ev.action }}</TableCell>
+                <TableCell class="text-muted-foreground">{{ ev.details || '—' }}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
 
-    <Card class="rounded-xl shadow-none">
-      <CardHeader class="flex flex-row flex-wrap items-center justify-between gap-3 px-4 pt-4 pb-2">
-        <CardTitle class="text-base">Riwayat report mingguan</CardTitle>
+    <Card class="rounded-xl border-border/60 shadow-none">
+      <CardHeader class="flex flex-row flex-wrap items-center justify-between gap-3">
+        <div>
+          <CardTitle class="text-base">Riwayat report mingguan</CardTitle>
+          <p class="mt-0.5 text-sm text-muted-foreground">Arsip CSV kehadiran per minggu.</p>
+        </div>
         <div class="flex flex-wrap gap-2">
-          <Select default-value="all">
-            <SelectTrigger class="w-36"><SelectValue placeholder="Team" /></SelectTrigger>
-            <SelectContent><SelectItem value="all">Semua team</SelectItem></SelectContent>
-          </Select>
-          <Button size="sm">Generate report scope ini</Button>
-          <Button variant="outline" size="sm">Sinkronkan riwayat report</Button>
+          <Button size="sm" :disabled="generating" @click="generateWeekly">
+            {{ generating ? 'Memproses…' : 'Generate report mingguan' }}
+          </Button>
+          <Button variant="outline" size="sm" @click="reloadWeekly">Muat ulang</Button>
         </div>
       </CardHeader>
-      <CardContent v-if="reportOpen" class="space-y-3 px-4 pb-4">
-        <div class="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-900">
-          <span class="font-medium">Scope Excel mingguan:</span>
-          report akan mencakup semua karyawan aktif di workspace untuk minggu berjalan.
+      <CardContent v-if="reportOpen" class="space-y-3">
+        <EmptyState
+          v-if="(weeklyReports?.length ?? 0) === 0"
+          :icon="FileSpreadsheet"
+          title="Belum ada report mingguan"
+          description="Generate report pertama untuk mengarsipkan data kehadiran minggu berjalan."
+          compact
+        >
+          <template #actions>
+            <Button size="sm" :disabled="generating" @click="generateWeekly">
+              {{ generating ? 'Memproses…' : 'Generate report pertama' }}
+            </Button>
+          </template>
+        </EmptyState>
+        <div v-else class="overflow-x-auto rounded-lg border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Minggu</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Waktu generate</TableHead>
+                <TableHead class="text-right">Aksi</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="w in weeklyReports ?? []" :key="String(w.id)">
+                <TableCell class="tabular-nums">
+                  {{ String(w.week_start).slice(0, 10) }} – {{ String(w.week_end).slice(0, 10) }}
+                </TableCell>
+                <TableCell>
+                  <Badge variant="secondary">{{ w.status }}</Badge>
+                </TableCell>
+                <TableCell class="tabular-nums text-muted-foreground">
+                  {{ w.generated_at ? String(w.generated_at).slice(0, 16).replace('T', ' ') : '—' }}
+                </TableCell>
+                <TableCell class="text-right">
+                  <Button
+                    v-if="w.status === 'completed'"
+                    variant="outline"
+                    size="sm"
+                    @click="downloadWeekly(Number(w.id))"
+                  >
+                    <Download class="mr-1 size-3.5" />
+                    Unduh CSV
+                  </Button>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </div>
-        <TableEmpty message="Belum ada riwayat report mingguan." compact />
       </CardContent>
     </Card>
   </PageShell>

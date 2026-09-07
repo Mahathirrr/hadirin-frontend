@@ -10,37 +10,70 @@ import {
 } from '@/lib/map-tiles'
 import { cn } from '@/lib/utils'
 
+export type MapMarker = { lat: number; lng: number; label?: string }
+export type MapCircle = { lat: number; lng: number; radiusM: number; label?: string }
+
 const props = withDefaults(defineProps<{
   center?: [number, number]
   zoom?: number
   fullHeight?: boolean
   minHeight?: string
   class?: string
-  markers?: Array<{ lat: number; lng: number; label?: string }>
+  markers?: MapMarker[]
+  circles?: MapCircle[]
+  interactive?: boolean
 }>(), {
   center: () => DEFAULT_MAP_CENTER,
   zoom: DEFAULT_MAP_ZOOM,
   fullHeight: false,
   minHeight: '320px',
   markers: () => [],
+  circles: () => [],
+  interactive: false,
 })
+
+const emit = defineEmits<{
+  mapClick: [lat: number, lng: number]
+}>()
 
 const mapEl = ref<HTMLElement | null>(null)
 let map: L.Map | null = null
 let tileLayer: L.TileLayer | null = null
 let markerLayer: L.LayerGroup | null = null
+let circleLayer: L.LayerGroup | null = null
 
-function renderMarkers() {
+function renderOverlays() {
   if (!map) return
+
   markerLayer?.clearLayers()
+  circleLayer?.clearLayers()
   markerLayer = L.layerGroup().addTo(map)
+  circleLayer = L.layerGroup().addTo(map)
+
+  const bounds: L.LatLngExpression[] = []
+
+  for (const c of props.circles) {
+    if (!Number.isFinite(c.lat) || !Number.isFinite(c.lng)) continue
+    L.circle([c.lat, c.lng], {
+      radius: c.radiusM,
+      color: '#2563eb',
+      fillColor: '#3b82f6',
+      fillOpacity: 0.12,
+      weight: 2,
+    })
+      .bindPopup(c.label ?? '')
+      .addTo(circleLayer)
+    bounds.push([c.lat, c.lng])
+  }
+
   for (const m of props.markers) {
     if (!Number.isFinite(m.lat) || !Number.isFinite(m.lng)) continue
     L.marker([m.lat, m.lng]).bindPopup(m.label ?? '').addTo(markerLayer)
+    bounds.push([m.lat, m.lng])
   }
-  if (props.markers.length > 0) {
-    const bounds = L.latLngBounds(props.markers.map((m) => [m.lat, m.lng] as [number, number]))
-    map.fitBounds(bounds.pad(0.2))
+
+  if (bounds.length > 0) {
+    map.fitBounds(L.latLngBounds(bounds).pad(0.2))
   }
 }
 
@@ -59,9 +92,15 @@ function initMap() {
 
   L.control.zoom({ position: 'topright' }).addTo(map)
 
+  if (props.interactive) {
+    map.on('click', (e: L.LeafletMouseEvent) => {
+      emit('mapClick', e.latlng.lat, e.latlng.lng)
+    })
+  }
+
   setTimeout(() => map?.invalidateSize(), 120)
   setTimeout(() => map?.invalidateSize(), 400)
-  renderMarkers()
+  renderOverlays()
 }
 
 watch(() => [props.center, props.zoom], ([center, zoom]) => {
@@ -69,11 +108,12 @@ watch(() => [props.center, props.zoom], ([center, zoom]) => {
   map.setView(center, zoom ?? DEFAULT_MAP_ZOOM)
 })
 
-watch(() => props.markers, () => renderMarkers(), { deep: true })
+watch(() => [props.markers, props.circles], () => renderOverlays(), { deep: true })
 
 onMounted(initMap)
 onUnmounted(() => {
   markerLayer = null
+  circleLayer = null
   tileLayer = null
   map?.remove()
   map = null
@@ -81,6 +121,7 @@ onUnmounted(() => {
 
 defineExpose({
   invalidateSize: () => map?.invalidateSize(),
+  flyTo: (lat: number, lng: number, zoom = 15) => map?.flyTo([lat, lng], zoom),
 })
 </script>
 

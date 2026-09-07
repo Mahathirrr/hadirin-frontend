@@ -10,13 +10,13 @@ import JoinWorkspaceDialog from '@/components/app/join-workspace-dialog.vue'
 import CommandSearch from '@/components/command-search.vue'
 import HeaderReportMenu from '@/components/app/header-report-menu.vue'
 import HeaderUserMenu from '@/components/app/header-user-menu.vue'
+import UserAvatar from '@/components/app/user-avatar.vue'
 import WorkspaceSwitcher from '@/components/app/workspace-switcher.vue'
 import Logo from '@/components/logo.vue'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
-import { initials, truncateText } from '@/lib/display'
+import { truncateText } from '@/lib/display'
 import { ROUTES } from '@/lib/routes'
 import { useAuthStore } from '@/stores/auth'
 
@@ -65,17 +65,13 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
         class="flex shrink-0 cursor-pointer items-center gap-2 rounded-md border-r border-white/20 px-1 py-1 pr-3 transition-colors hover:bg-white/10"
       >
         <Logo :size="22" class="text-white" />
-        <span class="text-sm font-semibold tracking-tight">Hadirin.id</span>
+        <span class="text-sm font-semibold tracking-tight">Hadirin</span>
       </RouterLink>
 
       <SidebarTrigger class="-ml-1 cursor-pointer text-white hover:bg-white/10 hover:text-white" />
 
       <div class="hidden min-w-0 items-center gap-2 text-sm text-zinc-300 md:flex">
-        <Avatar class="size-6 shrink-0 border border-white/15">
-          <AvatarFallback class="bg-zinc-700 text-[10px] text-white">
-            {{ initials(auth.user?.name || 'Admin') }}
-          </AvatarFallback>
-        </Avatar>
+        <UserAvatar :user="auth.user" class="size-6 shrink-0" />
         <span class="max-w-[8rem] truncate lg:max-w-[10rem]">
           {{ truncateText(auth.user?.name || 'Admin', 18) }}
         </span>
@@ -135,11 +131,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
     </div>
 
     <div class="flex items-center gap-2 border-t border-white/10 px-3 py-2 text-sm text-zinc-300 md:hidden">
-      <Avatar class="size-6 border border-white/15">
-        <AvatarFallback class="bg-zinc-600 text-[10px] text-white">
-          {{ initials(auth.user?.name || 'Admin') }}
-        </AvatarFallback>
-      </Avatar>
+      <UserAvatar :user="auth.user" class="size-6 shrink-0" />
       <span class="truncate">{{ auth.user?.name || 'Admin' }}</span>
       <span class="text-white/35">/</span>
       <WorkspaceSwitcher

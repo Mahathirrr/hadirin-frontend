@@ -15,8 +15,8 @@ import { Label } from '@/components/ui/label'
 
 <template>
   <div class="flex flex-col gap-6">
-    <Card>
-      <CardHeader class="text-center">
+    <Card class="pt-1">
+      <CardHeader class="text-center pt-5">
         <CardTitle class="text-xl">Forgot your password?</CardTitle>
         <CardDescription>
           Enter your email address and we'll send you a link to reset your password

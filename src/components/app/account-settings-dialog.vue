@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { Laptop, MoreHorizontal, Shield, User, X } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import UserAvatar from '@/components/app/user-avatar.vue'
 import { Badge } from '@/components/ui/badge'
 import {
   Dialog,
@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { createDialogDismissGuard } from '@/lib/defer-open'
-import { initials, usernameFromEmail } from '@/lib/display'
+import { usernameFromEmail } from '@/lib/display'
 import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps<{ open: boolean }>()
@@ -135,11 +135,7 @@ function handleOpenChange(nextOpen: boolean) {
               <div class="flex items-center gap-6 py-5 first:pt-0">
                 <p class="w-36 shrink-0 text-sm text-muted-foreground">Profile</p>
                 <div class="flex min-w-0 flex-1 items-center gap-3">
-                  <Avatar class="size-10 shrink-0">
-                    <AvatarFallback class="bg-violet-500 text-sm text-white">
-                      {{ initials(displayName) }}
-                    </AvatarFallback>
-                  </Avatar>
+                  <UserAvatar :user="auth.user" class="size-10 shrink-0 border-border/60" />
                   <p v-if="!editingName" class="truncate font-medium">{{ displayName }}</p>
                   <input
                     v-else

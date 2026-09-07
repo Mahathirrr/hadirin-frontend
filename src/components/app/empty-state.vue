@@ -1,21 +1,37 @@
 <script setup lang="ts">
-import { Info } from 'lucide-vue-next'
-import { Button } from '@/components/ui/button'
+import type { Component } from 'vue'
+
+import { cn } from '@/lib/utils'
 
 defineProps<{
   title: string
   description?: string
-  actionLabel?: string
+  icon?: Component
+  compact?: boolean
+  class?: string
 }>()
-
-defineEmits<{ action: [] }>()
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/15 px-4 py-8 text-center">
-    <Info class="mb-2 size-6 text-muted-foreground" />
-    <p class="text-sm font-medium">{{ title }}</p>
-    <p v-if="description" class="mt-1 max-w-md text-sm text-muted-foreground">{{ description }}</p>
-    <Button v-if="actionLabel" variant="outline" size="sm" class="mt-3" @click="$emit('action')">{{ actionLabel }}</Button>
+  <div
+    :class="cn(
+      'flex flex-col items-center justify-center rounded-xl border border-dashed border-border/70 bg-muted/10 text-center',
+      compact ? 'gap-2 px-4 py-6' : 'gap-3 px-4 py-8',
+      $props.class,
+    )"
+  >
+    <div
+      v-if="icon"
+      class="flex size-11 items-center justify-center rounded-full bg-muted/50 text-muted-foreground"
+    >
+      <component :is="icon" class="size-5" />
+    </div>
+    <div class="max-w-sm space-y-1">
+      <p class="text-sm font-medium text-foreground">{{ title }}</p>
+      <p v-if="description" class="text-sm text-muted-foreground">{{ description }}</p>
+    </div>
+    <div v-if="$slots.actions" class="flex flex-wrap items-center justify-center gap-2 pt-1">
+      <slot name="actions" />
+    </div>
   </div>
 </template>

@@ -88,6 +88,8 @@ export type DashboardSummary = {
   active_geofences: number
   active_qr_devices: number
   recent_attendances_7d: number
+  stale_location_sessions?: number
+  attendance_trend_7d?: Array<{ date: string; day: string; rate: number }>
 }
 
 export type WorkspaceSettings = {
@@ -152,10 +154,16 @@ export const api = {
     unwrapList(await request<{ data: Array<Record<string, unknown>> }>(`/employees?workspace_id=${workspaceId}`, { token })),
   createEmployee: (token: string, workspaceId: number, body: Record<string, unknown>) =>
     request<Record<string, unknown>>(`/employees?workspace_id=${workspaceId}`, { method: 'POST', token, body }),
+  updateEmployee: (token: string, id: number, body: Record<string, unknown>) =>
+    request<Record<string, unknown>>(`/employees/${id}`, { method: 'PUT', token, body }),
+  deleteEmployee: (token: string, id: number) =>
+    request<{ message: string }>(`/employees/${id}`, { method: 'DELETE', token }),
   listAttendance: async (token: string, workspaceId: number, date?: string) =>
     unwrapList(await request<{ data: Array<Record<string, unknown>> }>(`/attendance?workspace_id=${workspaceId}${date ? `&date=${date}` : ''}`, { token })),
   createAttendance: (token: string, workspaceId: number, body: Record<string, unknown>) =>
     request<Record<string, unknown>>(`/attendance?workspace_id=${workspaceId}`, { method: 'POST', token, body }),
+  patchAttendance: (token: string, id: number, body: Record<string, unknown>) =>
+    request<Record<string, unknown>>(`/attendance/${id}`, { method: 'PATCH', token, body }),
   listLeaveRequests: async (token: string, workspaceId: number) =>
     unwrapList(await request<{ data: Array<Record<string, unknown>> }>(`/leave-requests?workspace_id=${workspaceId}`, { token })),
   createLeaveRequest: (token: string, workspaceId: number, body: Record<string, unknown>) =>
@@ -185,6 +193,10 @@ export const api = {
     unwrapList(await request<{ data: Array<Record<string, unknown>> }>(`/qr-devices?workspace_id=${workspaceId}`, { token })),
   createQRDevice: (token: string, workspaceId: number, body: Record<string, unknown>) =>
     request<Record<string, unknown>>(`/qr-devices?workspace_id=${workspaceId}`, { method: 'POST', token, body }),
+  updateQRDevice: (token: string, id: number, body: Record<string, unknown>) =>
+    request<Record<string, unknown>>(`/qr-devices/${id}`, { method: 'PUT', token, body }),
+  deleteQRDevice: (token: string, id: number) =>
+    request<{ message: string }>(`/qr-devices/${id}`, { method: 'DELETE', token }),
   createQRRegistrationCode: (token: string, workspaceId: number) =>
     request<{ code: string; expires_at: string }>(`/qr-devices/registration-codes?workspace_id=${workspaceId}`, { method: 'POST', token }),
   listGeofences: async (token: string, workspaceId: number) =>
@@ -221,16 +233,51 @@ export const api = {
       formData: form,
     })
   },
+  verifyFaceEnrollment: (token: string, workspaceId: number, employeeId: number, photo: File) => {
+    const form = new FormData()
+    form.append('employee_id', String(employeeId))
+    form.append('photo', photo)
+    return request<{
+      match: boolean
+      verification_token?: string
+      expires_in_seconds?: number
+      employee_id?: number
+    }>(`/face-enrollments/verify?workspace_id=${workspaceId}`, {
+      method: 'POST',
+      token,
+      formData: form,
+    })
+  },
+  deleteFaceEnrollment: (token: string, id: number) =>
+    request<{ message: string }>(`/face-enrollments/${id}`, { method: 'DELETE', token }),
+  listPasskeys: async (token: string, workspaceId: number) =>
+    unwrapList(await request<{ data: Array<Record<string, unknown>> }>(`/passkeys?workspace_id=${workspaceId}`, { token })),
+  beginPasskeyRegistration: (token: string, workspaceId: number, label?: string) =>
+    request<{ options: PublicKeyCredentialCreationOptions; workspace_id: number; label?: string }>(
+      '/passkeys/register/begin',
+      { method: 'POST', token, body: { workspace_id: workspaceId, label } },
+    ),
+  finishPasskeyRegistration: (token: string, workspaceId: number, credential: unknown, label?: string) =>
+    request<Record<string, unknown>>(
+      `/passkeys/register/finish?workspace_id=${workspaceId}${label ? `&label=${encodeURIComponent(label)}` : ''}`,
+      { method: 'POST', token, body: credential },
+    ),
+  deletePasskey: (token: string, id: number) =>
+    request<{ message: string }>(`/passkeys/${id}`, { method: 'DELETE', token }),
   listWorkPlans: async (token: string, workspaceId: number) =>
     unwrapList(await request<{ data: Array<Record<string, unknown>> }>(`/work-plans?workspace_id=${workspaceId}`, { token })),
   createWorkPlan: (token: string, workspaceId: number, body: Record<string, unknown>) =>
     request<Record<string, unknown>>(`/work-plans?workspace_id=${workspaceId}`, { method: 'POST', token, body }),
+  deleteWorkPlan: (token: string, id: number) =>
+    request<{ message: string }>(`/work-plans/${id}`, { method: 'DELETE', token }),
   listWorkReports: async (token: string, workspaceId: number) =>
     unwrapList(await request<{ data: Array<Record<string, unknown>> }>(`/work-reports?workspace_id=${workspaceId}`, { token })),
   createWorkReport: (token: string, workspaceId: number, body: Record<string, unknown>) =>
     request<Record<string, unknown>>(`/work-reports?workspace_id=${workspaceId}`, { method: 'POST', token, body }),
   listWorkspaces: async (token: string) =>
     unwrapList(await request<{ data: Workspace[] }>('/workspaces', { token })),
+  listWeeklyReports: async (token: string, workspaceId: number) =>
+    unwrapList(await request<{ data: Array<Record<string, unknown>> }>(`/reports/weekly?workspace_id=${workspaceId}`, { token })),
   downloadLatestWeeklyReport: async (token: string, workspaceId: number) =>
     request<{ download_url?: string; message?: string }>(`/reports/weekly/latest?workspace_id=${workspaceId}`, { token }),
   generateWeeklyReport: async (token: string, workspaceId: number) =>
@@ -244,7 +291,10 @@ export const api = {
       { token },
     )
     if (!latest.id) throw new ApiError('Belum ada report mingguan yang selesai', 404)
-    await downloadWithAuth(`/reports/weekly/${latest.id}/download`, token, `weekly-report-${latest.id}.csv`)
+    await api.downloadWeeklyReportById(token, latest.id)
+  },
+  downloadWeeklyReportById: async (token: string, reportId: number) => {
+    await downloadWithAuth(`/reports/weekly/${reportId}/download`, token, `weekly-report-${reportId}.csv`)
   },
   weeklyReportDownloadUrl: (reportId: number) => `${API_URL}/reports/weekly/${reportId}/download`,
 }

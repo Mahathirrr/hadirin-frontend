@@ -50,9 +50,9 @@ async function handleJoin() {
   <div class="grid min-h-svh lg:grid-cols-2">
     <div class="flex flex-col gap-4 p-6 md:p-10">
       <div class="flex justify-center gap-2 md:justify-start">
-        <RouterLink to="/" class="flex items-center gap-2 font-medium">
-          <Logo :size="24" class="text-primary" />
-          Hadirin.id
+        <RouterLink to="/" class="flex items-center gap-2.5 font-semibold tracking-tight">
+          <Logo :size="32" />
+          <span>Hadirin</span>
         </RouterLink>
       </div>
       <div class="flex flex-1 items-center justify-center">

@@ -52,10 +52,10 @@ onMounted(async () => {
     </div>
     <slot name="toolbar" />
     <Card class="rounded-xl shadow-none">
-      <CardHeader class="px-4 pt-4 pb-2">
+      <CardHeader>
         <CardTitle class="text-base">{{ listTitle }}</CardTitle>
       </CardHeader>
-      <CardContent class="px-4 pb-4">
+      <CardContent>
         <div v-if="loading" class="py-6 text-center text-sm text-muted-foreground">Memuat...</div>
         <EmptyState v-else-if="!rows.length" title="Belum ada data" description="Data akan muncul setelah workspace mulai digunakan." />
         <Table v-else>

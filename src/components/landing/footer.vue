@@ -29,7 +29,7 @@ const footerLinks = {
         <div>
           <RouterLink to="/" class="flex items-center space-x-2">
             <Logo :size="24" class="text-background" />
-            <span class="font-bold">Hadirin.id</span>
+            <span class="font-bold">Hadirin</span>
           </RouterLink>
           <p class="mt-4 text-sm text-background/70">
             Platform absensi untuk tim modern.
@@ -49,7 +49,7 @@ const footerLinks = {
       </div>
 
       <p class="mt-10 text-sm text-background/60">
-        © {{ new Date().getFullYear() }} Hadirin.id
+        © {{ new Date().getFullYear() }} Hadirin
       </p>
     </div>
   </footer>

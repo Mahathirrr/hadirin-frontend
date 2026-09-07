@@ -1,17 +1,26 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { Activity, Info, QrCode, RefreshCw, TrendingUp, UserCheck, Users } from 'lucide-vue-next'
+import {
+  Activity,
+  CalendarRange,
+  QrCode,
+  RefreshCw,
+  TrendingUp,
+  UserCheck,
+  Users,
+} from 'lucide-vue-next'
 
 import AttendanceTrendChart from '@/components/app/attendance-trend-chart.vue'
+import EmptyState from '@/components/app/empty-state.vue'
 import PageShell from '@/components/app/page-shell.vue'
-import { Badge } from '@/components/ui/badge'
+import StatCard from '@/components/app/stat-card.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useWorkspaceLoader } from '@/composables/useWorkspaceData'
 import { api, type DashboardSummary } from '@/lib/api'
-import { useAuthStore } from '@/stores/auth'
 import { ROUTES } from '@/lib/routes'
+import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -27,129 +36,179 @@ const rate = computed(() => {
 })
 
 const averageRate = computed(() => {
-  const s = summary.value
-  if (!s || s.active_employees === 0) return 0
-  return Math.round((s.recent_attendances_7d / (s.active_employees * 7)) * 100)
+  const trend = summary.value?.attendance_trend_7d ?? []
+  if (trend.length === 0) return 0
+  const sum = trend.reduce((acc, point) => acc + point.rate, 0)
+  return Math.round(sum / trend.length)
 })
+
+const trendChartData = computed(() =>
+  (summary.value?.attendance_trend_7d ?? []).map((point) => ({
+    label: point.day,
+    rate: Math.round(point.rate),
+  })),
+)
+
+const healthAlerts = computed(() => {
+  const s = summary.value
+  if (!s) return []
+  const items: Array<{ tone: 'amber' | 'muted' | 'emerald'; text: string }> = []
+  if ((s.stale_location_sessions ?? 0) > 0) {
+    items.push({
+      tone: 'amber',
+      text: `${s.stale_location_sessions} sesi lokasi belum kirim ping sesuai interval`,
+    })
+  }
+  if (s.pending_leaves > 0) {
+    items.push({
+      tone: 'amber',
+      text: `${s.pending_leaves} pengajuan cuti menunggu persetujuan`,
+    })
+  }
+  if (s.active_geofences === 0) {
+    items.push({ tone: 'amber', text: 'Belum ada geofence aktif di workspace' })
+  }
+  if (s.active_qr_devices === 0) {
+    items.push({ tone: 'muted', text: 'Belum ada device QR yang terdaftar' })
+  }
+  if (s.recent_attendances_7d === 0) {
+    items.push({ tone: 'muted', text: 'Belum ada aktivitas absensi 7 hari terakhir' })
+  }
+  const presentRate = s.active_employees > 0
+    ? Math.round((s.today_present / s.active_employees) * 100)
+    : 0
+  if (s.active_employees > 0 && presentRate < 70) {
+    items.push({ tone: 'amber', text: `Rasio kehadiran hari ini ${presentRate}% — perlu dipantau` })
+  }
+  if (items.length === 0 && s.active_employees > 0) {
+    items.push({ tone: 'emerald', text: 'Operasional berjalan normal untuk workspace aktif' })
+  }
+  return items
+})
+
+const toneDot: Record<string, string> = {
+  amber: 'bg-amber-500',
+  muted: 'bg-muted-foreground/40',
+  emerald: 'bg-emerald-500',
+}
 </script>
 
 <template>
   <PageShell
     title="Ringkasan Operasional"
-    :description="`Menampilkan ringkasan untuk workspace aktif: ${auth.workspaceName}.`"
+    :description="`Ringkasan kehadiran dan aktivitas workspace ${auth.workspaceName}.`"
   >
     <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-      <Card class="rounded-xl shadow-none">
-        <CardContent class="flex items-start justify-between p-4">
-          <div>
-            <p class="text-sm text-muted-foreground">Karyawan aktif</p>
-            <p class="mt-1 text-3xl font-bold">{{ summary?.active_employees ?? (loading ? '…' : 0) }}</p>
-            <Button variant="outline" size="sm" class="mt-2" @click="router.push(ROUTES.employees)">Lihat karyawan</Button>
-          </div>
-          <Users class="size-4 text-muted-foreground" />
-        </CardContent>
-      </Card>
-      <Card class="rounded-xl shadow-none">
-        <CardContent class="p-4">
-          <div class="flex items-start justify-between">
-            <p class="text-sm text-muted-foreground">Hadir hari ini</p>
-            <UserCheck class="size-4 text-muted-foreground" />
-          </div>
-          <p class="mt-1 text-3xl font-bold">{{ summary?.today_present ?? 0 }}</p>
-          <p class="mt-1 text-xs text-muted-foreground">{{ summary?.today_late ?? 0 }} terlambat</p>
-        </CardContent>
-      </Card>
-      <Card class="rounded-xl shadow-none">
-        <CardContent class="p-4">
-          <div class="flex items-start justify-between">
-            <p class="text-sm text-muted-foreground">Rasio kehadiran</p>
-            <TrendingUp class="size-4 text-muted-foreground" />
-          </div>
-          <p class="mt-1 text-3xl font-bold">{{ rate }}</p>
-          <p class="mt-1 text-xs text-muted-foreground">Rata-rata 7 hari {{ averageRate }}%</p>
-        </CardContent>
-      </Card>
-      <Card class="rounded-xl shadow-none">
-        <CardContent class="flex items-start justify-between p-4">
-          <div>
-            <p class="text-sm text-muted-foreground">Device QR aktif</p>
-            <p class="mt-1 text-3xl font-bold">{{ summary?.active_qr_devices ?? 0 }}</p>
-            <Button variant="outline" size="sm" class="mt-2" @click="router.push(ROUTES.qrDevices)">Kelola device QR</Button>
-          </div>
-          <QrCode class="size-4 text-muted-foreground" />
-        </CardContent>
-      </Card>
+      <StatCard
+        label="Karyawan aktif"
+        :value="loading ? '…' : (summary?.active_employees ?? 0)"
+        :icon="Users"
+        hint="Terdaftar di workspace"
+      >
+        <Button variant="outline" size="sm" class="mt-2" @click="router.push(ROUTES.employees)">
+          Lihat karyawan
+        </Button>
+      </StatCard>
+      <StatCard
+        label="Hadir hari ini"
+        :value="summary?.today_present ?? 0"
+        :icon="UserCheck"
+        :hint="`${summary?.today_late ?? 0} terlambat`"
+      />
+      <StatCard
+        label="Rasio kehadiran"
+        :value="rate"
+        :icon="TrendingUp"
+        :hint="`Rata-rata 7 hari ${averageRate}%`"
+      />
+      <StatCard
+        label="Device QR aktif"
+        :value="summary?.active_qr_devices ?? 0"
+        :icon="QrCode"
+        hint="Siap untuk scan kehadiran"
+      >
+        <Button variant="outline" size="sm" class="mt-2" @click="router.push(ROUTES.qrDevices)">
+          Kelola device QR
+        </Button>
+      </StatCard>
     </div>
 
-    <Card class="rounded-xl shadow-none">
-      <CardHeader class="flex flex-row items-start justify-between gap-3 px-4 pt-4 pb-2">
+    <Card class="rounded-xl border-border/60 shadow-none">
+      <CardHeader class="flex flex-row items-start justify-between gap-3">
         <div>
           <CardTitle class="text-base">Kesehatan operasional</CardTitle>
-          <p class="mt-0.5 text-sm text-muted-foreground">Sorotan cepat untuk memeriksa kondisi workspace aktif.</p>
+          <p class="mt-0.5 text-sm text-muted-foreground">Indikator cepat kondisi workspace hari ini.</p>
         </div>
         <Button variant="ghost" size="icon-sm" :disabled="loading" @click="load">
           <RefreshCw class="size-4" :class="loading ? 'animate-spin' : ''" />
         </Button>
       </CardHeader>
-      <CardContent class="space-y-2 px-4 pb-4">
-        <div v-if="summary && summary.pending_leaves > 0" class="flex items-center gap-2 rounded-lg border bg-muted/30 px-3 py-2.5 text-sm">
-          <span class="size-2 rounded-full bg-amber-500" />{{ summary.pending_leaves }} pengajuan cuti menunggu persetujuan
+      <CardContent class="space-y-2">
+        <div
+          v-for="(alert, i) in healthAlerts"
+          :key="i"
+          class="flex items-center gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2.5 text-sm"
+        >
+          <span class="size-2 shrink-0 rounded-full" :class="toneDot[alert.tone]" />
+          {{ alert.text }}
         </div>
-        <div v-if="summary && summary.active_geofences === 0" class="flex items-center gap-2 rounded-lg border bg-muted/30 px-3 py-2.5 text-sm">
-          <span class="size-2 rounded-full bg-amber-500" />Belum ada geofence aktif
-        </div>
-        <div v-if="summary && summary.recent_attendances_7d === 0" class="flex items-center gap-2 rounded-lg border bg-muted/30 px-3 py-2.5 text-sm">
-          <span class="size-2 rounded-full bg-muted-foreground/40" />Belum ada aktivitas absensi 7 hari terakhir
-        </div>
-        <div v-if="!summary && !loading" class="text-sm text-muted-foreground">Belum ada data ringkasan.</div>
+        <p v-if="!summary && !loading" class="text-sm text-muted-foreground">Memuat ringkasan…</p>
       </CardContent>
     </Card>
 
     <div class="grid gap-3 lg:grid-cols-2">
-      <Card class="rounded-xl shadow-none">
-        <CardHeader class="flex flex-row items-start justify-between gap-3 px-4 pt-4 pb-2">
-          <div>
-            <CardTitle class="text-base">Tren kehadiran 7 hari</CardTitle>
-            <p class="mt-0.5 text-sm text-muted-foreground">Rata-rata rasio kehadiran {{ averageRate }}%</p>
-          </div>
+      <Card class="rounded-xl border-border/60 shadow-none">
+        <CardHeader>
+          <CardTitle class="text-base">Tren kehadiran 7 hari</CardTitle>
+          <p class="mt-0.5 text-sm text-muted-foreground">Rata-rata rasio kehadiran {{ averageRate }}%</p>
         </CardHeader>
-        <CardContent class="px-4 pb-4">
-          <AttendanceTrendChart :average-rate="averageRate" />
+        <CardContent>
+          <AttendanceTrendChart :data="trendChartData" :average-rate="averageRate" />
         </CardContent>
       </Card>
 
-      <Card class="rounded-xl shadow-none">
-        <CardHeader class="flex flex-row items-start justify-between gap-3 px-4 pt-4 pb-2">
-          <div>
-            <CardTitle class="text-base">Aktivitas terkini</CardTitle>
-            <p class="mt-0.5 text-sm text-muted-foreground">{{ summary?.recent_attendances_7d ?? 0 }} absensi 7 hari terakhir</p>
-          </div>
+      <Card class="rounded-xl border-border/60 shadow-none">
+        <CardHeader>
+          <CardTitle class="text-base">Aktivitas terkini</CardTitle>
+          <p class="mt-0.5 text-sm text-muted-foreground">
+            {{ summary?.recent_attendances_7d ?? 0 }} absensi tercatat 7 hari terakhir
+          </p>
         </CardHeader>
-        <CardContent class="px-4 pb-4">
-          <div class="flex min-h-44 flex-col items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/15 px-6 py-8 text-center">
-            <Info class="mb-2 size-6 text-muted-foreground" />
-            <p class="max-w-sm text-sm font-medium">Lihat detail absensi di halaman Laporan atau Karyawan.</p>
-            <div class="mt-3 flex flex-wrap justify-center gap-2">
-              <Button variant="outline" size="sm" @click="load">Muat ulang</Button>
+        <CardContent>
+          <EmptyState
+            v-if="(summary?.recent_attendances_7d ?? 0) === 0"
+            :icon="Activity"
+            title="Belum ada aktivitas terbaru"
+            description="Absensi karyawan akan muncul di sini setelah check-in pertama tercatat."
+            compact
+          >
+            <template #actions>
+              <Button variant="outline" size="sm" :disabled="loading" @click="load">Muat ulang</Button>
               <Button variant="outline" size="sm" @click="router.push(ROUTES.reports)">Buka laporan</Button>
-            </div>
+            </template>
+          </EmptyState>
+          <div v-else class="space-y-2">
+            <p class="text-sm text-muted-foreground">
+              Lihat detail lengkap absensi harian dan audit di halaman Laporan.
+            </p>
+            <Button size="sm" variant="outline" @click="router.push(ROUTES.reports)">Buka laporan</Button>
           </div>
         </CardContent>
       </Card>
     </div>
 
-    <Card class="rounded-xl shadow-none">
-      <CardHeader class="px-4 pt-4 pb-1">
+    <Card class="rounded-xl border-border/60 shadow-none">
+      <CardHeader>
         <div class="flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground">
-          <Activity class="size-3.5" />
-          STATUS REPORT MINGGUAN
+          <CalendarRange class="size-3.5" />
+          Report mingguan
         </div>
       </CardHeader>
-      <CardContent class="flex flex-col items-start gap-2 px-4 pb-4">
+      <CardContent class="flex flex-col items-start gap-2">
         <p class="text-sm text-muted-foreground">
-          Generate laporan mingguan CSV dari menu report di header atau halaman Work Plans.
+          Generate arsip CSV kehadiran mingguan untuk audit internal workspace.
         </p>
-        <Button size="sm" @click="router.push(ROUTES.workPlans)">Buka work plans & reports</Button>
+        <Button size="sm" @click="router.push(ROUTES.workPlans)">Kelola work plans & reports</Button>
       </CardContent>
     </Card>
   </PageShell>

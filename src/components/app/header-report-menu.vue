@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { FileDown, History, Upload } from 'lucide-vue-next'
+import { ArrowDownToLine, FileDown, History } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 
 import {
@@ -63,7 +63,7 @@ async function generateCurrentReport(event: Event) {
       class="inline-flex size-8 cursor-pointer items-center justify-center rounded-md text-white/90 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30"
       aria-label="Aksi report mingguan"
     >
-      <Upload class="size-4" />
+      <ArrowDownToLine class="size-4" />
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end" class="z-[120] w-72 border-zinc-800 bg-zinc-950 text-zinc-50">
       <DropdownMenuItem

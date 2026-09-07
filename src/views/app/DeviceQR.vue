@@ -36,6 +36,33 @@ async function generateCode() {
   }
 }
 
+async function deactivateDevice(device: Record<string, unknown>) {
+  if (!auth.token || !window.confirm(`Nonaktifkan device ${device.name}?`)) return
+  try {
+    await api.updateQRDevice(auth.token, Number(device.id), {
+      name: device.name,
+      device_code: device.device_code,
+      location: device.location ?? '',
+      active: false,
+    })
+    toast.success('Device dinonaktifkan')
+    await load()
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : 'Gagal menonaktifkan device')
+  }
+}
+
+async function revokeDevice(device: Record<string, unknown>) {
+  if (!auth.token || !window.confirm(`Hapus permanen device ${device.name}?`)) return
+  try {
+    await api.deleteQRDevice(auth.token, Number(device.id))
+    toast.success('Device dihapus')
+    await load()
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : 'Gagal menghapus device')
+  }
+}
+
 const pairingUrl = computed(() => `${API_URL}/qr-devices/register`)
 </script>
 
@@ -45,7 +72,7 @@ const pairingUrl = computed(() => `${API_URL}/qr-devices/register`)
     description="Kelola device QR permanen untuk check-in di lokasi kerja."
   >
     <Card class="rounded-xl shadow-none">
-      <CardHeader class="flex flex-row flex-wrap items-start justify-between gap-3 px-4 pt-4 pb-2">
+      <CardHeader class="flex flex-row flex-wrap items-start justify-between gap-3">
         <div>
           <Badge class="mb-1.5 bg-emerald-100 text-emerald-800 hover:bg-emerald-100">Admin</Badge>
           <CardTitle class="text-base">Kelola device QR permanen dari workspace aktif</CardTitle>
@@ -58,7 +85,7 @@ const pairingUrl = computed(() => `${API_URL}/qr-devices/register`)
           <Button variant="outline" size="sm" :disabled="loading" @click="load">Refresh</Button>
         </div>
       </CardHeader>
-      <CardContent class="px-4 pb-4">
+      <CardContent>
         <div class="grid gap-3 sm:grid-cols-3">
           <StatCard title="Device aktif" :value="activeCount" :hint="`dari ${devices?.length ?? 0} device`" />
           <StatCard title="Sedang online" :value="onlineCount" />
@@ -71,10 +98,10 @@ const pairingUrl = computed(() => `${API_URL}/qr-devices/register`)
     </Card>
 
     <Card class="rounded-xl shadow-none">
-      <CardHeader class="px-4 pt-4 pb-2">
+      <CardHeader>
         <CardTitle class="text-base">Daftar device</CardTitle>
       </CardHeader>
-      <CardContent class="px-4 pb-4">
+      <CardContent>
         <Table v-if="(devices?.length ?? 0) > 0">
           <TableHeader>
             <TableRow>
@@ -82,6 +109,7 @@ const pairingUrl = computed(() => `${API_URL}/qr-devices/register`)
               <TableHead>Kode</TableHead>
               <TableHead>Lokasi</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead class="text-right">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -90,6 +118,21 @@ const pairingUrl = computed(() => `${API_URL}/qr-devices/register`)
               <TableCell class="font-mono text-xs">{{ d.device_code }}</TableCell>
               <TableCell>{{ d.location || '—' }}</TableCell>
               <TableCell>{{ d.active ? 'Aktif' : 'Nonaktif' }}</TableCell>
+              <TableCell class="text-right">
+                <div class="flex justify-end gap-1">
+                  <Button
+                    v-if="d.active"
+                    variant="outline"
+                    size="sm"
+                    @click="deactivateDevice(d)"
+                  >
+                    Nonaktifkan
+                  </Button>
+                  <Button variant="ghost" size="sm" @click="revokeDevice(d)">
+                    Hapus
+                  </Button>
+                </div>
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>

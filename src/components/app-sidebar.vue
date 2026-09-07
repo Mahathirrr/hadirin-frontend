@@ -78,7 +78,7 @@ const data = {
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
-      <NavUser :user="{ name: auth.user?.name || 'Admin', email: auth.user?.email || 'admin@hadirin.id', avatar: '' }" />
+      <NavUser :user="{ name: auth.user?.name || 'Admin', email: auth.user?.email || 'admin@admin.com', avatar: '' }" />
     </SidebarFooter>
   </Sidebar>
 </template>

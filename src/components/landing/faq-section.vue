@@ -13,11 +13,11 @@ interface FaqItem {
 }
 
 const faqItems: FaqItem[] = [
-  { value: 'item-1', question: 'Apa itu Hadirin.id?', answer: 'Hadirin.id adalah aplikasi absensi untuk tim. Admin membuat workspace, mengundang anggota, lalu mencatat kehadiran, cuti, lokasi, dan laporan operasional.' },
-  { value: 'item-2', question: 'Bagaimana cara mulai memakai Hadirin.id?', answer: 'Daftar akun, lalu buat workspace baru atau gabung dengan kode undangan dari admin. Setelah itu Anda langsung masuk ke dashboard.' },
+  { value: 'item-1', question: 'Apa itu Hadirin?', answer: 'Hadirin adalah aplikasi absensi untuk tim. Admin membuat workspace, mengundang anggota, lalu mencatat kehadiran, cuti, lokasi, dan laporan operasional.' },
+  { value: 'item-2', question: 'Bagaimana cara mulai memakai Hadirin?', answer: 'Daftar akun, lalu buat workspace baru atau gabung dengan kode undangan dari admin. Setelah itu Anda langsung masuk ke dashboard.' },
   { value: 'item-3', question: 'Apakah saya bisa mengundang tim?', answer: 'Bisa. Setiap workspace punya kode undangan. Admin bisa membagikan kode itu, atau meresetnya jika perlu.' },
   { value: 'item-4', question: 'Data apa yang bisa dikelola?', answer: 'Kehadiran harian, pengajuan cuti, karyawan, geofence, device QR, work plan, laporan, dan log audit.' },
-  { value: 'item-5', question: 'Apakah harus punya perusahaan besar?', answer: 'Tidak. Hadirin.id bisa dipakai tim kecil dulu, lalu ditambah anggota seiring kebutuhan.' },
+  { value: 'item-5', question: 'Apakah harus punya perusahaan besar?', answer: 'Tidak. Hadirin bisa dipakai tim kecil dulu, lalu ditambah anggota seiring kebutuhan.' },
   { value: 'item-6', question: 'Bagaimana jika saya belum punya workspace?', answer: 'Setelah login Anda diarahkan ke halaman onboarding untuk membuat workspace atau bergabung dengan kode undangan.' },
 ]
 </script>
@@ -30,7 +30,7 @@ const faqItems: FaqItem[] = [
         <Badge variant="outline" class="mb-4">FAQ</Badge>
         <h2 class="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">Pertanyaan yang sering muncul</h2>
         <p class="text-lg text-muted-foreground">
-          Hal-hal dasar tentang cara kerja Hadirin.id, workspace, dan data kehadiran tim.
+          Hal-hal dasar tentang cara kerja Hadirin, workspace, dan data kehadiran tim.
         </p>
       </div>
 
@@ -56,7 +56,7 @@ const faqItems: FaqItem[] = [
 
         <!-- Contact Support CTA -->
         <div class="mt-12 text-center">
-          <p class="mb-4 text-muted-foreground">Siap mencoba Hadirin.id?</p>
+          <p class="mb-4 text-muted-foreground">Siap mencoba Hadirin?</p>
           <Button class="cursor-pointer" as-child>
             <RouterLink to="/auth/sign-up">Buat akun</RouterLink>
           </Button>

@@ -138,7 +138,7 @@ function formatType(t: unknown) {
     </div>
 
     <Card class="rounded-xl shadow-none">
-      <CardHeader class="flex flex-row flex-wrap items-center justify-between gap-3 px-4 pt-4 pb-2">
+      <CardHeader class="flex flex-row flex-wrap items-center justify-between gap-3">
         <div>
           <CardTitle class="text-base">Daftar anomaly</CardTitle>
           <p class="mt-0.5 text-sm text-muted-foreground">
@@ -164,7 +164,7 @@ function formatType(t: unknown) {
           </Button>
         </div>
       </CardHeader>
-      <CardContent class="px-4 pb-4">
+      <CardContent>
         <div v-if="(summary?.high_open ?? 0) > 0" class="mb-3 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900">
           <ShieldAlert class="size-4 shrink-0" />
           {{ summary?.high_open }} alert severity tinggi masih terbuka — prioritaskan review.

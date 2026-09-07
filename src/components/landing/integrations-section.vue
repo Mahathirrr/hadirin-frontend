@@ -28,7 +28,7 @@ const integrations = [
       <div class="mx-auto max-w-2xl text-center">
         <Badge variant="outline" class="mb-4">Integrasi</Badge>
         <h2 class="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
-          Hadirin.id siap terhubung ke alur kerja tim Anda
+          Hadirin siap terhubung ke alur kerja tim Anda
         </h2>
         <p class="text-muted-foreground">
           Notifikasi dan sinkronisasi dengan alat yang sudah dipakai tim sehari-hari.
