@@ -10,12 +10,10 @@ import { Button } from '@/components/ui/button'
 </script>
 
 <template>
-  <section id="hero" class="relative overflow-hidden bg-background pt-24 pb-20 sm:pt-32 sm:pb-28">
-    <div class="absolute inset-0 -z-10 pointer-events-none">
-      <DotPattern size="lg" fade-style="ellipse" opacity="medium" />
-    </div>
+  <section id="hero" class="relative isolate overflow-hidden bg-background pt-24 pb-20 sm:pt-32 sm:pb-28">
+    <DotPattern size="lg" fade-style="ellipse" opacity="high" />
 
-    <div class="container relative mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
       <ScrollReveal animation="fade-up" :duration="800">
         <div class="mx-auto max-w-4xl text-center">
         <div class="mb-8 flex justify-center">

@@ -16,35 +16,32 @@ const props = withDefaults(defineProps<Props>(), {
   fadeStyle: 'ellipse',
 })
 
-const sizeMap: Record<string, string> = {
-  sm: '[background-size:12px_12px]',
-  md: '[background-size:16px_16px]',
-  lg: '[background-size:20px_20px]',
-}
+const sizePx = { sm: 12, md: 16, lg: 22 } as const
+const opacityVal = { low: 0.45, medium: 0.65, high: 0.9 } as const
 
-const opacityMap: Record<string, string> = {
-  low: 'opacity-30',
-  medium: 'opacity-50',
-  high: 'opacity-70',
-}
+const maskMap = {
+  ellipse: 'radial-gradient(ellipse 85% 75% at 50% 35%, #000 55%, transparent 100%)',
+  circle: 'radial-gradient(circle at 50% 45%, #000 60%, transparent 100%)',
+  none: 'none',
+} as const
 
-const fadeMap: Record<string, string> = {
-  ellipse: '[mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]',
-  circle: '[mask-image:radial-gradient(circle_at_50%_50%,#000_70%,transparent_100%)]',
-  none: '',
-}
+const patternStyle = computed(() => {
+  const fade = props.fadeStyle
+  const mask = maskMap[fade]
 
-const cls = computed(() =>
-  cn(
-    'absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#374151_1px,transparent_1px)]',
-    sizeMap[props.size],
-    fadeMap[props.fadeStyle],
-    opacityMap[props.opacity],
-    props.class,
-  ),
-)
+  return {
+    backgroundImage: 'radial-gradient(circle, var(--dot-pattern-color) 1.5px, transparent 1.5px)',
+    backgroundSize: `${sizePx[props.size]}px ${sizePx[props.size]}px`,
+    opacity: opacityVal[props.opacity],
+    WebkitMaskImage: fade === 'none' ? undefined : mask,
+    maskImage: fade === 'none' ? undefined : mask,
+  }
+})
 </script>
 
 <template>
-  <div :class="cls" />
+  <div
+    :class="cn('absolute inset-0 pointer-events-none', props.class)"
+    :style="patternStyle"
+  />
 </template>
