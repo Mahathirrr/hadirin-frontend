@@ -3,6 +3,7 @@ import { ArrowRight, CheckCircle2 } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import ScrollReveal from '@/components/landing/scroll-reveal.vue'
 
 interface Integration {
   id: string
@@ -78,7 +79,8 @@ const integrations: Integration[] = [
   <section id="integrations" class="relative py-24 sm:py-32 overflow-hidden">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
-      <div class="mx-auto max-w-3xl text-center">
+      <ScrollReveal animation="fade-up">
+        <div class="mx-auto max-w-3xl text-center">
         <Badge variant="outline" class="mb-4 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider">
           Ekosistem & Integrasi
         </Badge>
@@ -89,19 +91,22 @@ const integrations: Integration[] = [
           Tidak perlu mengubah kebiasaan kerja tim. Hadirin terintegrasi langsung dengan platform komunikasi,
           kalender, dan sistem payroll Anda tanpa konfigurasi rumit.
         </p>
-      </div>
+        </div>
+      </ScrollReveal>
 
       <!-- Integrations Grid -->
       <div class="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <div
-          v-for="item in integrations"
+          v-for="(item, index) in integrations"
           :key="item.id"
-          class="group relative flex flex-col justify-between rounded-2xl border border-border/70 bg-card/60 p-6 backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:border-foreground/25 hover:bg-card hover:shadow-xl hover:shadow-foreground/5"
+          data-aos="fade-up"
+          :data-aos-delay="index * 60"
+          class="group relative flex flex-col justify-between landing-card p-6"
         >
           <div>
             <!-- Header with Icon & Status -->
             <div class="flex items-center justify-between mb-4">
-              <div class="flex size-12 items-center justify-center rounded-xl bg-muted/80 p-2.5 shadow-sm transition-transform duration-300 group-hover:scale-105">
+              <div class="flex size-12 items-center justify-center rounded-xl bg-muted/80 p-2.5">
                 <!-- Slack Official SVG -->
                 <svg v-if="item.id === 'slack'" viewBox="0 0 128 128" class="size-6 shrink-0" aria-hidden="true">
                   <path d="M26.7 80.3c0 7.4-6 13.4-13.4 13.4S0 87.7 0 80.3s6-13.4 13.4-13.4h13.3v13.4z" fill="#E01E5A"/>
@@ -171,7 +176,7 @@ const integrations: Integration[] = [
           </div>
 
           <!-- Bottom check status -->
-          <div class="mt-5 pt-3 border-t border-border/50 flex items-center gap-1.5 text-[11px] text-muted-foreground group-hover:text-foreground transition-colors">
+          <div class="mt-5 pt-3 border-t border-border/50 flex items-center gap-1.5 text-[11px] text-muted-foreground">
             <CheckCircle2 class="size-3.5 text-foreground/60 shrink-0" />
             <span>Integrasi aktif & otomatis</span>
           </div>
@@ -179,7 +184,8 @@ const integrations: Integration[] = [
       </div>
 
       <!-- Bottom API Banner -->
-      <div class="mx-auto mt-12 max-w-4xl rounded-2xl border border-border/70 bg-muted/40 p-6 backdrop-blur-sm sm:flex sm:items-center sm:justify-between sm:p-8">
+      <ScrollReveal animation="fade-up" :delay="80">
+        <div class="mx-auto mt-12 max-w-4xl rounded-2xl border border-border/70 bg-muted/40 p-6 sm:flex sm:items-center sm:justify-between sm:p-8">
         <div>
           <h4 class="text-base sm:text-lg font-semibold text-foreground">
             Butuh integrasi dengan sistem payroll atau HR internal?
@@ -196,7 +202,8 @@ const integrations: Integration[] = [
             </RouterLink>
           </Button>
         </div>
-      </div>
+        </div>
+      </ScrollReveal>
     </div>
   </section>
 </template>

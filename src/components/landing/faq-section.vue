@@ -5,6 +5,7 @@ import { RouterLink } from 'vue-router'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import ScrollReveal from '@/components/landing/scroll-reveal.vue'
 
 interface FaqItem {
   value: string
@@ -50,7 +51,8 @@ const faqItems: FaqItem[] = [
   <section id="faq" class="relative py-24 sm:py-32">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
-      <div class="mx-auto mb-16 max-w-3xl text-center">
+      <ScrollReveal animation="fade-up">
+        <div class="mx-auto mb-16 max-w-3xl text-center">
         <Badge variant="outline" class="mb-4 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider">
           Tanya Jawab
         </Badge>
@@ -60,20 +62,23 @@ const faqItems: FaqItem[] = [
         <p class="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
           Temukan jawaban atas pertanyaan umum seputar fitur, keamanan biometrik, dan implementasi Hadirin di perusahaan Anda.
         </p>
-      </div>
+        </div>
+      </ScrollReveal>
 
       <!-- FAQ Accordion -->
       <div class="mx-auto max-w-4xl">
         <Accordion type="single" collapsible class="space-y-4">
           <AccordionItem
-            v-for="item in faqItems"
+            v-for="(item, index) in faqItems"
             :key="item.value"
             :value="item.value"
-            class="rounded-2xl border border-border/80 bg-card/60 px-6 backdrop-blur-sm transition-colors hover:border-foreground/20"
+            data-aos="fade-up"
+            :data-aos-delay="index * 50"
+            class="landing-card px-6"
           >
             <AccordionTrigger class="py-5 text-start font-semibold text-foreground hover:no-underline text-base sm:text-lg">
               <div class="flex items-center gap-3">
-                <span class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <span class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
                   <HelpCircle class="size-4" />
                 </span>
                 <span>{{ item.question }}</span>
@@ -86,7 +91,8 @@ const faqItems: FaqItem[] = [
         </Accordion>
 
         <!-- Help Banner -->
-        <div class="mt-12 flex flex-col items-center justify-between gap-4 rounded-2xl border border-border/70 bg-muted/30 p-6 sm:flex-row sm:p-8">
+        <ScrollReveal animation="fade-up" :delay="100">
+          <div class="mt-12 flex flex-col items-center justify-between gap-4 landing-card p-6 sm:flex-row sm:p-8">
           <div>
             <h4 class="text-base sm:text-lg font-semibold text-foreground">Masih punya pertanyaan lain?</h4>
             <p class="mt-1 text-xs sm:text-sm text-muted-foreground">
@@ -99,7 +105,8 @@ const faqItems: FaqItem[] = [
               <span>Hubungi Kami via WhatsApp</span>
             </a>
           </Button>
-        </div>
+          </div>
+        </ScrollReveal>
       </div>
     </div>
   </section>

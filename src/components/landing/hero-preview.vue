@@ -148,7 +148,7 @@ const recentAttendance = [
             <div
               v-for="item in recentAttendance"
               :key="item.name"
-              class="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3 transition-colors hover:bg-muted/40"
+              class="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3"
             >
               <div class="flex items-center gap-3">
                 <div class="flex size-9 items-center justify-center rounded-full bg-muted font-bold text-xs text-foreground shrink-0">

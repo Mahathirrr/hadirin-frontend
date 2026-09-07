@@ -5,6 +5,7 @@ import { RouterLink } from 'vue-router'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import ScrollReveal from '@/components/landing/scroll-reveal.vue'
 
 const isAnnual = ref(true)
 
@@ -86,7 +87,8 @@ const plans: Plan[] = [
   <section id="pricing" class="relative py-24 sm:py-32 bg-muted/20">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
-      <div class="mx-auto max-w-3xl text-center">
+      <ScrollReveal animation="fade-up">
+        <div class="mx-auto max-w-3xl text-center">
         <Badge variant="outline" class="mb-4 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider">
           Harga Transparan
         </Badge>
@@ -120,18 +122,19 @@ const plans: Plan[] = [
             </span>
           </span>
         </div>
-      </div>
+        </div>
+      </ScrollReveal>
 
       <!-- Pricing Cards Grid -->
       <div class="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-3 items-stretch">
         <div
-          v-for="plan in plans"
+          v-for="(plan, index) in plans"
           :key="plan.id"
+          data-aos="fade-up"
+          :data-aos-delay="index * 90"
           :class="[
-            'relative flex flex-col justify-between rounded-3xl p-8 transition-all duration-300',
-            plan.popular
-              ? 'border-2 border-primary bg-card shadow-2xl shadow-primary/10 lg:-translate-y-2'
-              : 'border border-border/80 bg-card/70 hover:border-foreground/20 hover:shadow-lg',
+            'relative flex flex-col justify-between landing-card p-8',
+            plan.popular ? 'border-2 border-primary' : '',
           ]"
         >
           <!-- Popular Ribbon Badge -->

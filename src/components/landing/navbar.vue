@@ -20,6 +20,8 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 
+import { scrollToAnchor } from '@/composables/useLandingScroll'
+
 interface NavItem {
   name: string
   href: string
@@ -34,11 +36,7 @@ const navigationItems: NavItem[] = [
 ]
 
 function smoothScrollTo(targetId: string) {
-  if (!targetId.startsWith('#')) return
-  const element = document.querySelector(targetId)
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
+  scrollToAnchor(targetId)
 }
 
 function handleDesktopLink(e: MouseEvent, href?: string) {

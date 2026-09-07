@@ -9,13 +9,15 @@ import {
   ShieldAlert,
 } from 'lucide-vue-next'
 import { Badge } from '@/components/ui/badge'
+import ScrollReveal from '@/components/landing/scroll-reveal.vue'
 </script>
 
 <template>
   <section id="features" class="relative py-24 sm:py-32 bg-muted/20">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
-      <div class="mx-auto max-w-3xl text-center">
+      <ScrollReveal animation="fade-up">
+        <div class="mx-auto max-w-3xl text-center">
         <Badge variant="outline" class="mb-4 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider">
           Fitur Komprehensif
         </Badge>
@@ -25,12 +27,13 @@ import { Badge } from '@/components/ui/badge'
         <p class="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
           Semua instrumen yang dibutuhkan tim HR dan operasional untuk mengelola absensi karyawan tanpa celah kecurangan dan tanpa antrean manual.
         </p>
-      </div>
+        </div>
+      </ScrollReveal>
 
       <!-- Bento Grid -->
       <div class="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-3">
         <!-- Bento 1: Face ID (Span 2) -->
-        <div class="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-xl md:col-span-2">
+        <div data-aos="fade-up" data-aos-delay="0" class="group relative flex flex-col justify-between overflow-hidden landing-card p-6 sm:p-8 md:col-span-2">
           <div>
             <div class="flex items-center justify-between">
               <span class="flex size-11 items-center justify-center rounded-2xl bg-muted text-foreground">
@@ -79,7 +82,7 @@ import { Badge } from '@/components/ui/badge'
         </div>
 
         <!-- Bento 2: Geofence GPS Presisi -->
-        <div class="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-xl md:col-span-1">
+        <div data-aos="fade-up" data-aos-delay="80" class="group relative flex flex-col justify-between overflow-hidden landing-card p-6 sm:p-8 md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
               <span class="flex size-11 items-center justify-center rounded-2xl bg-muted text-foreground">
@@ -117,7 +120,7 @@ import { Badge } from '@/components/ui/badge'
         </div>
 
         <!-- Bento 3: Deteksi Anomaly & Anti-Fake GPS -->
-        <div class="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-xl md:col-span-1">
+        <div data-aos="fade-up" data-aos-delay="160" class="group relative flex flex-col justify-between overflow-hidden landing-card p-6 sm:p-8 md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
               <span class="flex size-11 items-center justify-center rounded-2xl bg-muted text-foreground">
@@ -153,7 +156,7 @@ import { Badge } from '@/components/ui/badge'
         </div>
 
         <!-- Bento 4: Cuti & Perizinan 1-Klik -->
-        <div class="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-xl md:col-span-1">
+        <div data-aos="fade-up" data-aos-delay="240" class="group relative flex flex-col justify-between overflow-hidden landing-card p-6 sm:p-8 md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
               <span class="flex size-11 items-center justify-center rounded-2xl bg-muted text-foreground">
@@ -192,7 +195,7 @@ import { Badge } from '@/components/ui/badge'
         </div>
 
         <!-- Bento 5: Ekspor Payroll (Col Span 1 or 2) -->
-        <div class="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-xl md:col-span-1">
+        <div data-aos="fade-up" data-aos-delay="320" class="group relative flex flex-col justify-between overflow-hidden landing-card p-6 sm:p-8 md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
               <span class="flex size-11 items-center justify-center rounded-2xl bg-muted text-foreground">

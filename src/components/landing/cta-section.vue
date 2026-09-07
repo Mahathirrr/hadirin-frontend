@@ -4,12 +4,14 @@ import { RouterLink } from 'vue-router'
 
 import DotPattern from '@/components/dot-pattern.vue'
 import Logo from '@/components/logo.vue'
+import ScrollReveal from '@/components/landing/scroll-reveal.vue'
 import { Button } from '@/components/ui/button'
 </script>
 
 <template>
   <section class="relative py-20 lg:py-28 overflow-hidden">
     <div class="container mx-auto px-4 lg:px-8">
+      <ScrollReveal animation="fade-up" :duration="800">
       <div class="relative mx-auto max-w-5xl overflow-hidden rounded-3xl border border-border bg-foreground p-8 sm:p-14 lg:p-16 text-center text-background shadow-2xl">
         <div class="absolute inset-0 -z-0 pointer-events-none opacity-20">
           <DotPattern size="md" fade-style="ellipse" opacity="high" class="!bg-[radial-gradient(rgba(255,255,255,0.35)_1px,transparent_1px)]" />
@@ -64,6 +66,7 @@ import { Button } from '@/components/ui/button'
           </div>
         </div>
       </div>
+      </ScrollReveal>
     </div>
   </section>
 </template>

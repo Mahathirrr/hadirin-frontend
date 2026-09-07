@@ -4,6 +4,7 @@ import { RouterLink } from 'vue-router'
 
 import DotPattern from '@/components/dot-pattern.vue'
 import HeroPreview from '@/components/landing/hero-preview.vue'
+import ScrollReveal from '@/components/landing/scroll-reveal.vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 </script>
@@ -15,7 +16,8 @@ import { Button } from '@/components/ui/button'
     </div>
 
     <div class="container relative mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-4xl text-center">
+      <ScrollReveal animation="fade-up" :duration="800">
+        <div class="mx-auto max-w-4xl text-center">
         <div class="mb-8 flex justify-center">
           <Badge variant="outline" class="rounded-full border-border bg-card/80 px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur-sm">
             Hadirin 2.0 — Face ID & Multi-Geofence
@@ -56,11 +58,14 @@ import { Button } from '@/components/ui/button'
             <span>Anti Fake-GPS & Titip Absen</span>
           </div>
         </div>
-      </div>
+        </div>
+      </ScrollReveal>
 
-      <div class="mx-auto mt-16 max-w-6xl sm:mt-20">
-        <HeroPreview />
-      </div>
+      <ScrollReveal animation="fade-up" :delay="120" :duration="900">
+        <div class="mx-auto mt-16 max-w-6xl sm:mt-20">
+          <HeroPreview />
+        </div>
+      </ScrollReveal>
     </div>
   </section>
 </template>
