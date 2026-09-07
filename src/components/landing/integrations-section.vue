@@ -10,8 +10,9 @@ interface Integration {
   category: string
   description: string
   status: string
-  badgeColor: string
 }
+
+const badgeClass = 'text-muted-foreground bg-muted border-border'
 
 const integrations: Integration[] = [
   {
@@ -20,7 +21,6 @@ const integrations: Integration[] = [
     category: 'Kolaborasi Tim',
     description: 'Kirim ringkasan clock-in pagi dan notifikasi keterlambatan langsung ke channel tim Anda.',
     status: 'Siap Pakai',
-    badgeColor: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
   },
   {
     id: 'google',
@@ -28,7 +28,6 @@ const integrations: Integration[] = [
     category: 'Kalender & Jadwal',
     description: 'Sinkronisasi pengajuan cuti yang disetujui otomatis ke Google Calendar tim.',
     status: '1-Klik Sync',
-    badgeColor: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
   },
   {
     id: 'whatsapp',
@@ -36,7 +35,6 @@ const integrations: Integration[] = [
     category: 'Pengingat & Notifikasi',
     description: 'Broadcast pengingat clock-in otomatis dan slip rekap bulanan langsung ke nomor WhatsApp karyawan.',
     status: 'Resmi',
-    badgeColor: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
   },
   {
     id: 'telegram',
@@ -44,7 +42,6 @@ const integrations: Integration[] = [
     category: 'Tim Lapangan',
     description: 'Bot kehadiran interaktif untuk presensi cepat tim sales dan kurir di lapangan.',
     status: 'Siap Pakai',
-    badgeColor: 'text-sky-500 bg-sky-500/10 border-sky-500/20',
   },
   {
     id: 'teams',
@@ -52,7 +49,6 @@ const integrations: Integration[] = [
     category: 'Enterprise Workspace',
     description: 'Pembaruan status ketersediaan (available/on-leave) terhubung otomatis dengan shift kerja.',
     status: 'Enterprise',
-    badgeColor: 'text-indigo-500 bg-indigo-500/10 border-indigo-500/20',
   },
   {
     id: 'discord',
@@ -60,7 +56,6 @@ const integrations: Integration[] = [
     category: 'Developer & Creative',
     description: 'Webhook kehadiran terstruktur untuk komunitas digital dan software house.',
     status: 'Webhook',
-    badgeColor: 'text-violet-500 bg-violet-500/10 border-violet-500/20',
   },
   {
     id: 'notion',
@@ -68,7 +63,6 @@ const integrations: Integration[] = [
     category: 'Dokumentasi & HR',
     description: 'Ekspor database absensi dan direktori karyawan ke halaman Notion perusahaan.',
     status: '2-Arah',
-    badgeColor: 'text-neutral-500 bg-neutral-500/10 border-neutral-500/20',
   },
   {
     id: 'jira',
@@ -76,7 +70,6 @@ const integrations: Integration[] = [
     category: 'Manajemen Proyek',
     description: 'REST API & Webhook terbuka untuk integrasi payroll eksternal dan sistem ERP kustom.',
     status: 'REST API',
-    badgeColor: 'text-cyan-500 bg-cyan-500/10 border-cyan-500/20',
   },
 ]
 </script>
@@ -160,7 +153,7 @@ const integrations: Integration[] = [
                 </svg>
               </div>
 
-              <span :class="['rounded-full border px-2.5 py-0.5 text-[11px] font-medium', item.badgeColor]">
+              <span :class="['rounded-full border px-2.5 py-0.5 text-[11px] font-medium', badgeClass]">
                 {{ item.status }}
               </span>
             </div>
@@ -179,7 +172,7 @@ const integrations: Integration[] = [
 
           <!-- Bottom check status -->
           <div class="mt-5 pt-3 border-t border-border/50 flex items-center gap-1.5 text-[11px] text-muted-foreground group-hover:text-foreground transition-colors">
-            <CheckCircle2 class="size-3.5 text-emerald-500 shrink-0" />
+            <CheckCircle2 class="size-3.5 text-foreground/60 shrink-0" />
             <span>Integrasi aktif & otomatis</span>
           </div>
         </div>

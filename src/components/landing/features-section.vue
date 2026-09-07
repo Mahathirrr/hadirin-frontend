@@ -1,23 +1,14 @@
 <script setup lang="ts">
 import {
-  AlertTriangle,
-  ArrowUpRight,
   Camera,
-  CheckCircle2,
   Clock,
   Download,
   FileSpreadsheet,
-  Lock,
   MapPin,
   ScanFace,
-  Shield,
   ShieldAlert,
-  Smartphone,
-  Sparkles,
-  Users,
 } from 'lucide-vue-next'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 </script>
 
 <template>
@@ -42,10 +33,10 @@ import { Button } from '@/components/ui/button'
         <div class="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-xl md:col-span-2">
           <div>
             <div class="flex items-center justify-between">
-              <span class="flex size-11 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <span class="flex size-11 items-center justify-center rounded-2xl bg-muted text-foreground">
                 <ScanFace class="size-6" />
               </span>
-              <span class="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+              <span class="rounded-full border border-border bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
                 Anti-Titip Absen
               </span>
             </div>
@@ -64,12 +55,12 @@ import { Button } from '@/components/ui/button'
               <div class="flex items-center gap-4 rounded-xl bg-card p-4 border border-border/60 shadow-sm">
                 <div class="relative size-14 rounded-xl bg-muted/80 flex items-center justify-center border border-border/60">
                   <Camera class="size-6 text-muted-foreground" />
-                  <span class="absolute -top-1 -right-1 size-3 rounded-full bg-emerald-500 ring-2 ring-card" />
+                  <span class="absolute -top-1 -right-1 size-3 rounded-full bg-foreground ring-2 ring-card" />
                 </div>
                 <div>
                   <p class="text-xs font-bold text-foreground">Scan Wajah Berhasil</p>
                   <p class="text-[11px] text-muted-foreground">Kecocokan: 99.8%</p>
-                  <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Liveness: Terverifikasi</p>
+                  <p class="text-[11px] text-foreground font-medium">Liveness: Terverifikasi</p>
                 </div>
               </div>
 
@@ -80,7 +71,7 @@ import { Button } from '@/components/ui/button'
                 </div>
                 <div class="flex items-center justify-between rounded-lg bg-card/60 px-3 py-2 border border-border/40">
                   <span class="text-muted-foreground">Perlindungan Anti-Spoofing</span>
-                  <span class="font-semibold text-emerald-600 dark:text-emerald-400">Aktif</span>
+                  <span class="font-semibold text-foreground">Aktif</span>
                 </div>
               </div>
             </div>
@@ -91,10 +82,10 @@ import { Button } from '@/components/ui/button'
         <div class="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-xl md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
-              <span class="flex size-11 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+              <span class="flex size-11 items-center justify-center rounded-2xl bg-muted text-foreground">
                 <MapPin class="size-6" />
               </span>
-              <span class="rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
+              <span class="rounded-full border border-border bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
                 Multi-Cabang
               </span>
             </div>
@@ -114,12 +105,12 @@ import { Button } from '@/components/ui/button'
               <span class="text-muted-foreground">Radius 50m</span>
             </div>
             <div class="mt-3 flex items-center gap-3">
-              <div class="flex size-8 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold text-xs">
+              <div class="flex size-8 items-center justify-center rounded-full bg-muted text-foreground font-bold text-xs">
                 ✓
               </div>
               <div>
                 <p class="text-xs font-semibold text-foreground">Jarak: 28m dari Titik</p>
-                <p class="text-[11px] text-emerald-600 dark:text-emerald-400">Absensi diizinkan</p>
+                <p class="text-[11px] text-muted-foreground">Absensi diizinkan</p>
               </div>
             </div>
           </div>
@@ -129,10 +120,10 @@ import { Button } from '@/components/ui/button'
         <div class="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-xl md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
-              <span class="flex size-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
+              <span class="flex size-11 items-center justify-center rounded-2xl bg-muted text-foreground">
                 <ShieldAlert class="size-6" />
               </span>
-              <span class="rounded-full border border-rose-500/20 bg-rose-500/10 px-2.5 py-1 text-xs font-semibold text-rose-600 dark:text-rose-400">
+              <span class="rounded-full border border-border bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
                 Keamanan AI
               </span>
             </div>
@@ -148,15 +139,15 @@ import { Button } from '@/components/ui/button'
           <div class="mt-6 space-y-2 rounded-2xl border border-border/70 bg-muted/40 p-3.5 text-xs">
             <div class="flex items-center justify-between rounded-lg bg-card px-3 py-2 border border-border/40">
               <span class="text-muted-foreground">Mock GPS App</span>
-              <span class="font-semibold text-rose-600 dark:text-rose-400">Terblokir</span>
+              <span class="font-semibold text-foreground">Terblokir</span>
             </div>
             <div class="flex items-center justify-between rounded-lg bg-card px-3 py-2 border border-border/40">
               <span class="text-muted-foreground">Root / Jailbreak</span>
-              <span class="font-semibold text-rose-600 dark:text-rose-400">Ditolak</span>
+              <span class="font-semibold text-foreground">Ditolak</span>
             </div>
             <div class="flex items-center justify-between rounded-lg bg-card px-3 py-2 border border-border/40">
               <span class="text-muted-foreground">Integrity Check</span>
-              <span class="font-semibold text-emerald-600 dark:text-emerald-400">100% Aman</span>
+              <span class="font-semibold text-foreground">100% Aman</span>
             </div>
           </div>
         </div>
@@ -165,10 +156,10 @@ import { Button } from '@/components/ui/button'
         <div class="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-xl md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
-              <span class="flex size-11 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+              <span class="flex size-11 items-center justify-center rounded-2xl bg-muted text-foreground">
                 <Clock class="size-6" />
               </span>
-              <span class="rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-xs font-semibold text-amber-600 dark:text-amber-400">
+              <span class="rounded-full border border-border bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
                 Otomatis
               </span>
             </div>
@@ -185,11 +176,11 @@ import { Button } from '@/components/ui/button'
             <div class="rounded-xl bg-card p-3 border border-border/50 shadow-sm">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-bold text-foreground">Cuti Tahunan (2 Hari)</span>
-                <span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold bg-amber-500/10 px-2 py-0.5 rounded">Menunggu</span>
+                <span class="text-[10px] text-muted-foreground font-semibold bg-muted px-2 py-0.5 rounded">Menunggu</span>
               </div>
               <p class="mt-1 text-[11px] text-muted-foreground">Rafi Pratama • Tim Backend</p>
               <div class="mt-2.5 flex gap-2">
-                <button class="flex-1 rounded-md bg-emerald-600 py-1 text-[11px] font-semibold text-white hover:bg-emerald-700 transition-colors">
+                <button class="flex-1 rounded-md bg-foreground py-1 text-[11px] font-semibold text-background hover:bg-foreground/90 transition-colors">
                   Setujui
                 </button>
                 <button class="rounded-md border border-border px-3 py-1 text-[11px] font-medium text-muted-foreground hover:bg-muted transition-colors">
@@ -204,10 +195,10 @@ import { Button } from '@/components/ui/button'
         <div class="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-foreground/20 hover:shadow-xl md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
-              <span class="flex size-11 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+              <span class="flex size-11 items-center justify-center rounded-2xl bg-muted text-foreground">
                 <FileSpreadsheet class="size-6" />
               </span>
-              <span class="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2.5 py-1 text-xs font-semibold text-cyan-600 dark:text-cyan-400">
+              <span class="rounded-full border border-border bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
                 1-Klik Rekap
               </span>
             </div>
@@ -230,7 +221,7 @@ import { Button } from '@/components/ui/button'
                 <Download class="size-4 text-primary" />
                 <span class="font-medium text-foreground">rekap_kehadiran.xlsx</span>
               </div>
-              <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+              <span class="text-[10px] font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded">
                 Siap Unduh
               </span>
             </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Check, Sparkles } from 'lucide-vue-next'
+import { Check } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
 
 import { Badge } from '@/components/ui/badge'
@@ -115,7 +115,7 @@ const plans: Plan[] = [
           </button>
           <span :class="['text-sm font-medium flex items-center gap-1.5', isAnnual ? 'text-foreground' : 'text-muted-foreground']">
             Tahunan
-            <span class="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+            <span class="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
               Hemat 20%
             </span>
           </span>
@@ -139,7 +139,6 @@ const plans: Plan[] = [
             v-if="plan.popular"
             class="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-foreground shadow-md"
           >
-            <Sparkles class="size-3" />
             <span>{{ plan.badge }}</span>
           </div>
 
@@ -184,7 +183,7 @@ const plans: Plan[] = [
                   :key="feature"
                   class="flex items-start gap-3 text-foreground/90"
                 >
-                  <Check class="size-4 shrink-0 text-emerald-500 mt-0.5" />
+                  <Check class="size-4 shrink-0 text-foreground/60 mt-0.5" />
                   <span class="leading-tight">{{ feature }}</span>
                 </li>
               </ul>
