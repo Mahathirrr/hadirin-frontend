@@ -1,0 +1,15 @@
+<script setup lang="ts">
+import { Separator } from '@/components/ui/separator'
+
+import { cn } from '@/lib/utils'
+
+const props = defineProps<{ class?: string }>()
+</script>
+
+<template>
+  <Separator
+    data-slot="sidebar-separator"
+    data-sidebar="separator"
+    :class="cn('bg-sidebar-border mx-2 w-auto', props.class)"
+  />
+</template>
