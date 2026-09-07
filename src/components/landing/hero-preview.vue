@@ -1,72 +1,209 @@
+<script setup lang="ts">
+import {
+  CheckCircle2,
+  Clock,
+  Fingerprint,
+  MapPin,
+  Search,
+  ShieldCheck,
+  Smartphone,
+  TrendingUp,
+  UserCheck,
+  Users,
+} from 'lucide-vue-next'
+import Logo from '@/components/logo.vue'
+
+const recentAttendance = [
+  {
+    name: 'Dimas Setiawan',
+    role: 'Lead UI/UX Designer',
+    dept: 'Product',
+    time: '07:58 WIB',
+    method: 'Face ID Mobile',
+    status: 'Tepat Waktu',
+    statusTone: 'emerald',
+    location: 'Kantor Pusat (42m)',
+    avatarBg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+    initials: 'DS',
+  },
+  {
+    name: 'Siti Rahmadani',
+    role: 'Senior Frontend Dev',
+    dept: 'Engineering',
+    time: '08:02 WIB',
+    method: 'Face ID Mobile',
+    status: 'Tepat Waktu',
+    statusTone: 'emerald',
+    location: 'Kantor Pusat (18m)',
+    avatarBg: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+    initials: 'SR',
+  },
+  {
+    name: 'Budi Kurniawan',
+    role: 'Account Executive',
+    dept: 'Sales & BD',
+    time: '08:14 WIB',
+    method: 'Geofence GPS',
+    status: 'Tepat Waktu',
+    statusTone: 'emerald',
+    location: 'Cabang BSD (85m)',
+    avatarBg: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400',
+    initials: 'BK',
+  },
+  {
+    name: 'Alya Putri',
+    role: 'HR Specialist',
+    dept: 'People Ops',
+    time: '08:45 WIB',
+    method: 'Device QR',
+    status: 'Terlambat 15m',
+    statusTone: 'amber',
+    location: 'Lobi Utama',
+    avatarBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+    initials: 'AP',
+  },
+]
+</script>
+
 <template>
-  <div class="relative mx-auto max-w-5xl">
-    <div class="absolute top-8 left-1/2 h-40 w-[80%] -translate-x-1/2 rounded-full bg-primary/25 blur-3xl lg:-top-4 lg:h-72" />
+  <div class="relative mx-auto max-w-6xl">
+    <!-- Ambient Backdrop Glow -->
+    <div class="absolute -top-12 left-1/2 -z-10 h-72 w-[85%] -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
 
-    <div class="relative overflow-hidden rounded-[1.75rem] bg-card p-3 shadow-[0_32px_80px_-30px_rgb(0_0_0/0.28)] sm:p-4">
-      <div class="grid min-h-[330px] grid-cols-[58px_1fr] overflow-hidden rounded-[1.25rem] bg-muted/45 sm:grid-cols-[140px_1fr]">
-        <aside class="flex flex-col justify-between bg-foreground px-3 py-5 text-background sm:px-5">
-          <div>
+    <!-- Main Window Container -->
+    <div class="overflow-hidden rounded-2xl sm:rounded-3xl border border-border/80 bg-card shadow-[0_25px_70px_-15px_rgba(0,0,0,0.3)] transition-all duration-300">
+      <!-- Window Topbar -->
+      <div class="flex items-center justify-between border-b border-border/70 bg-muted/40 px-4 py-3 sm:px-6">
+        <div class="flex items-center gap-2">
+          <span class="size-3 rounded-full bg-rose-500/80" />
+          <span class="size-3 rounded-full bg-amber-500/80" />
+          <span class="size-3 rounded-full bg-emerald-500/80" />
+          <div class="ml-3 hidden sm:flex items-center gap-2 rounded-md bg-background/70 px-3 py-1 text-xs text-muted-foreground border border-border/40">
+            <Search class="size-3.5" />
+            <span>Cari karyawan, departemen, atau log kehadiran...</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 text-xs font-medium">
+          <div class="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <span class="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Presensi Real-time Aktif</span>
+          </div>
+          <span class="hidden sm:inline text-muted-foreground">08:45 WIB • Shift Pagi</span>
+        </div>
+      </div>
+
+      <!-- Window Dashboard Body -->
+      <div class="p-4 sm:p-6 lg:p-8 space-y-6">
+        <!-- Stats Row -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <div class="rounded-xl border border-border/60 bg-muted/30 p-4 transition-all hover:bg-muted/50">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-muted-foreground">Tingkat Kehadiran</span>
+              <span class="rounded-md bg-emerald-500/10 p-1 text-emerald-600 dark:text-emerald-400">
+                <TrendingUp class="size-3.5" />
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="text-2xl font-bold tracking-tight">97.5%</span>
+              <span class="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">+3.8%</span>
+            </div>
+            <p class="mt-1 text-[11px] text-muted-foreground">39 dari 40 karyawan hadir</p>
+          </div>
+
+          <div class="rounded-xl border border-border/60 bg-muted/30 p-4 transition-all hover:bg-muted/50">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-muted-foreground">Tepat Waktu</span>
+              <span class="rounded-md bg-blue-500/10 p-1 text-blue-600 dark:text-blue-400">
+                <Clock class="size-3.5" />
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="text-2xl font-bold tracking-tight">38 Org</span>
+              <span class="text-[11px] font-medium text-muted-foreground">Rata-rata 08:04</span>
+            </div>
+            <p class="mt-1 text-[11px] text-muted-foreground">Hanya 1 keterlambatan</p>
+          </div>
+
+          <div class="rounded-xl border border-border/60 bg-muted/30 p-4 transition-all hover:bg-muted/50">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-muted-foreground">Face ID Biometrik</span>
+              <span class="rounded-md bg-emerald-500/10 p-1 text-emerald-600 dark:text-emerald-400">
+                <ShieldCheck class="size-3.5" />
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="text-2xl font-bold tracking-tight">100%</span>
+              <span class="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">Valid</span>
+            </div>
+            <p class="mt-1 text-[11px] text-muted-foreground">0 titip absen terdeteksi</p>
+          </div>
+
+          <div class="rounded-xl border border-border/60 bg-muted/30 p-4 transition-all hover:bg-muted/50">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-muted-foreground">Geofence Multi-Lokasi</span>
+              <span class="rounded-md bg-purple-500/10 p-1 text-purple-600 dark:text-purple-400">
+                <MapPin class="size-3.5" />
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="text-2xl font-bold tracking-tight">3 Cabang</span>
+              <span class="text-[11px] font-medium text-purple-600 dark:text-purple-400">Tersinkron</span>
+            </div>
+            <p class="mt-1 text-[11px] text-muted-foreground">Radius 100m aktif</p>
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="rounded-xl border border-border/60 bg-muted/20 overflow-hidden">
+          <div class="flex items-center justify-between border-b border-border/50 px-4 py-3 bg-muted/30">
             <div class="flex items-center gap-2">
-              <div class="grid size-6 place-items-center rounded-lg bg-background text-foreground">
-                <svg viewBox="0 0 32 32" class="size-4" fill="none" aria-hidden="true">
-                  <path d="M5 5h10.5a3 3 0 0 1 3 3v6.5H8a3 3 0 0 1-3-3V5Z" fill="currentColor" />
-                  <path d="M14 17.5h10.5a3 3 0 0 1 3 3V27H17a3 3 0 0 1-3-3v-6.5Z" fill="currentColor" />
-                </svg>
+              <UserCheck class="size-4 text-foreground" />
+              <span class="text-xs sm:text-sm font-semibold text-foreground">Log Presensi Hari Ini</span>
+            </div>
+            <span class="text-[11px] text-muted-foreground">Update otomatis setiap 30 detik</span>
+          </div>
+
+          <div class="divide-y divide-border/40">
+            <div
+              v-for="item in recentAttendance"
+              :key="item.name"
+              class="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3 transition-colors hover:bg-muted/40"
+            >
+              <div class="flex items-center gap-3">
+                <div :class="['flex size-9 items-center justify-center rounded-full font-bold text-xs shrink-0', item.avatarBg]">
+                  {{ item.initials }}
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <p class="text-xs sm:text-sm font-semibold text-foreground">{{ item.name }}</p>
+                    <span class="rounded bg-muted px-1.5 py-0.2 text-[10px] text-muted-foreground font-medium">
+                      {{ item.dept }}
+                    </span>
+                  </div>
+                  <p class="text-[11px] text-muted-foreground">{{ item.role }}</p>
+                </div>
               </div>
-              <span class="hidden text-xs font-semibold sm:block">Hadirin</span>
-            </div>
-            <div class="mt-10 space-y-3">
-              <div class="h-7 rounded-md bg-background/15" />
-              <div class="h-7 rounded-md bg-background/8" />
-              <div class="h-7 rounded-md bg-background/8" />
-              <div class="h-7 rounded-md bg-background/8" />
-            </div>
-          </div>
-          <div class="h-8 rounded-md bg-background/10" />
-        </aside>
 
-        <div class="min-w-0 p-4 sm:p-6">
-          <div class="mb-6 flex items-center justify-between">
-            <div>
-              <p class="text-xs text-muted-foreground">Senin, 7 September</p>
-              <p class="mt-1 text-sm font-semibold sm:text-base">Selamat pagi, Admin</p>
-            </div>
-            <div class="size-8 rounded-full bg-foreground/10" />
-          </div>
-
-          <div class="grid gap-3 sm:grid-cols-3">
-            <div class="rounded-xl bg-card px-3 py-3 shadow-sm sm:px-4">
-              <p class="text-[10px] text-muted-foreground sm:text-xs">Hadir hari ini</p>
-              <p class="mt-1 text-xl font-semibold tracking-tight sm:text-2xl">18 <span class="text-xs font-medium text-muted-foreground">/ 20</span></p>
-            </div>
-            <div class="rounded-xl bg-card px-3 py-3 shadow-sm sm:px-4">
-              <p class="text-[10px] text-muted-foreground sm:text-xs">Terlambat</p>
-              <p class="mt-1 text-xl font-semibold tracking-tight sm:text-2xl">02</p>
-            </div>
-            <div class="hidden rounded-xl bg-card px-4 py-3 shadow-sm sm:block">
-              <p class="text-xs text-muted-foreground">Menunggu cuti</p>
-              <p class="mt-1 text-2xl font-semibold tracking-tight">03</p>
-            </div>
-          </div>
-
-          <div class="mt-4 grid gap-4 lg:grid-cols-[1.35fr_0.8fr]">
-            <div class="rounded-xl bg-card p-4 shadow-sm">
-              <div class="mb-3 flex items-center justify-between">
-                <p class="text-xs font-semibold">Kehadiran minggu ini</p>
-                <span class="text-[10px] text-muted-foreground">7 hari terakhir</span>
-              </div>
-              <svg viewBox="0 0 280 88" class="h-20 w-full text-foreground" fill="none" aria-hidden="true">
-                <path d="M0 70 C 28 62, 42 48, 70 50 C 98 52, 112 28, 140 32 C 168 36, 182 18, 210 22 C 238 26, 252 14, 280 16" class="stroke-foreground" stroke-width="2.5" stroke-linecap="round" />
-                <path d="M0 70 C 28 62, 42 48, 70 50 C 98 52, 112 28, 140 32 C 168 36, 182 18, 210 22 C 238 26, 252 14, 280 16 V 88 H 0 Z" class="fill-foreground/8" />
-              </svg>
-            </div>
-
-            <div class="hidden space-y-3 rounded-xl bg-card p-4 shadow-sm lg:block">
-              <p class="text-xs font-semibold">Karyawan terbaru</p>
-              <div v-for="name in ['Alya Putri', 'Raka Pratama', 'Nadia Aulia']" :key="name" class="flex items-center gap-2">
-                <div class="size-6 rounded-full bg-muted" />
-                <span class="text-[10px] font-medium">{{ name }}</span>
-                <span class="ml-auto size-1.5 rounded-full bg-foreground" />
+              <div class="flex items-center gap-4 text-xs">
+                <div class="flex items-center gap-1 text-muted-foreground">
+                  <MapPin class="size-3.5 text-muted-foreground/70" />
+                  <span class="text-[11px]">{{ item.location }}</span>
+                </div>
+                <div class="flex items-center gap-1.5 font-medium text-foreground">
+                  <Clock class="size-3.5 text-primary" />
+                  <span class="text-[11px]">{{ item.time }}</span>
+                </div>
+                <span
+                  :class="[
+                    'rounded-full px-2.5 py-0.5 text-[11px] font-semibold border',
+                    item.statusTone === 'emerald'
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                      : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+                  ]"
+                >
+                  {{ item.status }}
+                </span>
               </div>
             </div>
           </div>
@@ -74,21 +211,37 @@
       </div>
     </div>
 
-    <div class="absolute -right-2 bottom-0 w-36 rotate-3 sm:right-4 sm:w-44 md:right-8">
-      <div class="rounded-[1.6rem] bg-foreground p-2 shadow-2xl">
-        <div class="rounded-[1.2rem] bg-card px-4 py-5 text-center">
-          <p class="text-[11px] font-medium text-muted-foreground">Absen masuk</p>
-          <div class="mx-auto my-4 flex size-20 items-center justify-center rounded-full bg-primary/10">
-            <div class="flex size-14 items-center justify-center rounded-full bg-primary/15 ring-2 ring-primary/40">
-              <svg viewBox="0 0 24 24" class="size-7 text-foreground" fill="none" aria-hidden="true">
-                <circle cx="12" cy="9" r="3" stroke="currentColor" stroke-width="1.8" />
-                <path d="M6.5 19c.8-3 3-4.5 5.5-4.5S16.7 16 17.5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              </svg>
-            </div>
-          </div>
-          <p class="text-sm font-semibold">Face ID siap</p>
-          <p class="mt-1 text-[11px] text-muted-foreground">Di dalam area kerja</p>
+    <!-- Floating Mobile Verification Card (Overlaid Bottom Right) -->
+    <div class="absolute -right-2 -bottom-6 sm:-right-4 sm:-bottom-8 w-64 sm:w-72 rounded-2xl border border-border/90 bg-card/95 p-4 shadow-2xl backdrop-blur-xl transition-transform duration-300 hover:scale-105 hidden md:block">
+      <div class="flex items-center justify-between pb-3 border-b border-border/60">
+        <div class="flex items-center gap-2">
+          <div class="size-2 rounded-full bg-emerald-500 animate-ping" />
+          <span class="text-xs font-semibold text-foreground">Verifikasi Presensi</span>
         </div>
+        <span class="text-[10px] font-medium text-muted-foreground">Mobile App</span>
+      </div>
+
+      <div class="mt-3 flex items-center gap-3">
+        <div class="relative size-12 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5 shadow-md">
+          <div class="flex size-full items-center justify-center rounded-full bg-card font-bold text-sm text-foreground">
+            RZ
+          </div>
+          <span class="absolute bottom-0 right-0 grid size-4 place-items-center rounded-full bg-emerald-500 text-white ring-2 ring-card">
+            <CheckCircle2 class="size-3" />
+          </span>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-foreground">Reza Pahlevi</p>
+          <p class="text-[11px] text-muted-foreground">Face ID Match 99.8%</p>
+          <div class="mt-1 flex items-center gap-1 text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+            <MapPin class="size-3" />
+            <span>Di dalam radius kantor</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3 rounded-lg bg-muted/60 p-2 text-center text-[11px] font-medium text-muted-foreground">
+        ✅ Absen Masuk Berhasil (08:00 WIB)
       </div>
     </div>
   </div>
