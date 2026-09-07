@@ -84,12 +84,26 @@ async function handleJoin() {
         </div>
       </div>
     </div>
-    <div class="bg-muted relative hidden lg:block">
+    <div class="bg-muted relative hidden lg:flex flex-col justify-between p-10 text-white overflow-hidden">
       <img
-        src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1400&q=80"
-        alt="Kantor modern"
+        src="/auth/onboarding-bg.jpg"
+        alt="Kantor Modern Hadirin"
         class="absolute inset-0 h-full w-full object-cover"
       />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/40" />
+      <div class="relative z-10 flex items-center gap-2.5 font-semibold tracking-tight">
+        <Logo :size="30" />
+        <span class="text-xl text-white">Hadirin Workspace</span>
+      </div>
+      <div class="relative z-10 max-w-md rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-md shadow-2xl">
+        <p class="text-sm font-medium leading-relaxed text-zinc-200">
+          "Ruang kerja kolaboratif untuk mengelola shift kerja, persetujuan cuti, rekap absensi, dan laporan kehadiran instan."
+        </p>
+        <div class="mt-4 flex items-center gap-2 text-xs text-zinc-400">
+          <span class="h-2 w-2 rounded-full bg-emerald-400 inline-block" />
+          <span>Setup cepat dalam kurang dari 2 menit</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>

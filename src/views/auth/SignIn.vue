@@ -22,12 +22,31 @@ const route = useRoute()
         </div>
       </div>
     </div>
-    <div class="bg-muted relative hidden lg:block">
+    <div class="bg-muted relative hidden lg:flex flex-col justify-between p-10 text-white overflow-hidden">
       <img
-        src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80"
-        alt="Tim kolaborasi"
+        src="/auth/signin-bg.jpg"
+        alt="Hadirin Workspace"
         class="absolute inset-0 h-full w-full object-cover"
       />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/40" />
+      <div class="relative z-10 flex items-center gap-2.5 font-semibold tracking-tight">
+        <Logo :size="30" />
+        <span class="text-xl text-white">Hadirin</span>
+      </div>
+      <div class="relative z-10 max-w-md rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-md shadow-2xl">
+        <p class="text-sm font-medium leading-relaxed text-zinc-200">
+          "Hadirin mempermudah pencatatan kehadiran dan monitoring lokasi tim secara presisi dengan verifikasi Face ID dan geofence pintar."
+        </p>
+        <div class="mt-4 flex items-center gap-3">
+          <div class="h-9 w-9 rounded-full bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center font-semibold text-xs text-emerald-300">
+            HR
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-white">Manajemen Operasional & Tim</p>
+            <p class="text-xs text-zinc-400">Terpercaya di 500+ Perusahaan</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

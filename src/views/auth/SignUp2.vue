@@ -20,12 +20,26 @@ import Logo from '@/components/logo.vue'
         </div>
       </div>
     </div>
-    <div class="bg-muted relative hidden lg:block">
+    <div class="bg-muted relative hidden lg:flex flex-col justify-between p-10 text-white overflow-hidden">
       <img
-        src="https://ui.shadcn.com/placeholder.svg"
-        alt="Image"
-        class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.95] dark:invert"
+        src="/auth/signup-bg.jpg"
+        alt="Workspace Tim Hadirin"
+        class="absolute inset-0 h-full w-full object-cover"
       />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/40" />
+      <div class="relative z-10 flex items-center gap-2.5 font-semibold tracking-tight">
+        <Logo :size="30" />
+        <span class="text-xl text-white">Hadirin</span>
+      </div>
+      <div class="relative z-10 max-w-md rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-md shadow-2xl">
+        <p class="text-sm font-medium leading-relaxed text-zinc-200">
+          "Bergabunglah bersama ribuan tim modern yang mengelola kehadiran kerja secara cerdas dan efisien."
+        </p>
+        <div class="mt-4 flex items-center gap-2 text-xs text-emerald-400 font-medium">
+          <span class="inline-block h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Mulai gratis tanpa kartu kredit</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
