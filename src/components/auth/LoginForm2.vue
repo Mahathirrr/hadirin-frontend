@@ -65,9 +65,9 @@ function loginWithGoogle() {
     <input type="password" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
 
     <div class="flex flex-col items-center gap-2 text-center">
-      <h1 class="text-2xl font-bold">Login to your account</h1>
+      <h1 class="text-2xl font-bold">Masuk ke akun Hadirin</h1>
       <p class="text-muted-foreground text-sm text-balance">
-        Enter your email below to login to your Hadirin account
+        Gunakan email dan password workspace Anda untuk mengakses dashboard presensi.
       </p>
     </div>
 
@@ -77,7 +77,7 @@ function loginWithGoogle() {
         <Input
           id="login-email"
           v-model="email"
-          placeholder="admin@admin.com"
+          placeholder="muhammad.mahathir.id@gmail.com"
           required
           v-bind="fieldAttrs.email"
           @focus="enableAutofillGuard($event.target)"
@@ -87,7 +87,7 @@ function loginWithGoogle() {
         <div class="flex items-center">
           <Label for="login-password">Password</Label>
           <RouterLink to="/auth/sign-up" class="ml-auto text-sm underline-offset-4 hover:underline">
-            Forgot your password?
+            Lupa password?
           </RouterLink>
         </div>
         <Input
@@ -99,19 +99,19 @@ function loginWithGoogle() {
         />
       </div>
       <Button type="submit" class="w-full cursor-pointer" :disabled="auth.loading">
-        Login
+        Masuk
       </Button>
       <div class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-        <span class="bg-background text-muted-foreground relative z-10 px-2">Or continue with</span>
+        <span class="bg-background text-muted-foreground relative z-10 px-2">Atau lanjutkan dengan</span>
       </div>
       <Button variant="outline" class="w-full cursor-pointer" type="button" :disabled="!googleEnabled" @click="loginWithGoogle">
-        Login with Google
+        Masuk dengan Google
       </Button>
     </div>
 
     <div class="text-center text-sm">
-      Don't have an account?
-      <RouterLink to="/auth/sign-up" class="underline underline-offset-4">Sign up</RouterLink>
+      Belum punya akun?
+      <RouterLink to="/auth/sign-up" class="underline underline-offset-4">Daftar</RouterLink>
     </div>
   </form>
 </template>

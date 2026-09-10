@@ -35,7 +35,7 @@ import { Label } from '@/components/ui/label'
               <Input
                 id="login-email-3"
                 type="email"
-                placeholder="admin@admin.com"
+                placeholder="admin@hadirin.id"
                 autocomplete="off"
                 required
               />

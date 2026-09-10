@@ -1,4 +1,6 @@
 import { ApiError, friendlyApiMessage } from '@/lib/api-error'
+import { DEV_SKIP_AUTH } from '@/lib/dev'
+import { devMockResponse } from '@/lib/dev-mock'
 
 function resolveApiUrl(): string {
   const configured = import.meta.env.VITE_API_BASE?.trim()
@@ -34,6 +36,16 @@ type RequestOptions = {
 }
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const method = options.method || 'GET'
+
+  if (DEV_SKIP_AUTH) {
+    const mocked = devMockResponse<T>(path, method)
+    if (mocked !== null) {
+      await new Promise((r) => setTimeout(r, 120))
+      return mocked
+    }
+  }
+
   const headers: Record<string, string> = {}
   if (!options.formData) headers['Content-Type'] = 'application/json'
   if (options.token) headers.Authorization = `Bearer ${options.token}`
@@ -79,6 +91,37 @@ function unwrapList<T>(res: { data: T } | T): T {
 export type Workspace = { id: number; name: string; slug: string; invite_code?: string; plan: string }
 export type Membership = { workspace_id: number; role: string; workspace: Workspace }
 
+export type PublicCatalogAttendance = {
+  name: string
+  role: string
+  department: string
+  time: string
+  status: string
+  on_time: boolean
+  location: string
+  initials: string
+}
+
+export type PublicCatalog = {
+  stats: {
+    total_employees: number
+    active_employees: number
+    today_present: number
+    today_late: number
+    attendance_rate: number
+    on_time_rate: number
+    active_geofences: number
+    face_enrolled: number
+    open_anomalies: number
+  }
+  recent_attendance: PublicCatalogAttendance[]
+  highlight?: {
+    name: string
+    face_match: string
+    check_in_time: string
+  }
+}
+
 export type DashboardSummary = {
   total_employees: number
   active_employees: number
@@ -118,6 +161,7 @@ export type WorkspaceMember = {
 export type IPWhitelistEntry = { id: number; workspace_id: number; cidr: string; label?: string }
 
 export const api = {
+  publicCatalog: () => request<PublicCatalog>('/public/catalog'),
   register: (name: string, email: string, password: string) =>
     request<{ token: string; user: { id: number; email: string; name: string } }>('/auth/register', {
       method: 'POST',

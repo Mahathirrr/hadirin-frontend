@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
 import {
   CheckCircle2,
   Clock,
@@ -9,48 +10,63 @@ import {
   UserCheck,
 } from 'lucide-vue-next'
 
-const recentAttendance = [
-  {
-    name: 'Dimas Setiawan',
-    role: 'Lead UI/UX Designer',
-    dept: 'Product',
-    time: '07:58 WIB',
-    status: 'Tepat Waktu',
-    onTime: true,
-    location: 'Kantor Pusat (42m)',
-    initials: 'DS',
-  },
-  {
-    name: 'Siti Rahmadani',
-    role: 'Senior Frontend Dev',
-    dept: 'Engineering',
-    time: '08:02 WIB',
-    status: 'Tepat Waktu',
-    onTime: true,
-    location: 'Kantor Pusat (18m)',
-    initials: 'SR',
-  },
-  {
-    name: 'Budi Kurniawan',
-    role: 'Account Executive',
-    dept: 'Sales & BD',
-    time: '08:14 WIB',
-    status: 'Tepat Waktu',
-    onTime: true,
-    location: 'Cabang BSD (85m)',
-    initials: 'BK',
-  },
-  {
-    name: 'Alya Putri',
-    role: 'HR Specialist',
-    dept: 'People Ops',
-    time: '08:45 WIB',
-    status: 'Terlambat 15m',
-    onTime: false,
-    location: 'Lobi Utama',
-    initials: 'AP',
-  },
-]
+import { api, type PublicCatalog } from '@/lib/api'
+
+const catalog = ref<PublicCatalog | null>(null)
+const loading = ref(true)
+
+onMounted(async () => {
+  try {
+    catalog.value = await api.publicCatalog()
+  } catch {
+    catalog.value = null
+  } finally {
+    loading.value = false
+  }
+})
+
+const stats = computed(() => catalog.value?.stats)
+const recentAttendance = computed(() => catalog.value?.recent_attendance ?? [])
+const highlight = computed(() => catalog.value?.highlight)
+
+const attendanceRate = computed(() => {
+  const rate = stats.value?.attendance_rate ?? 0
+  return `${rate.toFixed(1)}%`
+})
+
+const presentSummary = computed(() => {
+  const present = (stats.value?.today_present ?? 0) + (stats.value?.today_late ?? 0)
+  const total = stats.value?.active_employees ?? 0
+  return `${present} dari ${total} karyawan hadir`
+})
+
+const onTimeSummary = computed(() => {
+  const late = stats.value?.today_late ?? 0
+  if (late === 0) return 'Semua tepat waktu'
+  if (late === 1) return 'Hanya 1 keterlambatan'
+  return `${late} keterlambatan hari ini`
+})
+
+const geofenceSummary = computed(() => {
+  const count = stats.value?.active_geofences ?? 0
+  return count === 1 ? '1 titik aktif' : `${count} cabang tersinkron`
+})
+
+const faceSummary = computed(() => {
+  const enrolled = stats.value?.face_enrolled ?? 0
+  const total = stats.value?.active_employees ?? 0
+  if (total === 0) return 'Face ID siap digunakan'
+  return `${enrolled} dari ${total} karyawan terdaftar`
+})
+
+const nowLabel = computed(() => {
+  return new Intl.DateTimeFormat('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Asia/Jakarta',
+    hour12: false,
+  }).format(new Date()) + ' WIB • Shift Pagi'
+})
 </script>
 
 <template>
@@ -72,7 +88,7 @@ const recentAttendance = [
             <span class="size-1.5 rounded-full bg-foreground/70" />
             <span>Presensi Real-time Aktif</span>
           </div>
-          <span class="hidden sm:inline text-muted-foreground">08:45 WIB • Shift Pagi</span>
+          <span class="hidden sm:inline text-muted-foreground">{{ nowLabel }}</span>
         </div>
       </div>
 
@@ -86,10 +102,9 @@ const recentAttendance = [
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold tracking-tight">97.5%</span>
-              <span class="text-[11px] font-medium text-muted-foreground">+3.8%</span>
+              <span class="text-2xl font-bold tracking-tight">{{ loading ? '—' : attendanceRate }}</span>
             </div>
-            <p class="mt-1 text-[11px] text-muted-foreground">39 dari 40 karyawan hadir</p>
+            <p class="mt-1 text-[11px] text-muted-foreground">{{ loading ? 'Memuat data…' : presentSummary }}</p>
           </div>
 
           <div class="rounded-xl border border-border/60 bg-muted/30 p-4">
@@ -100,10 +115,10 @@ const recentAttendance = [
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold tracking-tight">38 Org</span>
-              <span class="text-[11px] font-medium text-muted-foreground">Rata-rata 08:04</span>
+              <span class="text-2xl font-bold tracking-tight">{{ loading ? '—' : (stats?.today_present ?? 0) }}</span>
+              <span class="text-[11px] font-medium text-muted-foreground">Org hadir tepat waktu</span>
             </div>
-            <p class="mt-1 text-[11px] text-muted-foreground">Hanya 1 keterlambatan</p>
+            <p class="mt-1 text-[11px] text-muted-foreground">{{ loading ? 'Memuat data…' : onTimeSummary }}</p>
           </div>
 
           <div class="rounded-xl border border-border/60 bg-muted/30 p-4">
@@ -114,10 +129,10 @@ const recentAttendance = [
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold tracking-tight">100%</span>
-              <span class="text-[11px] font-medium text-muted-foreground">Valid</span>
+              <span class="text-2xl font-bold tracking-tight">{{ loading ? '—' : (stats?.face_enrolled ?? 0) }}</span>
+              <span class="text-[11px] font-medium text-muted-foreground">Terdaftar</span>
             </div>
-            <p class="mt-1 text-[11px] text-muted-foreground">0 titip absen terdeteksi</p>
+            <p class="mt-1 text-[11px] text-muted-foreground">{{ loading ? 'Memuat data…' : faceSummary }}</p>
           </div>
 
           <div class="rounded-xl border border-border/60 bg-muted/30 p-4">
@@ -128,10 +143,10 @@ const recentAttendance = [
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold tracking-tight">3 Cabang</span>
-              <span class="text-[11px] font-medium text-muted-foreground">Tersinkron</span>
+              <span class="text-2xl font-bold tracking-tight">{{ loading ? '—' : (stats?.active_geofences ?? 0) }}</span>
+              <span class="text-[11px] font-medium text-muted-foreground">Titik</span>
             </div>
-            <p class="mt-1 text-[11px] text-muted-foreground">Radius 100m aktif</p>
+            <p class="mt-1 text-[11px] text-muted-foreground">{{ loading ? 'Memuat data…' : geofenceSummary }}</p>
           </div>
         </div>
 
@@ -141,13 +156,19 @@ const recentAttendance = [
               <UserCheck class="size-4 text-foreground" />
               <span class="text-xs sm:text-sm font-semibold text-foreground">Log Presensi Hari Ini</span>
             </div>
-            <span class="text-[11px] text-muted-foreground">Update otomatis setiap 30 detik</span>
+            <span class="text-[11px] text-muted-foreground">Data langsung dari workspace showcase</span>
           </div>
 
-          <div class="divide-y divide-border/40">
+          <div v-if="loading" class="p-6 text-center text-sm text-muted-foreground">
+            Memuat log presensi…
+          </div>
+          <div v-else-if="recentAttendance.length === 0" class="p-6 text-center text-sm text-muted-foreground">
+            Belum ada presensi hari ini.
+          </div>
+          <div v-else class="divide-y divide-border/40">
             <div
               v-for="item in recentAttendance"
-              :key="item.name"
+              :key="`${item.name}-${item.time}`"
               class="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3"
             >
               <div class="flex items-center gap-3">
@@ -158,7 +179,7 @@ const recentAttendance = [
                   <div class="flex items-center gap-2">
                     <p class="text-xs sm:text-sm font-semibold text-foreground">{{ item.name }}</p>
                     <span class="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium">
-                      {{ item.dept }}
+                      {{ item.department }}
                     </span>
                   </div>
                   <p class="text-[11px] text-muted-foreground">{{ item.role }}</p>
@@ -168,7 +189,7 @@ const recentAttendance = [
               <div class="flex items-center gap-4 text-xs">
                 <div class="flex items-center gap-1 text-muted-foreground">
                   <MapPin class="size-3.5" />
-                  <span class="text-[11px]">{{ item.location }}</span>
+                  <span class="text-[11px]">{{ item.location || 'Kantor Pusat' }}</span>
                 </div>
                 <div class="flex items-center gap-1.5 font-medium text-foreground">
                   <Clock class="size-3.5" />
@@ -177,7 +198,7 @@ const recentAttendance = [
                 <span
                   :class="[
                     'rounded-full px-2.5 py-0.5 text-[11px] font-semibold border',
-                    item.onTime
+                    item.on_time
                       ? 'bg-muted text-foreground border-border'
                       : 'bg-muted text-muted-foreground border-border',
                   ]"
@@ -191,7 +212,10 @@ const recentAttendance = [
       </div>
     </div>
 
-    <div class="absolute -right-2 -bottom-6 sm:-right-4 sm:-bottom-8 w-64 sm:w-72 rounded-2xl border border-border/90 bg-card/95 p-4 shadow-2xl backdrop-blur-xl hidden md:block">
+    <div
+      v-if="highlight?.name"
+      class="absolute -right-2 -bottom-6 sm:-right-4 sm:-bottom-8 w-64 sm:w-72 rounded-2xl border border-border/90 bg-card/95 p-4 shadow-2xl backdrop-blur-xl hidden md:block"
+    >
       <div class="flex items-center justify-between pb-3 border-b border-border/60">
         <div class="flex items-center gap-2">
           <div class="size-2 rounded-full bg-foreground/70" />
@@ -203,15 +227,15 @@ const recentAttendance = [
       <div class="mt-3 flex items-center gap-3">
         <div class="relative size-12 rounded-full border-2 border-border bg-muted">
           <div class="flex size-full items-center justify-center rounded-full font-bold text-sm text-foreground">
-            RZ
+            {{ highlight.name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase() }}
           </div>
           <span class="absolute bottom-0 right-0 grid size-4 place-items-center rounded-full bg-foreground text-background ring-2 ring-card">
             <CheckCircle2 class="size-3" />
           </span>
         </div>
         <div>
-          <p class="text-xs font-bold text-foreground">Reza Pahlevi</p>
-          <p class="text-[11px] text-muted-foreground">Face ID Match 99.8%</p>
+          <p class="text-xs font-bold text-foreground">{{ highlight.name }}</p>
+          <p class="text-[11px] text-muted-foreground">Face ID Match {{ highlight.face_match }}</p>
           <div class="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground font-medium">
             <MapPin class="size-3" />
             <span>Di dalam radius kantor</span>
@@ -220,7 +244,7 @@ const recentAttendance = [
       </div>
 
       <div class="mt-3 rounded-lg bg-muted/60 p-2 text-center text-[11px] font-medium text-muted-foreground">
-        Absen Masuk Berhasil (08:00 WIB)
+        Absen Masuk Berhasil ({{ highlight.check_in_time }})
       </div>
     </div>
   </div>

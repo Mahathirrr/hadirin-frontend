@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import { DASHBOARD_ROUTE_NAMES, ROUTES, type RouteName } from '@/lib/routes'
+import { DEV_SKIP_AUTH } from '@/lib/dev'
 import { useAuthStore } from '@/stores/auth'
 
 const basename = (import.meta.env.VITE_BASENAME as string) || ''
@@ -52,6 +53,10 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
   const auth = useAuthStore()
+
+  if (DEV_SKIP_AUTH && !auth.user) {
+    auth.enableDevBypass()
+  }
 
   if (!auth.user && auth.token) {
     await auth.init()

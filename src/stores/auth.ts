@@ -3,12 +3,19 @@ import { computed, ref } from 'vue'
 
 import { api, type Membership, type Workspace } from '@/lib/api'
 import { ApiError } from '@/lib/api-error'
+import {
+  DEV_MOCK_MEMBERSHIPS,
+  DEV_MOCK_TOKEN,
+  DEV_MOCK_USER,
+  DEV_MOCK_WORKSPACE_ID,
+  DEV_SKIP_AUTH,
+} from '@/lib/dev'
 
 const TOKEN_KEY = 'hadirin_token'
 const WORKSPACE_KEY = 'hadirin_workspace_id'
 
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref<string | null>(localStorage.getItem(TOKEN_KEY))
+  const token = ref<string | null>(DEV_SKIP_AUTH ? null : localStorage.getItem(TOKEN_KEY))
   const user = ref<{ id: number; email: string; name: string; avatar_url?: string } | null>(null)
   const memberships = ref<Membership[]>([])
   const workspaceId = ref<number | null>(Number(localStorage.getItem(WORKSPACE_KEY)) || null)
@@ -108,7 +115,19 @@ export const useAuthStore = defineStore('auth', () => {
     return ws
   }
 
+  function enableDevBypass() {
+    if (!DEV_SKIP_AUTH) return
+    token.value = DEV_MOCK_TOKEN
+    user.value = { ...DEV_MOCK_USER }
+    memberships.value = [...DEV_MOCK_MEMBERSHIPS] as Membership[]
+    workspaceId.value = DEV_MOCK_WORKSPACE_ID
+  }
+
   function logout() {
+    if (DEV_SKIP_AUTH) {
+      enableDevBypass()
+      return
+    }
     token.value = null
     user.value = null
     memberships.value = []
@@ -118,6 +137,10 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function init() {
+    if (DEV_SKIP_AUTH) {
+      enableDevBypass()
+      return
+    }
     if (!token.value) return
     try {
       await fetchMe()
@@ -132,6 +155,6 @@ export const useAuthStore = defineStore('auth', () => {
     token, user, memberships, workspaceId, workspaceName, activeMembership, loading, error,
     hasWorkspace, isAuthenticated,
     login, register, logout, init, fetchMe, createWorkspace, joinWorkspace, setWorkspace,
-    handleOAuthCallback, setToken,
+    handleOAuthCallback, setToken, enableDevBypass,
   }
 })

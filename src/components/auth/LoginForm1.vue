@@ -70,7 +70,7 @@ const onSubmit = handleSubmit(async (values) => {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="admin@admin.com"
+                      placeholder="muhammad.mahathir.id@gmail.com"
                       v-bind="{ ...componentField, ...fieldAttrs.email }"
                       @focus="enableAutofillGuard($event.target)"
                     />
