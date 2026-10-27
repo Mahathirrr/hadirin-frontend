@@ -215,6 +215,40 @@ export const api = {
     request<Record<string, unknown>>(`/leave-requests?workspace_id=${workspaceId}`, { method: 'POST', token, body }),
   updateLeaveRequest: (token: string, id: number, body: Record<string, unknown>) =>
     request<Record<string, unknown>>(`/leave-requests/${id}`, { method: 'PATCH', token, body }),
+  actLeaveApproval: (token: string, id: number, body: { action: 'approve' | 'reject'; note?: string }) =>
+    request<Record<string, unknown>>(`/leave-requests/${id}/approval`, { method: 'POST', token, body }),
+  listWorkShifts: async (token: string, workspaceId: number) =>
+    unwrapList(await request<{ data: Array<Record<string, unknown>> }>(`/work-shifts?workspace_id=${workspaceId}`, { token })),
+  createWorkShift: (token: string, workspaceId: number, body: Record<string, unknown>) =>
+    request<Record<string, unknown>>(`/work-shifts?workspace_id=${workspaceId}`, { method: 'POST', token, body }),
+  updateWorkShift: (token: string, workspaceId: number, id: number, body: Record<string, unknown>) =>
+    request<Record<string, unknown>>(`/work-shifts/${id}?workspace_id=${workspaceId}`, { method: 'PUT', token, body }),
+  deleteWorkShift: (token: string, workspaceId: number, id: number) =>
+    request<{ message: string }>(`/work-shifts/${id}?workspace_id=${workspaceId}`, { method: 'DELETE', token }),
+  listEmployeeShifts: async (token: string, workspaceId: number, employeeId?: string) =>
+    unwrapList(await request<{ data: Array<Record<string, unknown>> }>(
+      `/employee-shifts?workspace_id=${workspaceId}${employeeId ? `&employee_id=${employeeId}` : ''}`,
+      { token },
+    )),
+  assignEmployeeShift: (token: string, workspaceId: number, body: Record<string, unknown>) =>
+    request<Record<string, unknown>>(`/employee-shifts?workspace_id=${workspaceId}`, { method: 'POST', token, body }),
+  deleteEmployeeShift: (token: string, workspaceId: number, id: number) =>
+    request<{ message: string }>(`/employee-shifts/${id}?workspace_id=${workspaceId}`, { method: 'DELETE', token }),
+  listNotifications: (token: string, unreadOnly = false) =>
+    request<{ data: Array<Record<string, unknown>>; unread_count: number }>(
+      `/notifications${unreadOnly ? '?unread=1' : ''}`,
+      { token },
+    ),
+  markNotificationRead: (token: string, id: number) =>
+    request<{ message: string }>(`/notifications/${id}/read`, { method: 'PATCH', token }),
+  markAllNotificationsRead: (token: string) =>
+    request<{ message: string }>('/notifications/read-all', { method: 'POST', token }),
+  pushVapidPublicKey: () =>
+    request<{ public_key: string }>('/push/vapid-public-key'),
+  subscribePush: (token: string, body: { endpoint: string; p256dh: string; auth: string }) =>
+    request<{ message: string }>('/push/subscribe', { method: 'POST', token, body }),
+  unsubscribePush: (token: string, endpoint: string) =>
+    request<{ message: string }>('/push/subscribe', { method: 'DELETE', token, body: { endpoint } }),
   listAuditLogs: async (token: string, workspaceId: number) =>
     unwrapList(await request<{ data: Array<Record<string, unknown>> }>(`/audit-logs?workspace_id=${workspaceId}`, { token })),
   listAnomalyAlerts: async (token: string, workspaceId: number, status?: string) =>

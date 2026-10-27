@@ -154,11 +154,26 @@ async function submitAlpha() {
   }
 }
 
+function approvalSummary(row: Record<string, unknown>) {
+  const steps = row.approval_steps as Array<{ step_order: number; required_role: string; status: string }> | undefined
+  if (!steps?.length) return '—'
+  return steps.map((s) => `${s.required_role}:${s.status}`).join(' → ')
+}
+
 async function review(id: number, status: 'approved' | 'rejected') {
   if (!auth.token || !isAdmin.value) return
+  const row = (rows.value ?? []).find((r) => Number(r.id) === id)
+  const steps = row?.approval_steps as unknown[] | undefined
+  const hasWorkflow = Array.isArray(steps) && steps.length > 0
   try {
-    await api.updateLeaveRequest(auth.token, id, { status })
-    toast.success(status === 'approved' ? 'Pengajuan disetujui' : 'Pengajuan ditolak')
+    if (hasWorkflow) {
+      await api.actLeaveApproval(auth.token, id, {
+        action: status === 'approved' ? 'approve' : 'reject',
+      })
+    } else {
+      await api.updateLeaveRequest(auth.token, id, { status })
+    }
+    toast.success(status === 'approved' ? 'Langkah persetujuan dicatat' : 'Pengajuan ditolak')
     await load()
   } catch (e) {
     toast.error(e instanceof Error ? e.message : 'Gagal memperbarui status')
@@ -344,6 +359,7 @@ async function review(id: number, status: 'approved' | 'rejected') {
                 <TableHead>Periode</TableHead>
                 <TableHead>Alasan</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Persetujuan</TableHead>
                 <TableHead v-if="isAdmin" class="text-right">Aksi</TableHead>
               </TableRow>
             </TableHeader>
@@ -359,6 +375,9 @@ async function review(id: number, status: 'approved' | 'rejected') {
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary">{{ statusLabel[String(row.status)] ?? row.status }}</Badge>
+                </TableCell>
+                <TableCell class="max-w-[160px] truncate text-xs text-muted-foreground">
+                  {{ approvalSummary(row) }}
                 </TableCell>
                 <TableCell v-if="isAdmin" class="space-x-1 text-right">
                   <template v-if="row.status === 'pending'">

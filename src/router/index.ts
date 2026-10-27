@@ -34,6 +34,7 @@ const router = createRouter({
         { path: 'employees', name: 'employees', meta: { title: 'Karyawan', description: 'Review absensi karyawan.' }, component: () => import('@/views/app/Karyawan.vue') },
         { path: 'workspace', name: 'workspace', meta: { title: 'Workspace', description: 'Member, undangan, dan jam kerja.' }, component: () => import('@/views/app/Workspace.vue') },
         { path: 'geofence', name: 'geofence', meta: { title: 'Geofence', description: 'Titik lokasi dan validasi.' }, component: () => import('@/views/app/Geofence.vue') },
+        { path: 'shift-roster', name: 'shift-roster', meta: { title: 'Shift & Roster', description: 'Jam kerja dan penugasan shift.' }, component: () => import('@/views/app/ShiftRoster.vue') },
         { path: 'guide', name: 'guide', meta: { title: 'Panduan', description: 'Ringkasan alur kerja workspace.' }, component: () => import('@/views/app/Guide.vue') },
         // Legacy Indonesian paths → English routes
         { path: 'ringkasan', redirect: ROUTES.summary },

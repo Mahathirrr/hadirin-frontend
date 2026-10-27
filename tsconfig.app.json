@@ -28,20 +28,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.d.ts"],
-  "exclude": [
-    "src/views/Dashboard.vue",
-    "src/views/Dashboard2.vue",
-    "src/views/DashboardPage.vue",
-    "src/views/Users.vue",
-    "src/views/Calendar.vue",
-    "src/views/Chat.vue",
-    "src/views/Mail.vue",
-    "src/views/settings/**",
-    "src/components/mail/**",
-    "src/components/chat/**",
-    "src/components/calendar/**",
-    "src/views/Faqs.vue",
-    "src/views/Pricing.vue"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.d.ts"]
 }

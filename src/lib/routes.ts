@@ -16,6 +16,7 @@ export const ROUTES = {
   employees: '/employees',
   workspace: '/workspace',
   geofence: '/geofence',
+  shiftRoster: '/shift-roster',
   guide: '/guide',
 } as const
 
@@ -32,6 +33,7 @@ export type RouteName =
   | 'employees'
   | 'workspace'
   | 'geofence'
+  | 'shift-roster'
   | 'guide'
 
 export const DASHBOARD_ROUTE_NAMES = new Set<RouteName>([
@@ -47,6 +49,7 @@ export const DASHBOARD_ROUTE_NAMES = new Set<RouteName>([
   'employees',
   'workspace',
   'geofence',
+  'shift-roster',
   'guide',
 ])
 

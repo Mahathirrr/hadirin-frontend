@@ -2,6 +2,7 @@
 import { toTypedSchema } from '@vee-validate/zod'
 import { BookOpen, Github, Mail, MessageCircle } from 'lucide-vue-next'
 import { ref } from 'vue'
+import { toast } from 'vue-sonner'
 import { z } from 'zod'
 
 import { Badge } from '@/components/ui/badge'
@@ -30,8 +31,8 @@ const schema = toTypedSchema(
 
 const formRef = ref()
 
-function onSubmit(values: Record<string, unknown>) {
-  console.log(values)
+function onSubmit(_values: Record<string, unknown>) {
+  toast.success('Pesan diterima — tim kami akan menghubungi Anda.')
   formRef.value?.resetForm()
 }
 </script>

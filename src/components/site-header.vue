@@ -9,6 +9,7 @@ import CreateWorkspaceDialog from '@/components/app/create-workspace-dialog.vue'
 import JoinWorkspaceDialog from '@/components/app/join-workspace-dialog.vue'
 import CommandSearch from '@/components/command-search.vue'
 import HeaderReportMenu from '@/components/app/header-report-menu.vue'
+import NotificationsMenu from '@/components/app/notifications-menu.vue'
 import HeaderUserMenu from '@/components/app/header-user-menu.vue'
 import UserAvatar from '@/components/app/user-avatar.vue'
 import WorkspaceSwitcher from '@/components/app/workspace-switcher.vue'
@@ -124,6 +125,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
           <RefreshCw class="size-4" :class="refreshing ? 'animate-spin' : ''" />
         </Button>
 
+        <NotificationsMenu />
         <HeaderReportMenu />
         <HeaderUserMenu @open-account="openAccountSettings" />
       </div>

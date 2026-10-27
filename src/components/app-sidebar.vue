@@ -5,6 +5,7 @@ import {
   FileText,
   LayoutDashboard,
   MapPin,
+  CalendarRange,
   QrCode,
   ScanFace,
   ScrollText,
@@ -51,6 +52,7 @@ const data = {
       items: [
         { title: 'Workspace', url: ROUTES.workspace, icon: Settings },
         { title: 'Geofence', url: ROUTES.geofence, icon: MapPin },
+        { title: 'Shift & Roster', url: ROUTES.shiftRoster, icon: CalendarRange },
       ],
     },
   ],
