@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ArrowRight, HelpCircle } from 'lucide-vue-next'
-import { RouterLink } from 'vue-router'
+import { HelpCircle, Mail } from 'lucide-vue-next'
+
+import { scrollToAnchor } from '@/composables/useLandingScroll'
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
@@ -99,15 +100,20 @@ const faqItems: FaqItem[] = [
             <div>
               <h4 class="text-base sm:text-lg font-semibold text-foreground">Masih punya pertanyaan?</h4>
               <p class="mt-1 text-xs sm:text-sm text-muted-foreground">
-                Daftar akun dan kelola presensi tim Anda dari dashboard Hadirin.
+                Untuk langganan dan fitur, lihat bagian harga. Untuk hal lain, hubungi dukungan lewat email.
               </p>
             </div>
-            <Button variant="outline" class="cursor-pointer shrink-0" as-child>
-              <RouterLink to="/auth/sign-up">
-                <span>Daftar akun</span>
-                <ArrowRight class="ml-2 size-4" />
-              </RouterLink>
-            </Button>
+            <div class="flex shrink-0 flex-col gap-2 sm:flex-row">
+              <Button variant="outline" class="cursor-pointer" as-child>
+                <a href="#pricing" @click.prevent="scrollToAnchor('#pricing')">Lihat harga</a>
+              </Button>
+              <Button variant="outline" class="cursor-pointer" as-child>
+                <a href="mailto:muhammad.mahathir.id@gmail.com">
+                  <Mail class="mr-2 size-4" />
+                  Email dukungan
+                </a>
+              </Button>
+            </div>
           </div>
         </ScrollReveal>
       </div>
