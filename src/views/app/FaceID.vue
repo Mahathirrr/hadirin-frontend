@@ -51,7 +51,10 @@ const activeCount = computed(() =>
   (enrollments.value ?? []).filter((e) => e.status === 'active').length,
 )
 const pendingCount = computed(() =>
-  (enrollments.value ?? []).filter((e) => e.status !== 'active').length,
+  (enrollments.value ?? []).filter((e) => e.status !== 'active' && e.status !== 'revoked').length,
+)
+const legacyRevokedCount = computed(() =>
+  (enrollments.value ?? []).filter((e) => e.sync_status === 'legacy_invalid_template').length,
 )
 
 function enrollmentEmployeeName(row: Record<string, unknown>): string {
@@ -168,11 +171,21 @@ async function refreshAll() {
       <StatCard label="Karyawan" :value="employees?.length ?? 0" :icon="Users" />
       <StatCard
         label="Engine"
-        :value="settingsRes?.data.face_engine ?? 'local'"
+        :value="settingsRes?.data.face_engine ?? 'remote'"
         :icon="Fingerprint"
-        hint="Template hash lokal"
+        hint="Sidecar embedding production"
       />
     </div>
+
+    <Card
+      v-if="legacyRevokedCount > 0 && isAdmin"
+      class="rounded-xl border-amber-500/40 bg-amber-500/5 shadow-none"
+    >
+      <CardContent class="pt-4 text-sm text-muted-foreground">
+        {{ legacyRevokedCount }} enrollment lama (data demo) tidak valid untuk engine embedding.
+        Enroll ulang foto wajah karyawan agar check-in Face ID berfungsi.
+      </CardContent>
+    </Card>
 
     <Card class="rounded-xl border-border/60 shadow-none">
       <CardHeader class="flex flex-row flex-wrap items-center justify-between gap-3">

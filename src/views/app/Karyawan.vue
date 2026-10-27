@@ -12,9 +12,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import FaceCheckInDialog from '@/components/app/face-check-in-dialog.vue'
 import { useEmployeeAccess } from '@/composables/useEmployeeAccess'
+import { performFaceVerifyAndCheckIn, performManualCheckIn } from '@/composables/useCheckIn'
 import { useWorkspaceLoader } from '@/composables/useWorkspaceData'
-import { api } from '@/lib/api'
+import { api, type WorkspaceSettings } from '@/lib/api'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -24,8 +26,12 @@ const showAdd = ref(false)
 const newName = ref('')
 const newEmail = ref('')
 const newDepartment = ref('')
+const checkInBusy = ref(false)
+const faceDialogOpen = ref(false)
+const faceCheckInEmployeeId = ref<number | null>(null)
+const faceCheckInEmployeeName = ref('')
 
-const { isManager, canActOnEmployee, employeesForAction } = useEmployeeAccess()
+const { isManager, canActOnEmployee, employeesForAction, linkedEmployeeId } = useEmployeeAccess()
 const isAdmin = isManager
 
 const { data: employees, load: reloadEmployees } = useWorkspaceLoader(async (token, ws) =>
@@ -35,6 +41,31 @@ const { data: employees, load: reloadEmployees } = useWorkspaceLoader(async (tok
 const { data: attendance, loading, load: reloadAttendance } = useWorkspaceLoader(async (token, ws) =>
   api.listAttendance(token, ws, activeDate.value) as Promise<Array<Record<string, unknown>>>,
 )
+
+const { data: settingsRes } = useWorkspaceLoader(async (token, ws) => api.getWorkspaceSettings(token, ws))
+
+const { data: faceEnrollments } = useWorkspaceLoader(async (token, ws) =>
+  api.listFaceEnrollments(token, ws) as Promise<Array<Record<string, unknown>>>,
+)
+
+const workspaceSettings = computed(() => settingsRes.value?.data as WorkspaceSettings | undefined)
+
+function employeeHasActiveFace(employeeId: number) {
+  return (faceEnrollments.value ?? []).some(
+    (row) => Number(row.employee_id) === employeeId && row.status === 'active',
+  )
+}
+
+/** Karyawan ter-link wajib Face ID bila fitur aktif dan sudah enrolled; admin boleh manual untuk orang lain. */
+function shouldUseFaceCheckIn(employeeId: number) {
+  const settings = workspaceSettings.value
+  if (!settings?.face_id_enabled || !employeeHasActiveFace(employeeId)) return false
+  if (isAdmin.value) {
+    const selfId = linkedEmployeeId(employees.value ?? [])
+    return selfId != null && selfId === employeeId
+  }
+  return true
+}
 
 watch(activeDate, () => { void reloadAttendance() })
 
@@ -105,12 +136,48 @@ async function removeEmployee(id: number) {
 async function checkInEmployee(employeeId: number) {
   if (!auth.token || !auth.workspaceId) return
   if (!canActOnEmployee(employeeId, employees.value ?? [])) return
+  const settings = workspaceSettings.value
+  if (!settings) {
+    toast.error('Pengaturan workspace belum dimuat')
+    return
+  }
+  if (shouldUseFaceCheckIn(employeeId)) {
+    const emp = (employees.value ?? []).find((e) => Number(e.id) === employeeId)
+    faceCheckInEmployeeId.value = employeeId
+    faceCheckInEmployeeName.value = String(emp?.name ?? '')
+    faceDialogOpen.value = true
+    return
+  }
+  checkInBusy.value = true
   try {
-    await api.createAttendance(auth.token, auth.workspaceId, { employee_id: employeeId })
-    toast.success('Check-in berhasil')
+    await performManualCheckIn(auth.token, auth.workspaceId, employeeId, settings)
     await reloadAttendance()
   } catch (e) {
     toast.error(e instanceof Error ? e.message : 'Gagal check-in')
+  } finally {
+    checkInBusy.value = false
+  }
+}
+
+async function onFaceCheckInConfirm(photo: File) {
+  if (!auth.token || !auth.workspaceId || faceCheckInEmployeeId.value == null) return
+  const settings = workspaceSettings.value
+  if (!settings) return
+  checkInBusy.value = true
+  try {
+    await performFaceVerifyAndCheckIn(
+      auth.token,
+      auth.workspaceId,
+      faceCheckInEmployeeId.value,
+      photo,
+      settings,
+    )
+    faceDialogOpen.value = false
+    await reloadAttendance()
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : 'Verifikasi wajah gagal')
+  } finally {
+    checkInBusy.value = false
   }
 }
 
@@ -153,6 +220,12 @@ async function refreshAll() {
           <CardTitle class="text-base">Filter review harian</CardTitle>
           <p class="mt-0.5 text-sm text-muted-foreground">
             Role: {{ roleLabel }} · Data live tanggal {{ activeDate }}
+            <span v-if="workspaceSettings?.geofence_enabled" class="text-amber-700 dark:text-amber-400">
+              · Geofence aktif (GPS wajib)
+            </span>
+            <span v-if="workspaceSettings?.face_id_enabled" class="text-sky-700 dark:text-sky-400">
+              · Face ID aktif
+            </span>
           </p>
         </div>
         <div class="flex flex-wrap items-end gap-2">
@@ -244,9 +317,10 @@ async function refreshAll() {
                         v-if="!attendanceByEmployee.has(Number(emp.id))"
                         variant="outline"
                         size="sm"
+                        :disabled="checkInBusy"
                         @click="checkInEmployee(Number(emp.id))"
                       >
-                        Check-in
+                        {{ shouldUseFaceCheckIn(Number(emp.id)) ? 'Check-in Face ID' : 'Check-in' }}
                       </Button>
                       <Button
                         v-else-if="!attendanceByEmployee.get(Number(emp.id))?.check_out"
@@ -273,5 +347,12 @@ async function refreshAll() {
         </div>
       </CardContent>
     </Card>
+
+    <FaceCheckInDialog
+      v-model:open="faceDialogOpen"
+      :employee-name="faceCheckInEmployeeName"
+      :loading="checkInBusy"
+      @confirm="onFaceCheckInConfirm"
+    />
   </PageShell>
 </template>
