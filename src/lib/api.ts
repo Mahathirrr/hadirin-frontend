@@ -174,6 +174,11 @@ export const api = {
       body: { email, password },
     }),
   googleAuthStatus: () => request<{ enabled: boolean; url: string }>('/auth/google/status'),
+  passwordResetStatus: () => request<{ enabled: boolean }>('/auth/password-reset/status'),
+  forgotPassword: (email: string) =>
+    request<{ message: string }>('/auth/forgot-password', { method: 'POST', body: { email } }),
+  resetPassword: (token: string, password: string) =>
+    request<{ message: string }>('/auth/reset-password', { method: 'POST', body: { token, password } }),
   googleAuthStartUrl: () => `${API_ORIGIN}/api/auth/google/start`,
   me: (token: string) =>
     request<{ user: { id: number; email: string; name: string; avatar_url?: string }; memberships: Membership[] }>('/auth/me', { token }),

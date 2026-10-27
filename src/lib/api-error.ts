@@ -14,6 +14,7 @@ export function friendlyApiMessage(status: number, raw: string, retryIn?: number
   const lower = raw.toLowerCase()
   switch (status) {
   case 400:
+    if (lower.includes('invalid or expired reset')) return 'Tautan reset tidak valid atau sudah kedaluwarsa. Minta link baru.'
     if (lower.includes('email')) return 'Format email tidak valid.'
     if (lower.includes('password') && lower.includes('min')) return 'Password minimal 6 karakter.'
     return raw || 'Data yang dikirim tidak valid.'

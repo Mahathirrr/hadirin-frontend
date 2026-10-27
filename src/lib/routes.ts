@@ -2,6 +2,8 @@ export const ROUTES = {
   landing: '/',
   signIn: '/auth/sign-in',
   signUp: '/auth/sign-up',
+  forgotPassword: '/auth/forgot-password',
+  resetPassword: '/auth/reset-password',
   onboarding: '/onboarding',
   authCallback: '/auth/callback',
   summary: '/summary',

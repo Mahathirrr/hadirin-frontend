@@ -15,6 +15,8 @@ const router = createRouter({
     { path: ROUTES.landing, name: 'landing', component: () => import('@/views/LandingPage.vue') },
     { path: ROUTES.signIn, name: 'sign-in', component: () => import('@/views/auth/SignIn.vue'), meta: { guest: true } },
     { path: ROUTES.signUp, name: 'sign-up', component: () => import('@/views/auth/SignUp.vue'), meta: { guest: true } },
+    { path: ROUTES.forgotPassword, name: 'forgot-password', component: () => import('@/views/auth/ForgotPassword.vue'), meta: { guest: true } },
+    { path: ROUTES.resetPassword, name: 'reset-password', component: () => import('@/views/auth/ResetPassword.vue'), meta: { guest: true } },
     { path: ROUTES.authCallback, name: 'auth-callback', component: () => import('@/views/auth/OAuthCallback.vue'), meta: { guest: true } },
     { path: ROUTES.onboarding, name: 'onboarding', component: () => import('@/views/auth/WorkspaceOnboarding.vue'), meta: { requiresAuth: true, onboarding: true } },
     {

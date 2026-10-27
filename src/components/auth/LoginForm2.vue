@@ -94,7 +94,7 @@ function loginWithGoogle() {
       <div class="grid gap-3">
         <div class="flex items-center">
           <Label for="login-password">Password</Label>
-          <RouterLink to="/auth/sign-up" class="ml-auto text-sm underline-offset-4 hover:underline">
+          <RouterLink :to="ROUTES.forgotPassword" class="ml-auto text-sm underline-offset-4 hover:underline">
             Lupa password?
           </RouterLink>
         </div>
