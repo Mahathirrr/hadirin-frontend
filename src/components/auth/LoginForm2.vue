@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 
+import GoogleIcon from '@/components/icons/google-icon.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -111,9 +112,42 @@ function loginWithGoogle() {
       <div class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
         <span class="bg-background text-muted-foreground relative z-10 px-2">Atau lanjutkan dengan</span>
       </div>
-      <Button variant="outline" class="w-full cursor-pointer" type="button" :disabled="!googleEnabled" @click="loginWithGoogle">
+      <Button
+        variant="outline"
+        class="w-full cursor-pointer gap-2"
+        type="button"
+        :disabled="!googleEnabled"
+        @click="loginWithGoogle"
+      >
+        <GoogleIcon />
         Masuk dengan Google
       </Button>
+    </div>
+
+    <div class="rounded-lg border border-border/60 bg-muted/30 p-3">
+      <p class="text-center text-xs font-medium text-muted-foreground">Akun demo (foto profil aktif setelah login)</p>
+      <div class="mt-2 flex items-center justify-center gap-4">
+        <div class="flex flex-col items-center gap-1">
+          <img
+            src="/auth/avatars/demo-admin.jpg"
+            alt="Admin demo"
+            class="size-10 rounded-full border object-cover shadow-sm"
+            width="40"
+            height="40"
+          />
+          <span class="max-w-[7rem] truncate text-[10px] text-muted-foreground">Admin</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <img
+            src="/auth/avatars/demo-student.jpg"
+            alt="Karyawan demo"
+            class="size-10 rounded-full border object-cover shadow-sm"
+            width="40"
+            height="40"
+          />
+          <span class="max-w-[7rem] truncate text-[10px] text-muted-foreground">Karyawan</span>
+        </div>
+      </div>
     </div>
 
     <div class="text-center text-sm">

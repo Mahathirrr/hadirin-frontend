@@ -8,7 +8,7 @@ import {
 } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
 
-import Logo from '@/components/logo.vue'
+import UserAvatar from '@/components/app/user-avatar.vue'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +26,12 @@ import {
 } from '@/components/ui/sidebar'
 
 interface Props {
-  user: { name: string; email: string; avatar: string }
+  user: {
+    name: string
+    email: string
+    avatar_url?: string
+    id?: number
+  }
 }
 
 const props = defineProps<Props>()
@@ -43,9 +48,7 @@ const { isMobile } = useSidebar()
             size="lg"
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
           >
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg">
-              <Logo :size="28" />
-            </div>
+            <UserAvatar :user="props.user" class="size-8 shrink-0" />
             <div class="grid flex-1 text-left text-sm leading-tight">
               <span class="font-medium truncate">{{ props.user.name }}</span>
               <span class="text-muted-foreground truncate text-xs">
@@ -63,9 +66,7 @@ const { isMobile } = useSidebar()
         >
           <DropdownMenuLabel class="p-0 font-normal">
             <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-              <div class="h-8 w-8 rounded-lg">
-                <Logo :size="28" />
-              </div>
+              <UserAvatar :user="props.user" class="size-10 shrink-0" />
               <div class="grid flex-1 text-left text-sm leading-tight">
                 <span class="font-medium truncate">{{ props.user.name }}</span>
                 <span class="text-muted-foreground truncate text-xs">

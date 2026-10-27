@@ -38,9 +38,14 @@ const route = useRoute()
           "Hadirin mempermudah pencatatan kehadiran dan monitoring lokasi tim secara presisi dengan verifikasi Face ID dan geofence pintar."
         </p>
         <div class="mt-4 flex items-center gap-3">
-          <div class="h-9 w-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-semibold text-xs text-zinc-200">
-            HR
-          </div>
+          <img
+            src="/auth/avatars/testimonial-ops.jpg"
+            alt="Foto Manajer Operasional"
+            class="size-11 shrink-0 rounded-full border-2 border-white/25 object-cover shadow-md"
+            width="44"
+            height="44"
+            loading="lazy"
+          />
           <div>
             <p class="text-xs font-semibold text-white">Manajemen Operasional & Tim</p>
             <p class="text-xs text-zinc-400">Presensi biometrik & geofence terintegrasi</p>
