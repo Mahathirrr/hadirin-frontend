@@ -161,6 +161,36 @@ export type WorkspaceMember = {
 
 export type IPWhitelistEntry = { id: number; workspace_id: number; cidr: string; label?: string }
 
+export type SubscriptionPlan = {
+  id: number
+  code: string
+  name: string
+  description: string
+  price_idr: number
+  duration_days: number
+  max_employees: number
+  is_active: boolean
+}
+
+export type WorkspaceSubscription = {
+  workspace_id: number
+  plan_id: number
+  status: string
+  current_period_start: string
+  current_period_end: string
+  plan?: SubscriptionPlan
+}
+
+export type BillingOrder = {
+  public_id: string
+  workspace_id: number
+  plan_id: number
+  amount_idr: number
+  status: string
+  payment_link?: string
+  plan?: SubscriptionPlan
+}
+
 export const api = {
   publicCatalog: () => request<PublicCatalog>('/public/catalog'),
   register: (name: string, email: string, password: string) =>
@@ -381,6 +411,25 @@ export const api = {
     await downloadWithAuth(`/reports/weekly/${reportId}/download`, token, `weekly-report-${reportId}.csv`)
   },
   weeklyReportDownloadUrl: (reportId: number) => `${API_URL}/reports/weekly/${reportId}/download`,
+
+  billingStatus: () => request<{ enabled: boolean; sandbox: boolean }>('/billing/status'),
+  listSubscriptionPlans: () => request<{ data: SubscriptionPlan[] }>('/billing/plans'),
+  getSubscription: (token: string, workspaceId: number) =>
+    request<WorkspaceSubscription>(`/billing/subscription?workspace_id=${workspaceId}`, { token }),
+  createCheckout: (token: string, workspaceId: number, planId: number) =>
+    request<{ order: BillingOrder; payment_url: string; sandbox: boolean }>('/billing/checkout', {
+      method: 'POST',
+      token,
+      body: { workspace_id: workspaceId, plan_id: planId },
+    }),
+  listBillingOrders: (token: string, workspaceId: number) =>
+    request<{ data: BillingOrder[]; total: number }>(`/billing/orders?workspace_id=${workspaceId}`, { token }),
+  syncBillingOrder: (token: string, publicId: string) =>
+    request<BillingOrder>(`/billing/orders/${publicId}/sync`, { method: 'POST', token }),
+  simulateSandboxOrder: (token: string, publicId: string) =>
+    request<{ message: string }>(`/billing/sandbox/orders/${publicId}/simulate`, { method: 'POST', token }),
+  adminListPlans: (token: string) => request<{ data: SubscriptionPlan[] }>('/billing/admin/plans', { token }),
+  adminListOrders: (token: string) => request<{ data: BillingOrder[]; total: number }>('/billing/admin/orders', { token }),
 }
 
 export { API_ORIGIN, API_URL }

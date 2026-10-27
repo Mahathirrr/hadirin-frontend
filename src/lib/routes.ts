@@ -20,6 +20,10 @@ export const ROUTES = {
   geofence: '/geofence',
   shiftRoster: '/shift-roster',
   guide: '/guide',
+  subscription: '/subscription',
+  subscriptionCheckout: '/subscription/checkout',
+  billingHistory: '/billing/history',
+  billingAdmin: '/billing/admin',
 } as const
 
 export type RouteName =
@@ -37,6 +41,10 @@ export type RouteName =
   | 'geofence'
   | 'shift-roster'
   | 'guide'
+  | 'subscription'
+  | 'subscription-checkout'
+  | 'billing-history'
+  | 'billing-admin'
 
 export const DASHBOARD_ROUTE_NAMES = new Set<RouteName>([
   'summary',
@@ -53,6 +61,10 @@ export const DASHBOARD_ROUTE_NAMES = new Set<RouteName>([
   'geofence',
   'shift-roster',
   'guide',
+  'subscription',
+  'subscription-checkout',
+  'billing-history',
+  'billing-admin',
 ])
 
 /** Legacy Indonesian paths kept for backward-compatible redirects. */

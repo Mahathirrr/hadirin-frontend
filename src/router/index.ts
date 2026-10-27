@@ -38,6 +38,10 @@ const router = createRouter({
         { path: 'geofence', name: 'geofence', meta: { title: 'Geofence', description: 'Titik lokasi dan validasi.' }, component: () => import('@/views/app/Geofence.vue') },
         { path: 'shift-roster', name: 'shift-roster', meta: { title: 'Shift & Roster', description: 'Jam kerja dan penugasan shift.' }, component: () => import('@/views/app/ShiftRoster.vue') },
         { path: 'guide', name: 'guide', meta: { title: 'Panduan', description: 'Ringkasan alur kerja workspace.' }, component: () => import('@/views/app/Guide.vue') },
+        { path: 'subscription', name: 'subscription', meta: { title: 'Langganan', description: 'Paket langganan workspace.' }, component: () => import('@/views/app/Langganan.vue') },
+        { path: 'subscription/checkout', name: 'subscription-checkout', meta: { title: 'Checkout', description: 'Pembayaran langganan.' }, component: () => import('@/views/app/CheckoutLangganan.vue') },
+        { path: 'billing/history', name: 'billing-history', meta: { title: 'Riwayat billing', description: 'Transaksi langganan.' }, component: () => import('@/views/app/RiwayatBilling.vue') },
+        { path: 'billing/admin', name: 'billing-admin', meta: { title: 'Admin billing', description: 'Kelola paket dan order.' }, component: () => import('@/views/app/AdminBilling.vue') },
         // Legacy Indonesian paths → English routes
         { path: 'ringkasan', redirect: ROUTES.summary },
         { path: 'laporan', redirect: ROUTES.reports },
