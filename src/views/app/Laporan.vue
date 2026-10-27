@@ -142,6 +142,29 @@ async function downloadWeekly(id: number) {
   }
 }
 
+function weeklyStatusLabel(status: unknown) {
+  const map: Record<string, string> = {
+    completed: 'Selesai',
+    processing: 'Memproses',
+    failed: 'Gagal',
+    pending: 'Menunggu',
+  }
+  return map[String(status)] ?? String(status)
+}
+
+function formatWeekRange(start: unknown, end: unknown) {
+  const s = String(start ?? '').slice(0, 10)
+  const e = String(end ?? '').slice(0, 10)
+  if (!s || !e) return '—'
+  return `${s} s/d ${e}`
+}
+
+function formatGeneratedAt(value: unknown) {
+  if (!value) return '—'
+  const s = String(value)
+  return s.slice(0, 16).replace('T', ' ')
+}
+
 const dataCondition = computed(() => {
   const n = records.value?.length ?? 0
   if (n === 0) return 'Belum ada data absensi untuk tanggal ini'
@@ -332,13 +355,15 @@ const dataCondition = computed(() => {
             <TableBody>
               <TableRow v-for="w in weeklyReports ?? []" :key="String(w.id)">
                 <TableCell class="tabular-nums">
-                  {{ String(w.week_start).slice(0, 10) }} – {{ String(w.week_end).slice(0, 10) }}
+                  {{ formatWeekRange(w.week_start, w.week_end) }}
                 </TableCell>
                 <TableCell>
-                  <Badge variant="secondary">{{ w.status }}</Badge>
+                  <Badge :variant="w.status === 'completed' ? 'secondary' : 'outline'">
+                    {{ weeklyStatusLabel(w.status) }}
+                  </Badge>
                 </TableCell>
                 <TableCell class="tabular-nums text-muted-foreground">
-                  {{ w.generated_at ? String(w.generated_at).slice(0, 16).replace('T', ' ') : '—' }}
+                  {{ formatGeneratedAt(w.generated_at) }}
                 </TableCell>
                 <TableCell class="text-right">
                   <Button

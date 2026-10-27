@@ -14,11 +14,13 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
+import { useEmployeeAccess } from '@/composables/useEmployeeAccess'
 import { useWorkspaceLoader } from '@/composables/useWorkspaceData'
 import { api } from '@/lib/api'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
+const { employeesForAction, linkedEmployeeId } = useEmployeeAccess()
 const activeTab = ref('plans')
 const search = ref('')
 const showPlanForm = ref(false)
@@ -60,6 +62,8 @@ const { data: employees } = useWorkspaceLoader(async (token, ws) =>
   api.listEmployees(token, ws) as Promise<Array<Record<string, unknown>>>,
 )
 
+const selectableEmployees = computed(() => employeesForAction(employees.value ?? []))
+
 const planCount = computed(() => plans.value?.length ?? 0)
 const reportCount = computed(() => reports.value?.length ?? 0)
 const weeklyCount = computed(() => weeklyReports.value?.length ?? 0)
@@ -92,8 +96,15 @@ async function refreshAll() {
   await Promise.all([reloadPlans(), reloadReports(), reloadWeekly()])
 }
 
+function ensureDefaultEmployee(form: { employee_id: string }) {
+  if (form.employee_id) return
+  const id = linkedEmployeeId(employees.value ?? [])
+  if (id != null) form.employee_id = String(id)
+}
+
 async function submitPlan() {
   if (!auth.token || !auth.workspaceId) return
+  ensureDefaultEmployee(planForm.value)
   if (!planForm.value.employee_id || !planForm.value.title.trim()) {
     toast.error('Pilih karyawan dan isi judul rencana kerja')
     return
@@ -126,6 +137,7 @@ async function submitPlan() {
 
 async function submitReport() {
   if (!auth.token || !auth.workspaceId) return
+  ensureDefaultEmployee(reportForm.value)
   if (!reportForm.value.employee_id || !reportForm.value.title.trim()) {
     toast.error('Pilih karyawan dan isi judul laporan')
     return
@@ -233,7 +245,7 @@ async function downloadWeekly(id: number) {
               <Select v-model="planForm.employee_id">
                 <SelectTrigger><SelectValue placeholder="Pilih karyawan" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="emp in employees ?? []" :key="String(emp.id)" :value="String(emp.id)">
+                  <SelectItem v-for="emp in selectableEmployees" :key="String(emp.id)" :value="String(emp.id)">
                     {{ emp.name }}
                   </SelectItem>
                 </SelectContent>
@@ -313,7 +325,7 @@ async function downloadWeekly(id: number) {
               <Select v-model="reportForm.employee_id">
                 <SelectTrigger><SelectValue placeholder="Pilih karyawan" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="emp in employees ?? []" :key="String(emp.id)" :value="String(emp.id)">
+                  <SelectItem v-for="emp in selectableEmployees" :key="String(emp.id)" :value="String(emp.id)">
                     {{ emp.name }}
                   </SelectItem>
                 </SelectContent>

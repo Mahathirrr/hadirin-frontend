@@ -147,7 +147,7 @@ const label = (i: number) =>
       </g>
       <!-- x labels -->
       <g class="fill-muted-foreground" font-size="12">
-        <text v-for="(d, i) in data" :key="`x${i}`" :x="left + i * groupW() + groupW() / 2" :y="height - 10" text-anchor="middle">
+        <text v-for="(_d, i) in data" :key="`x${i}`" :x="left + i * groupW() + groupW() / 2" :y="height - 10" text-anchor="middle">
           {{ label(i) }}
         </text>
       </g>

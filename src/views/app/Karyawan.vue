@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useEmployeeAccess } from '@/composables/useEmployeeAccess'
 import { useWorkspaceLoader } from '@/composables/useWorkspaceData'
 import { api } from '@/lib/api'
 import { useAuthStore } from '@/stores/auth'
@@ -24,9 +25,8 @@ const newName = ref('')
 const newEmail = ref('')
 const newDepartment = ref('')
 
-const isAdmin = computed(() =>
-  auth.activeMembership?.role === 'owner' || auth.activeMembership?.role === 'admin',
-)
+const { isManager, canActOnEmployee, employeesForAction } = useEmployeeAccess()
+const isAdmin = isManager
 
 const { data: employees, load: reloadEmployees } = useWorkspaceLoader(async (token, ws) =>
   api.listEmployees(token, ws) as Promise<Array<Record<string, unknown>>>,
@@ -50,7 +50,7 @@ const attendanceByEmployee = computed(() => {
 
 const filtered = computed(() => {
   const q = searchQuery.value.trim().toLowerCase()
-  let emps = employees.value ?? []
+  let emps = employeesForAction(employees.value ?? [])
   if (q) emps = emps.filter((e) => String(e.name ?? '').toLowerCase().includes(q))
   return emps
 })
@@ -67,10 +67,6 @@ const stats = computed(() => {
 function formatTime(value: unknown) {
   if (!value) return '—'
   return String(value).slice(11, 16)
-}
-
-function employeeName(row: Record<string, unknown>) {
-  return (row.employee as { name?: string })?.name ?? `#${row.employee_id}`
 }
 
 async function addEmployee() {
@@ -107,7 +103,8 @@ async function removeEmployee(id: number) {
 }
 
 async function checkInEmployee(employeeId: number) {
-  if (!auth.token || !auth.workspaceId || !isAdmin.value) return
+  if (!auth.token || !auth.workspaceId) return
+  if (!canActOnEmployee(employeeId, employees.value ?? [])) return
   try {
     await api.createAttendance(auth.token, auth.workspaceId, { employee_id: employeeId })
     toast.success('Check-in berhasil')
@@ -118,7 +115,8 @@ async function checkInEmployee(employeeId: number) {
 }
 
 async function checkOutEmployee(employeeId: number) {
-  if (!auth.token || !isAdmin.value) return
+  if (!auth.token) return
+  if (!canActOnEmployee(employeeId, employees.value ?? [])) return
   const record = attendanceByEmployee.value.get(employeeId)
   if (!record?.id) return
   try {
@@ -217,7 +215,7 @@ async function refreshAll() {
                 <TableHead>Check-in</TableHead>
                 <TableHead>Check-out</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead v-if="isAdmin" class="text-right">Aksi</TableHead>
+                <TableHead class="text-right">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -239,25 +237,32 @@ async function refreshAll() {
                   </Badge>
                   <Badge v-else variant="outline">Belum absen</Badge>
                 </TableCell>
-                <TableCell v-if="isAdmin" class="text-right">
+                <TableCell class="text-right">
                   <div class="flex justify-end gap-1">
+                    <template v-if="canActOnEmployee(Number(emp.id), employees ?? [])">
+                      <Button
+                        v-if="!attendanceByEmployee.has(Number(emp.id))"
+                        variant="outline"
+                        size="sm"
+                        @click="checkInEmployee(Number(emp.id))"
+                      >
+                        Check-in
+                      </Button>
+                      <Button
+                        v-else-if="!attendanceByEmployee.get(Number(emp.id))?.check_out"
+                        variant="outline"
+                        size="sm"
+                        @click="checkOutEmployee(Number(emp.id))"
+                      >
+                        Check-out
+                      </Button>
+                    </template>
                     <Button
-                      v-if="!attendanceByEmployee.has(Number(emp.id))"
-                      variant="outline"
+                      v-if="isAdmin"
+                      variant="ghost"
                       size="sm"
-                      @click="checkInEmployee(Number(emp.id))"
+                      @click="removeEmployee(Number(emp.id))"
                     >
-                      Check-in
-                    </Button>
-                    <Button
-                      v-else-if="!attendanceByEmployee.get(Number(emp.id))?.check_out"
-                      variant="outline"
-                      size="sm"
-                      @click="checkOutEmployee(Number(emp.id))"
-                    >
-                      Check-out
-                    </Button>
-                    <Button variant="ghost" size="sm" @click="removeEmployee(Number(emp.id))">
                       Hapus
                     </Button>
                   </div>

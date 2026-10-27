@@ -22,7 +22,7 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
           Fitur Komprehensif
         </Badge>
         <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-foreground">
-          Dari Check-in Hingga Payroll, Semuanya Mengalir Rapi
+          Dari Check-in Hingga Laporan Mingguan, Semuanya Terlacak
         </h2>
         <p class="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
           Semua instrumen yang dibutuhkan tim HR dan operasional untuk mengelola absensi karyawan tanpa celah kecurangan dan tanpa antrean manual.
@@ -45,10 +45,10 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
             </div>
 
             <h3 class="mt-6 text-xl sm:text-2xl font-bold text-foreground">
-              Face ID Biometrik dengan Liveness Detection
+              Face ID dengan enrollment & token sekali pakai
             </h3>
             <p class="mt-2 text-sm text-muted-foreground leading-relaxed max-w-xl">
-              Teknologi pencocokan wajah berbasis AI yang membedakan wajah asli dengan foto, video rekaman, atau cetakan kertas. Verifikasi tuntas dalam 0.3 detik.
+              Admin mendaftarkan foto karyawan; saat check-in, backend memverifikasi template, lalu menerbitkan token Redis ber TTL pendek sebelum absensi dicatat.
             </p>
           </div>
 
@@ -62,19 +62,19 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
                 </div>
                 <div>
                   <p class="text-xs font-bold text-foreground">Scan Wajah Berhasil</p>
-                  <p class="text-[11px] text-muted-foreground">Kecocokan: 99.8%</p>
-                  <p class="text-[11px] text-foreground font-medium">Liveness: Terverifikasi</p>
+                  <p class="text-[11px] text-muted-foreground">Template cocok</p>
+                  <p class="text-[11px] text-foreground font-medium">Token verifikasi aktif</p>
                 </div>
               </div>
 
               <div class="space-y-2 text-xs">
                 <div class="flex items-center justify-between rounded-lg bg-card/60 px-3 py-2 border border-border/40">
-                  <span class="text-muted-foreground">Waktu Verifikasi</span>
-                  <span class="font-semibold text-foreground">0.3 Detik</span>
+                  <span class="text-muted-foreground">TTL token</span>
+                  <span class="font-semibold text-foreground">5 menit</span>
                 </div>
                 <div class="flex items-center justify-between rounded-lg bg-card/60 px-3 py-2 border border-border/40">
-                  <span class="text-muted-foreground">Perlindungan Anti-Spoofing</span>
-                  <span class="font-semibold text-foreground">Aktif</span>
+                  <span class="text-muted-foreground">Enrollment aktif</span>
+                  <span class="font-semibold text-foreground">1 per karyawan</span>
                 </div>
               </div>
             </div>
@@ -132,10 +132,10 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
             </div>
 
             <h3 class="mt-6 text-xl font-bold text-foreground">
-              Deteksi Anomaly & Fake GPS
+              Deteksi anomali absensi
             </h3>
             <p class="mt-2 text-sm text-muted-foreground leading-relaxed">
-              Secara cerdas memblokir aplikasi pemalsu lokasi, smartphone dengan akses root/jailbreak, dan kloning aplikasi.
+              Scanner backend mendeteksi check-in ganda, keterlambatan berulang, pelanggaran geofence, absensi saat cuti, dan shift tanpa check-out.
             </p>
           </div>
 

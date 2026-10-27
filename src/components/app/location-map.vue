@@ -38,7 +38,6 @@ const emit = defineEmits<{
 
 const mapEl = ref<HTMLElement | null>(null)
 let map: L.Map | null = null
-let tileLayer: L.TileLayer | null = null
 let markerLayer: L.LayerGroup | null = null
 let circleLayer: L.LayerGroup | null = null
 
@@ -85,7 +84,7 @@ function initMap() {
     attributionControl: true,
   }).setView(props.center, props.zoom)
 
-  tileLayer = L.tileLayer(HADIRIN_MAP_TILES.url, {
+  L.tileLayer(HADIRIN_MAP_TILES.url, {
     maxZoom: HADIRIN_MAP_TILES.maxZoom,
     attribution: HADIRIN_MAP_TILES.attribution,
   }).addTo(map)
@@ -103,10 +102,13 @@ function initMap() {
   renderOverlays()
 }
 
-watch(() => [props.center, props.zoom], ([center, zoom]) => {
-  if (!map || !center) return
-  map.setView(center, zoom ?? DEFAULT_MAP_ZOOM)
-})
+watch(
+  () => ({ center: props.center, zoom: props.zoom }),
+  ({ center, zoom }) => {
+    if (!map) return
+    map.setView(center, zoom ?? DEFAULT_MAP_ZOOM)
+  },
+)
 
 watch(() => [props.markers, props.circles], () => renderOverlays(), { deep: true })
 
@@ -114,7 +116,6 @@ onMounted(initMap)
 onUnmounted(() => {
   markerLayer = null
   circleLayer = null
-  tileLayer = null
   map?.remove()
   map = null
 })

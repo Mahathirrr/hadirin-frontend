@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { CircleHelp, HelpCircle, MessageSquare } from 'lucide-vue-next'
-import { RouterLink } from 'vue-router'
+import { HelpCircle, MessageSquare } from 'lucide-vue-next'
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
@@ -17,12 +16,12 @@ const faqItems: FaqItem[] = [
   {
     value: 'item-1',
     question: 'Bagaimana Hadirin mencegah kecurangan titip absen dan pemalsuan foto?',
-    answer: 'Hadirin dilengkapi Face ID Biometrik dengan teknologi Liveness Detection AI. Sistem secara akurat memverifikasi bahwa subjek adalah manusia hidup asli di depan kamera, secara otomatis menolak foto dari layar ponsel lain, video rekaman, topeng, maupun cetakan kertas.',
+    answer: 'Admin mendaftarkan foto karyawan (template hash di server). Saat check-in wajah, backend memverifikasi foto dengan template, lalu menerbitkan token Redis sekali pakai sebelum absensi disimpan. Ini mencegah check-in tanpa verifikasi terbaru, bukan pengganti modul computer vision berat di perangkat.',
   },
   {
     value: 'item-2',
     question: 'Bagaimana cara kerja Geofence dan apakah bisa dimanipulasi Fake GPS?',
-    answer: 'Admin dapat menentukan titik koordinat kantor dan batas radius presensi (misal 50 meter). Hadirin memiliki modul pendeteksi anomali yang otomatis memblokir aplikasi Mock Location (Fake GPS) serta perangkat yang telah dimodifikasi (root/jailbreak). Karyawan di luar perimeter tidak dapat melakukan absensi masuk.',
+    answer: 'Admin menetapkan titik koordinat dan radius. Jika geofence aktif, check-in membutuhkan koordinat di dalam salah satu area. Scanner anomali backend juga menandai check-in di luar geofence, check-in ganda, dan pola keterlambatan berulang.',
   },
   {
     value: 'item-3',
@@ -31,8 +30,8 @@ const faqItems: FaqItem[] = [
   },
   {
     value: 'item-4',
-    question: 'Bagaimana cara mengintegrasikan data absensi ke sistem payroll perusahaan?',
-    answer: 'Data absensi, total jam kerja, keterlambatan, lembur, dan izin cuti dapat diunduh instan dalam format Excel (.xlsx), CSV, atau PDF. Untuk perusahaan skala enterprise, Hadirin menyediakan REST API dan Webhook untuk sinkronisasi otomatis ke SAP, Mekari Talenta, atau sistem ERP internal Anda.',
+    question: 'Bagaimana mengekspor data absensi untuk HR atau payroll?',
+    answer: 'Laporan mingguan dapat digenerate dari dashboard dan diunduh sebagai CSV. Data absensi harian, cuti, dan log audit tersedia lewat API workspace yang sama untuk integrasi lanjutan (payroll/ERP) saat fitur tersebut diaktifkan.',
   },
   {
     value: 'item-5',

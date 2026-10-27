@@ -1,4 +1,4 @@
-import type { DashboardSummary, Membership } from '@/lib/api'
+import type { DashboardSummary, Membership, PublicCatalog } from '@/lib/api'
 import { DEV_MOCK_MEMBERSHIPS, DEV_MOCK_USER, DEV_MOCK_WORKSPACE_ID } from '@/lib/dev'
 
 const mockSummary: DashboardSummary = {
@@ -110,7 +110,45 @@ export function devMockResponse<T>(path: string, method: string): T | null {
   }
 
   if (method === 'GET' && p.startsWith('/audit-logs')) {
-    return { data: [] } as T
+    return {
+      data: [
+        {
+          id: 1,
+          action: 'create',
+          entity_type: 'attendance',
+          entity_id: 1,
+          details: 'Ahmad Rizki — face_id (Kampus USK — Fakultas Teknik)',
+          created_at: new Date().toISOString(),
+        },
+        {
+          id: 2,
+          action: 'create',
+          entity_type: 'attendance',
+          entity_id: 2,
+          details: 'Siti Nurhaliza — qr (Lobby Kantor)',
+          created_at: new Date().toISOString(),
+        },
+      ],
+    } as T
+  }
+
+  if (method === 'GET' && p.startsWith('/reports/weekly')) {
+    const now = new Date()
+    const weekStart = new Date(now)
+    weekStart.setDate(now.getDate() - now.getDay() + 1)
+    const weekEnd = new Date(weekStart)
+    weekEnd.setDate(weekStart.getDate() + 6)
+    return {
+      data: [
+        {
+          id: 1,
+          week_start: weekStart.toISOString(),
+          week_end: weekEnd.toISOString(),
+          status: 'completed',
+          generated_at: now.toISOString(),
+        },
+      ],
+    } as T
   }
 
   if (method === 'GET' && p.startsWith('/anomaly-alerts/summary')) {
@@ -152,6 +190,41 @@ export function devMockResponse<T>(path: string, method: string): T | null {
 
   if (method === 'GET' && p === '/workspaces') {
     return { data: [DEV_MOCK_MEMBERSHIPS[0].workspace] } as T
+  }
+
+  if (method === 'GET' && p === '/public/catalog') {
+    const catalog: PublicCatalog = {
+      stats: {
+        total_employees: 24,
+        active_employees: 22,
+        today_present: 19,
+        today_late: 2,
+        attendance_rate: 95.5,
+        on_time_rate: 90.5,
+        active_geofences: 2,
+        face_enrolled: 8,
+        open_anomalies: 1,
+      },
+      recent_attendance: [
+        {
+          name: 'Ahmad Rizki',
+          role: 'Staff',
+          department: 'Ops',
+          time: '08:02 WIB',
+          status: 'Tepat Waktu',
+          on_time: true,
+          location: 'HQ',
+          initials: 'AR',
+        },
+      ],
+      highlight: {
+        name: 'Ahmad Rizki',
+        check_in_time: '08:02 WIB',
+        check_in_method: 'face',
+        face_verified: true,
+      },
+    }
+    return catalog as T
   }
 
   if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) return {} as T

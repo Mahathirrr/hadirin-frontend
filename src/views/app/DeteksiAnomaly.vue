@@ -173,8 +173,7 @@ function formatType(t: unknown) {
         <div v-if="loading" class="py-8 text-center text-sm text-muted-foreground">Memuat…</div>
         <TableEmpty
           v-else-if="filteredAlerts.length === 0"
-          title="Belum ada anomaly"
-          description="Jalankan scan (admin) setelah ada data absensi/lokasi, atau tunggu alert baru dari scan berikutnya."
+          message="Belum ada anomaly. Jalankan scan (admin) setelah ada data absensi/lokasi, atau tunggu alert baru dari scan berikutnya."
         />
         <Table v-else>
           <TableHeader>

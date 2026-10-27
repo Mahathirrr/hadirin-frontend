@@ -32,7 +32,7 @@ const router = createRouter({
         { path: 'qr-devices', name: 'qr-devices', meta: { title: 'Device QR', description: 'Kelola device QR permanen.' }, component: () => import('@/views/app/DeviceQR.vue') },
         { path: 'face-id', name: 'face-id', meta: { title: 'Face ID', description: 'Enrollment wajah karyawan.' }, component: () => import('@/views/app/FaceID.vue') },
         { path: 'employees', name: 'employees', meta: { title: 'Karyawan', description: 'Review absensi karyawan.' }, component: () => import('@/views/app/Karyawan.vue') },
-        { path: 'workspace', name: 'workspace', meta: { title: 'Workspace', description: 'Billing, member, dan undangan.' }, component: () => import('@/views/app/Workspace.vue') },
+        { path: 'workspace', name: 'workspace', meta: { title: 'Workspace', description: 'Member, undangan, dan jam kerja.' }, component: () => import('@/views/app/Workspace.vue') },
         { path: 'geofence', name: 'geofence', meta: { title: 'Geofence', description: 'Titik lokasi dan validasi.' }, component: () => import('@/views/app/Geofence.vue') },
         { path: 'guide', name: 'guide', meta: { title: 'Panduan', description: 'Ringkasan alur kerja workspace.' }, component: () => import('@/views/app/Guide.vue') },
         // Legacy Indonesian paths → English routes

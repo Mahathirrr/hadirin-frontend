@@ -29,6 +29,16 @@ const stats = computed(() => catalog.value?.stats)
 const recentAttendance = computed(() => catalog.value?.recent_attendance ?? [])
 const highlight = computed(() => catalog.value?.highlight)
 
+const highlightVerificationLabel = computed(() => {
+  const h = highlight.value
+  if (!h) return ''
+  if (h.face_verified) return 'Face ID terverifikasi (token sesi)'
+  if (h.check_in_method === 'qr') return 'Check-in via QR device'
+  if (h.check_in_method === 'face') return 'Check-in metode wajah'
+  if (h.check_in_method) return `Check-in: ${h.check_in_method}`
+  return 'Check-in tercatat'
+})
+
 const attendanceRate = computed(() => {
   const rate = stats.value?.attendance_rate ?? 0
   return `${rate.toFixed(1)}%`
@@ -235,7 +245,7 @@ const nowLabel = computed(() => {
         </div>
         <div>
           <p class="text-xs font-bold text-foreground">{{ highlight.name }}</p>
-          <p class="text-[11px] text-muted-foreground">Face ID Match {{ highlight.face_match }}</p>
+          <p class="text-[11px] text-muted-foreground">{{ highlightVerificationLabel }}</p>
           <div class="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground font-medium">
             <MapPin class="size-3" />
             <span>Di dalam radius kantor</span>

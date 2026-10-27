@@ -14,11 +14,13 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Textarea } from '@/components/ui/textarea'
+import { useEmployeeAccess } from '@/composables/useEmployeeAccess'
 import { useWorkspaceLoader } from '@/composables/useWorkspaceData'
 import { api } from '@/lib/api'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
+const { isManager, linkedEmployeeId, employeesForAction } = useEmployeeAccess()
 const statusFilter = ref('pending')
 const typeFilter = ref('all')
 const showForm = ref(false)
@@ -39,9 +41,11 @@ const alphaForm = ref({
   reason: 'Alfa — tidak hadir tanpa keterangan',
 })
 
-const isAdmin = computed(() =>
-  auth.activeMembership?.role === 'owner' || auth.activeMembership?.role === 'admin',
-)
+const isAdmin = isManager
+
+const selectableEmployees = computed(() => employeesForAction(employees.value ?? []))
+
+const myEmployeeId = computed(() => linkedEmployeeId(employees.value ?? []))
 
 const { data: rows, loading, load } = useWorkspaceLoader(async (token, ws) =>
   api.listLeaveRequests(token, ws) as Promise<Array<Record<string, unknown>>>,
@@ -92,14 +96,21 @@ function employeeName(row: Record<string, unknown>) {
 
 async function submitLeave() {
   if (!auth.token || !auth.workspaceId) return
-  if (!form.value.employee_id || !form.value.start_date || !form.value.end_date) {
+  const employeeId = isAdmin.value
+    ? form.value.employee_id
+    : String(myEmployeeId.value ?? '')
+  if (!employeeId || !form.value.start_date || !form.value.end_date) {
     toast.error('Lengkapi karyawan dan tanggal cuti')
+    return
+  }
+  if (form.value.end_date < form.value.start_date) {
+    toast.error('Tanggal selesai harus setelah atau sama dengan tanggal mulai')
     return
   }
   submitting.value = true
   try {
     await api.createLeaveRequest(auth.token, auth.workspaceId, {
-      employee_id: Number(form.value.employee_id),
+      employee_id: Number(employeeId),
       type: form.value.type,
       start_date: `${form.value.start_date}T00:00:00Z`,
       end_date: `${form.value.end_date}T23:59:59Z`,
@@ -167,28 +178,46 @@ async function review(id: number, status: 'approved' | 'rejected') {
       <StatCard label="Total pengajuan" :value="rows?.length ?? 0" :icon="FileText" />
     </div>
 
-    <Card v-if="isAdmin" class="rounded-xl border-border/60 shadow-none">
+    <Card class="rounded-xl border-border/60 shadow-none">
       <CardHeader class="flex flex-row flex-wrap items-center justify-between gap-3">
         <div>
-          <CardTitle class="text-base">Buat pengajuan</CardTitle>
-          <p class="mt-0.5 text-sm text-muted-foreground">Admin dapat mengajukan cuti atas nama karyawan.</p>
+          <CardTitle class="text-base">{{ isAdmin ? 'Buat pengajuan' : 'Ajukan cuti saya' }}</CardTitle>
+          <p class="mt-0.5 text-sm text-muted-foreground">
+            {{
+              isAdmin
+                ? 'Admin dapat mengajukan cuti atas nama karyawan.'
+                : 'Pengajuan hanya untuk profil karyawan yang terhubung ke akun Anda.'
+            }}
+          </p>
         </div>
-        <Button variant="outline" size="sm" @click="showForm = !showForm">
+        <Button
+          v-if="isAdmin || myEmployeeId"
+          variant="outline"
+          size="sm"
+          @click="showForm = !showForm"
+        >
           {{ showForm ? 'Tutup form' : 'Pengajuan baru' }}
         </Button>
       </CardHeader>
-      <CardContent v-if="showForm" class="grid gap-3 border-t pt-3 sm:grid-cols-2">
-        <div class="grid gap-1.5 sm:col-span-2">
+      <CardContent
+        v-if="showForm && (isAdmin || myEmployeeId)"
+        class="grid gap-3 border-t pt-3 sm:grid-cols-2"
+      >
+        <div v-if="isAdmin" class="grid gap-1.5 sm:col-span-2">
           <Label>Karyawan</Label>
           <Select v-model="form.employee_id">
             <SelectTrigger><SelectValue placeholder="Pilih karyawan" /></SelectTrigger>
             <SelectContent>
-              <SelectItem v-for="emp in employees ?? []" :key="String(emp.id)" :value="String(emp.id)">
+              <SelectItem v-for="emp in selectableEmployees" :key="String(emp.id)" :value="String(emp.id)">
                 {{ emp.name }}
               </SelectItem>
             </SelectContent>
           </Select>
         </div>
+        <p v-else class="sm:col-span-2 text-sm text-muted-foreground">
+          Mengajukan sebagai:
+          <span class="font-medium text-foreground">{{ selectableEmployees[0]?.name ?? '—' }}</span>
+        </p>
         <div class="grid gap-1.5">
           <Label>Jenis</Label>
           <Select v-model="form.type">
@@ -219,6 +248,9 @@ async function review(id: number, status: 'approved' | 'rejected') {
           </Button>
         </div>
       </CardContent>
+      <CardContent v-else-if="!isAdmin && !myEmployeeId" class="border-t pt-3 text-sm text-muted-foreground">
+        Profil karyawan belum terhubung ke akun Anda. Minta admin menautkan <strong>user_id</strong> di halaman Karyawan.
+      </CardContent>
     </Card>
 
     <Card class="rounded-xl border-border/60 shadow-none">
@@ -241,7 +273,7 @@ async function review(id: number, status: 'approved' | 'rejected') {
             <Select v-model="alphaForm.employee_id">
               <SelectTrigger><SelectValue placeholder="Pilih karyawan" /></SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="emp in employees ?? []" :key="String(emp.id)" :value="String(emp.id)">
+                <SelectItem v-for="emp in selectableEmployees" :key="String(emp.id)" :value="String(emp.id)">
                   {{ emp.name }}
                 </SelectItem>
               </SelectContent>

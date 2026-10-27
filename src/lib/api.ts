@@ -117,8 +117,9 @@ export type PublicCatalog = {
   recent_attendance: PublicCatalogAttendance[]
   highlight?: {
     name: string
-    face_match: string
     check_in_time: string
+    check_in_method?: string
+    face_verified?: boolean
   }
 }
 
@@ -325,7 +326,7 @@ export const api = {
   downloadLatestWeeklyReport: async (token: string, workspaceId: number) =>
     request<{ download_url?: string; message?: string }>(`/reports/weekly/latest?workspace_id=${workspaceId}`, { token }),
   generateWeeklyReport: async (token: string, workspaceId: number) =>
-    request<{ message: string; status?: string; download_url?: string }>(
+    request<{ message: string; status?: string; record_count?: number; id?: number; download_url?: string }>(
       `/reports/weekly/generate?workspace_id=${workspaceId}`,
       { method: 'POST', token },
     ),

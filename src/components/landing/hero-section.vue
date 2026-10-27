@@ -36,7 +36,7 @@ import { Button } from '@/components/ui/button'
         <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
           <Button size="lg" class="h-12 px-8 text-base font-semibold cursor-pointer" as-child>
             <RouterLink to="/auth/sign-up">
-              <span>Mulai Gratis 14 Hari</span>
+              <span>Buat Akun Gratis</span>
               <ArrowRight class="ml-2 size-4" />
             </RouterLink>
           </Button>
@@ -49,11 +49,11 @@ import { Button } from '@/components/ui/button'
         <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
           <div class="flex items-center gap-2">
             <CheckCircle2 class="size-4 text-foreground/70" />
-            <span>99.8% Akurasi Face ID</span>
+            <span>Face ID + token verifikasi Redis</span>
           </div>
           <div class="flex items-center gap-2">
             <ShieldCheck class="size-4 text-foreground/70" />
-            <span>Anti Fake-GPS & Titip Absen</span>
+            <span>Geofence & deteksi anomali</span>
           </div>
         </div>
         </div>

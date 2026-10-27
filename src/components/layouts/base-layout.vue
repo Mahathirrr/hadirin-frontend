@@ -4,16 +4,19 @@ import SiteHeader from '@/components/site-header.vue'
 import SiteFooter from '@/components/site-footer.vue'
 import { provideSidebarConfig } from '@/contexts/sidebarContext'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { cn } from '@/lib/utils'
 
 const sidebar = provideSidebarConfig()
 </script>
 
 <template>
   <SidebarProvider
-    :class="[
-      sidebar.config.collapsible === 'none' ? 'sidebar-none-mode' : '',
-      'pt-[5.5rem] md:pt-(--header-height)',
-    ]"
+    :class="
+      cn(
+        sidebar.config.collapsible === 'none' ? 'sidebar-none-mode' : '',
+        'pt-[5.5rem] md:pt-(--header-height)',
+      )
+    "
     :style="{
       '--sidebar-width': '16rem',
       '--sidebar-width-icon': '3rem',

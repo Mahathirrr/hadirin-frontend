@@ -54,6 +54,11 @@ const pendingCount = computed(() =>
   (enrollments.value ?? []).filter((e) => e.status !== 'active').length,
 )
 
+function enrollmentEmployeeName(row: Record<string, unknown>): string {
+  const emp = row.employee as { name?: string } | undefined
+  return emp?.name ?? `#${String(row.employee_id ?? '')}`
+}
+
 function onPhotoChange(e: Event) {
   const input = e.target as HTMLInputElement
   const file = input.files?.[0]
@@ -281,7 +286,7 @@ async function refreshAll() {
             <TableBody>
               <TableRow v-for="row in enrollments" :key="String(row.id)">
                 <TableCell class="font-medium">
-                  {{ (row.employee as { name?: string })?.name ?? `#${row.employee_id}` }}
+                  {{ enrollmentEmployeeName(row) }}
                 </TableCell>
                 <TableCell><Badge variant="secondary">{{ row.status }}</Badge></TableCell>
                 <TableCell>{{ row.sync_status }}</TableCell>

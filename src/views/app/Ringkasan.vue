@@ -42,9 +42,17 @@ const averageRate = computed(() => {
   return Math.round(sum / trend.length)
 })
 
+function trendLabel(point: { day: string; date: string }) {
+  const d = point.date ? new Date(`${point.date}T12:00:00`) : null
+  const short = d && !Number.isNaN(d.getTime())
+    ? `${d.getDate()}/${d.getMonth() + 1}`
+    : ''
+  return short ? `${point.day} ${short}` : point.day
+}
+
 const trendChartData = computed(() =>
   (summary.value?.attendance_trend_7d ?? []).map((point) => ({
-    label: point.day,
+    label: trendLabel(point),
     rate: Math.round(point.rate),
   })),
 )

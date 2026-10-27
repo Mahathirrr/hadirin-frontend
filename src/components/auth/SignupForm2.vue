@@ -49,7 +49,7 @@ async function onSubmit() {
     <div class="flex flex-col items-center gap-2 text-center">
       <h1 class="text-2xl font-bold">Create your account</h1>
       <p class="text-muted-foreground text-sm text-balance">
-        Enter your information to create a new Hadirin account
+        Enter your information to create a new Hadirin.id account
       </p>
     </div>
 

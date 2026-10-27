@@ -33,7 +33,7 @@ const { data: sessions, loading, load: reloadSessions } = useWorkspaceLoader(asy
   api.listLocationSessions(token, workspaceId, true) as Promise<Array<Record<string, unknown>>>,
 )
 
-const { data: settingsRes, load: reloadSettings } = useWorkspaceLoader(async (token, ws) => {
+const { load: reloadSettings } = useWorkspaceLoader(async (token, ws) => {
   const res = await api.getWorkspaceSettings(token, ws)
   intervalMinutes.value = String(res.data.location_interval_minutes ?? 20)
   return res
@@ -52,11 +52,16 @@ const staleCount = computed(() =>
   (sessions.value ?? []).filter((s) => s.is_stale === true).length,
 )
 
+function sessionEmployeeName(s: Record<string, unknown>): string {
+  const emp = s.employee as { name?: string } | undefined
+  return emp?.name ?? 'Karyawan'
+}
+
 const mapMarkers = computed(() =>
   filtered.value.map((s) => ({
     lat: Number(s.latitude),
     lng: Number(s.longitude),
-    label: (s.employee as { name?: string })?.name ?? 'Karyawan',
+    label: sessionEmployeeName(s),
   })),
 )
 
@@ -150,7 +155,7 @@ async function refreshAll() {
               :key="String(s.id)"
               class="rounded-lg border border-border/60 p-3 text-sm"
             >
-              <p class="font-medium">{{ (s.employee as { name?: string })?.name ?? 'Karyawan' }}</p>
+              <p class="font-medium">{{ sessionEmployeeName(s) }}</p>
               <div class="mt-1 flex items-center gap-2">
                 <Badge v-if="s.is_stale" variant="destructive" class="text-[10px]">Stale</Badge>
                 <Badge v-else variant="secondary" class="text-[10px]">Live</Badge>
