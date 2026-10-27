@@ -50,10 +50,10 @@ async function main() {
   const simRes = await fetch(`${API_BASE}/billing/sandbox/orders/${orderId}/simulate`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
+    signal: AbortSignal.timeout(120_000),
   })
-  assert('simulate', simRes.ok, simRes.status)
-
-  await new Promise((r) => setTimeout(r, 3000))
+  const simBody = await simRes.text()
+  assert('simulate', simRes.ok, `${simRes.status} ${simBody}`)
 
   const syncRes = await fetch(`${API_BASE}/billing/orders/${orderId}/sync`, {
     method: 'POST',
