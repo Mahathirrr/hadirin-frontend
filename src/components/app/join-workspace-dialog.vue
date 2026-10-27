@@ -32,7 +32,7 @@ async function submit() {
   submitting.value = true
   try {
     await auth.joinWorkspace(trimmed)
-    toast.success('Berhasil bergabung ke workspace')
+    toast.success('Berhasil bergabung ke perusahaan')
     emit('update:open', false)
   } catch (error) {
     toast.error(error instanceof Error ? error.message : 'Invitation code tidak valid')
@@ -46,9 +46,9 @@ async function submit() {
   <Dialog :open="props.open" @update:open="emit('update:open', $event)">
     <DialogContent class="z-[130] sm:max-w-lg">
       <DialogHeader>
-        <DialogTitle>Gabung workspace</DialogTitle>
+        <DialogTitle>Gabung perusahaan</DialogTitle>
         <DialogDescription>
-          Masukkan invitation code dari workspace tujuan. Jika berhasil, workspace akan langsung menjadi aktif.
+          Masukkan kode undangan dari perusahaan tujuan. Jika berhasil, perusahaan tersebut langsung menjadi aktif.
         </DialogDescription>
       </DialogHeader>
       <Input
@@ -59,7 +59,7 @@ async function submit() {
       />
       <DialogFooter>
         <Button :disabled="submitting || !inviteCode.trim()" @click="submit">
-          Gabung workspace
+          Gabung perusahaan
         </Button>
       </DialogFooter>
     </DialogContent>

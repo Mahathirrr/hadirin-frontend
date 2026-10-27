@@ -22,10 +22,10 @@ async function handleCreate() {
   submitting.value = true
   try {
     await auth.createWorkspace(workspaceName.value.trim())
-    toast.success('Workspace berhasil dibuat')
+    toast.success('Perusahaan berhasil dibuat')
     router.push(ROUTES.summary)
   } catch (e) {
-    toast.error(e instanceof Error ? e.message : 'Gagal membuat workspace')
+    toast.error(e instanceof Error ? e.message : 'Gagal membuat perusahaan')
   } finally {
     submitting.value = false
   }
@@ -36,7 +36,7 @@ async function handleJoin() {
   submitting.value = true
   try {
     await auth.joinWorkspace(inviteCode.value.trim())
-    toast.success('Berhasil bergabung ke workspace')
+    toast.success('Berhasil bergabung ke perusahaan')
     router.push(ROUTES.summary)
   } catch (e) {
     toast.error(e instanceof Error ? e.message : 'Token undangan tidak valid')
@@ -58,27 +58,27 @@ async function handleJoin() {
       <div class="flex flex-1 items-center justify-center">
         <div class="w-full max-w-md">
           <div class="mb-6 text-center">
-            <h1 class="text-2xl font-bold">Pilih workspace</h1>
-            <p class="text-muted-foreground text-sm">Buat workspace baru atau join dengan token undangan.</p>
+            <h1 class="text-2xl font-bold">Siapkan perusahaan Anda</h1>
+            <p class="text-muted-foreground text-sm">Buat perusahaan baru atau gabung dengan kode undangan.</p>
           </div>
           <Tabs default-value="create">
             <TabsList class="grid w-full grid-cols-2">
-              <TabsTrigger value="create">Buat Workspace</TabsTrigger>
-              <TabsTrigger value="join">Join Workspace</TabsTrigger>
+              <TabsTrigger value="create">Buat perusahaan</TabsTrigger>
+              <TabsTrigger value="join">Gabung perusahaan</TabsTrigger>
             </TabsList>
             <TabsContent value="create" class="space-y-4 pt-4">
               <div class="grid gap-3">
-                <Label>Nama workspace</Label>
-                <Input v-model="workspaceName" placeholder="Contoh: me hq" />
+                <Label>Nama perusahaan</Label>
+                <Input v-model="workspaceName" placeholder="Contoh: PT Maju Jaya" />
               </div>
-              <Button class="w-full" :disabled="submitting" @click="handleCreate">Buat Workspace</Button>
+              <Button class="w-full" :disabled="submitting" @click="handleCreate">Buat perusahaan</Button>
             </TabsContent>
             <TabsContent value="join" class="space-y-4 pt-4">
               <div class="grid gap-3">
                 <Label>Token undangan</Label>
                 <Input v-model="inviteCode" placeholder="HDR-XXXX-XXXX" class="uppercase" />
               </div>
-              <Button class="w-full" :disabled="submitting" @click="handleJoin">Gabung Workspace</Button>
+              <Button class="w-full" :disabled="submitting" @click="handleJoin">Gabung perusahaan</Button>
             </TabsContent>
           </Tabs>
         </div>

@@ -56,7 +56,7 @@ const searchItems: SearchItem[] = [
   { title: 'Device QR', url: ROUTES.qrDevices, group: 'Operasional', icon: QrCode },
   { title: 'Face ID', url: ROUTES.faceId, group: 'Operasional', icon: ScanFace },
   { title: 'Karyawan', url: ROUTES.employees, group: 'Operasional', icon: Users },
-  { title: 'Workspace', url: ROUTES.workspace, group: 'Pengaturan', icon: Settings },
+  { title: 'Perusahaan', url: ROUTES.workspace, group: 'Pengaturan', icon: Settings },
   { title: 'Panduan', url: ROUTES.guide, group: 'Operasional', icon: Compass },
   { title: 'Geofence', url: ROUTES.geofence, group: 'Pengaturan', icon: MapPin },
 ]

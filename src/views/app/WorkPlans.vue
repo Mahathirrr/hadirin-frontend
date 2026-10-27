@@ -197,7 +197,7 @@ async function downloadWeekly(id: number) {
 <template>
   <PageShell
     title="Work Plans & Reports"
-    description="Kelola rencana kerja harian, laporan operasional, dan export mingguan workspace."
+    description="Kelola rencana kerja harian, laporan operasional, dan unduhan laporan mingguan."
   >
     <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard label="Rencana kerja" :value="planCount" :icon="ClipboardList" />

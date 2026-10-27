@@ -65,7 +65,7 @@ onMounted(async () => {
       <CardHeader><CardTitle>Daftar log</CardTitle></CardHeader>
       <CardContent>
         <div v-if="loading" class="py-8 text-center text-sm text-muted-foreground">Memuat...</div>
-        <EmptyState v-else-if="!rows.length" title="Belum ada log audit" description="Aktivitas workspace akan tercatat otomatis." />
+        <EmptyState v-else-if="!rows.length" title="Belum ada riwayat" description="Aktivitas perusahaan akan tercatat otomatis." />
         <Table v-else>
           <TableHeader>
             <TableRow>

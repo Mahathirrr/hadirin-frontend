@@ -178,7 +178,7 @@ async function saveSettings() {
 <template>
   <PageShell
     title="Pengaturan Geofence"
-    description="Atur titik lokasi, radius validasi, dan whitelist IP untuk workspace aktif."
+    description="Atur titik lokasi, radius absensi, dan pembatasan jaringan untuk perusahaan Anda."
     class="pb-24"
   >
     <Card class="rounded-xl border-border/60 shadow-none">
@@ -292,7 +292,7 @@ async function saveSettings() {
           <CardHeader class="flex flex-row items-center justify-between">
             <div>
               <CardTitle class="text-base">IP whitelist</CardTitle>
-              <p class="text-xs text-muted-foreground">Opsional - batasi akses API dari jaringan tertentu</p>
+              <p class="text-xs text-muted-foreground">Opsional: batasi akses aplikasi hanya dari jaringan kantor tertentu</p>
             </div>
             <Switch v-model="ipWhitelistEnabled" :disabled="!isAdmin" @update:model-value="markDirty" />
           </CardHeader>

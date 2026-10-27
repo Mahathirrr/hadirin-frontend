@@ -29,7 +29,6 @@ interface NavItem {
 
 const navigationItems: NavItem[] = [
   { name: 'Fitur', href: '#features' },
-  { name: 'Integrasi', href: '#integrations' },
   { name: 'Solusi', href: '#use-cases' },
   { name: 'Harga', href: '#pricing' },
   { name: 'FAQ', href: '#faq' },
@@ -84,7 +83,7 @@ const isOpen = ref(false)
           <RouterLink to="/auth/sign-in">Masuk</RouterLink>
         </Button>
         <Button class="h-10 px-5 text-[15px] font-semibold cursor-pointer" as-child>
-          <RouterLink to="/auth/sign-up">Mulai Gratis</RouterLink>
+          <RouterLink to="/auth/sign-up">Daftar</RouterLink>
         </Button>
       </div>
 
@@ -129,7 +128,7 @@ const isOpen = ref(false)
                     <RouterLink to="/auth/sign-in">Masuk</RouterLink>
                   </Button>
                   <Button class="cursor-pointer font-semibold" size="lg" as-child>
-                    <RouterLink to="/auth/sign-up">Mulai</RouterLink>
+                    <RouterLink to="/auth/sign-up">Daftar</RouterLink>
                   </Button>
                 </div>
               </div>

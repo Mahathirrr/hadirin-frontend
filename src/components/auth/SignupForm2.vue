@@ -36,7 +36,7 @@ onMounted(() => {
 
 function loginWithGoogle() {
   if (!googleEnabled.value) {
-    toast.error('Google OAuth belum dikonfigurasi di server')
+    toast.error('Masuk dengan Google belum tersedia. Gunakan email dan kata sandi.')
     return
   }
   window.location.href = api.googleAuthStartUrl()
@@ -70,7 +70,7 @@ async function onSubmit() {
     <div class="flex flex-col items-center gap-2 text-center">
       <h1 class="text-2xl font-bold">Buat akun Hadirin</h1>
       <p class="text-muted-foreground text-sm text-balance">
-        Daftar untuk mengelola presensi, geofence, dan Face ID di workspace Anda.
+        Daftar untuk mengelola presensi, geofence, dan Face ID untuk perusahaan Anda.
       </p>
     </div>
 

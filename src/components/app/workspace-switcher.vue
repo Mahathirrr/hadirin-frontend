@@ -79,13 +79,13 @@ function openJoin(event: Event) {
         class="cursor-pointer rounded-md px-2 py-2 focus:bg-zinc-900 focus:text-zinc-50"
         @select="openCreate"
       >
-        Buat workspace baru
+        Buat perusahaan baru
       </DropdownMenuItem>
       <DropdownMenuItem
         class="cursor-pointer rounded-md px-2 py-2 focus:bg-zinc-900 focus:text-zinc-50"
         @select="openJoin"
       >
-        Gabung workspace
+        Gabung perusahaan
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

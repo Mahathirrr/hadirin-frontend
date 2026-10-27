@@ -13,7 +13,7 @@ const router = useRouter()
 onMounted(async () => {
   const jwt = typeof route.query.token === 'string' ? route.query.token : ''
   if (!jwt) {
-    toast.error('Token OAuth tidak ditemukan')
+    toast.error('Masuk dengan Google gagal. Silakan coba lagi.')
     router.replace(ROUTES.signIn)
     return
   }

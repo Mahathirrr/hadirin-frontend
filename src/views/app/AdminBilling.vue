@@ -17,7 +17,7 @@ onMounted(async () => {
     plans.value = (await api.adminListPlans(auth.token)).data
     orders.value = (await api.adminListOrders(auth.token)).data
   } catch {
-    toast.error('Akses admin billing ditolak atau gagal memuat')
+    toast.error('Akses admin langganan ditolak atau gagal memuat')
   } finally {
     loading.value = false
   }
@@ -27,8 +27,8 @@ onMounted(async () => {
 <template>
   <div class="mx-auto flex w-full max-w-5xl flex-col gap-8 p-6">
     <div>
-      <h1 class="text-2xl font-semibold">Admin billing</h1>
-      <p class="text-muted-foreground text-sm">Kelola paket dan pantau transaksi (sandbox).</p>
+      <h1 class="text-2xl font-semibold">Admin langganan</h1>
+      <p class="text-muted-foreground text-sm">Kelola paket dan pantau transaksi langganan.</p>
     </div>
     <section>
       <h2 class="mb-2 font-medium">Paket</h2>

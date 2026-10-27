@@ -138,7 +138,7 @@ async function checkInEmployee(employeeId: number) {
   if (!canActOnEmployee(employeeId, employees.value ?? [])) return
   const settings = workspaceSettings.value
   if (!settings) {
-    toast.error('Pengaturan workspace belum dimuat')
+    toast.error('Pengaturan perusahaan belum dimuat')
     return
   }
   if (shouldUseFaceCheckIn(employeeId)) {
@@ -205,7 +205,7 @@ async function refreshAll() {
 <template>
   <PageShell
     title="Review Absensi Karyawan"
-    description="Tinjau kehadiran harian per karyawan dan kelola data karyawan workspace."
+    description="Tinjau kehadiran harian per karyawan dan kelola data karyawan perusahaan."
   >
     <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard label="Total karyawan" :value="stats.total" :icon="Users" />

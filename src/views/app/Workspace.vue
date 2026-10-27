@@ -155,8 +155,8 @@ async function deleteWorkspace() {
 
 <template>
   <PageShell
-    title="Workspace Management"
-    description="Kelola member, jadwal kerja, dan profil workspace."
+    title="Pengaturan perusahaan"
+    description="Kelola anggota tim, jadwal kerja, dan profil perusahaan."
   >
     <div v-if="loading" class="py-12 text-center text-sm text-muted-foreground">Memuat workspace...</div>
 

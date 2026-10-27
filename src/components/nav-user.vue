@@ -24,6 +24,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { ROUTES } from '@/lib/routes'
 
 interface Props {
   user: {
@@ -80,19 +81,19 @@ const { isMobile } = useSidebar()
             <DropdownMenuItem as-child class="cursor-pointer">
               <RouterLink to="/settings/account">
                 <CircleUser />
-                Account
+                Akun
               </RouterLink>
             </DropdownMenuItem>
             <DropdownMenuItem as-child class="cursor-pointer">
-              <RouterLink to="/settings/billing">
+              <RouterLink :to="ROUTES.subscription">
                 <CreditCard />
-                Billing
+                Langganan
               </RouterLink>
             </DropdownMenuItem>
             <DropdownMenuItem as-child class="cursor-pointer">
-              <RouterLink to="/settings/notifications">
+              <RouterLink :to="ROUTES.billingHistory">
                 <BellDot />
-                Notifications
+                Riwayat pembayaran
               </RouterLink>
             </DropdownMenuItem>
           </DropdownMenuGroup>

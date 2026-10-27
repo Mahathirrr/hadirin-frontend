@@ -40,7 +40,7 @@ function formatIDR(n: number) {
 
 function checkout(planId: number) {
   if (!workspaceId.value) {
-    toast.error('Pilih workspace terlebih dahulu')
+    toast.error('Pilih perusahaan terlebih dahulu')
     return
   }
   router.push({ name: 'subscription-checkout', query: { plan_id: String(planId), workspace_id: String(workspaceId.value) } })
@@ -50,15 +50,15 @@ function checkout(planId: number) {
 <template>
   <div class="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 md:p-6">
     <div>
-      <h1 class="text-2xl font-semibold tracking-tight">Langganan workspace</h1>
-      <p class="text-muted-foreground text-sm">Kelola paket Hadirin untuk organisasi Anda.</p>
+      <h1 class="text-2xl font-semibold tracking-tight">Langganan</h1>
+      <p class="text-muted-foreground text-sm">Kelola paket Hadirin untuk perusahaan Anda.</p>
     </div>
 
     <div
       v-if="sandbox"
       class="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100"
     >
-      Mode uji coba — pembayaran tidak nyata (Mayar sandbox).
+      Mode uji coba: transaksi pembayaran tidak nyata.
     </div>
 
     <Card v-if="subscription">
@@ -76,7 +76,7 @@ function checkout(planId: number) {
 
     <div v-if="loading" class="text-muted-foreground text-sm">Memuat paket…</div>
     <div v-else-if="!billingEnabled" class="text-muted-foreground text-sm">
-      Billing belum aktif di server.
+      Langganan sementara tidak tersedia. Coba lagi nanti.
     </div>
     <div v-else class="grid gap-4 md:grid-cols-3">
       <Card v-for="plan in plans" :key="plan.id">

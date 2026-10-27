@@ -61,7 +61,7 @@ function onOpenChange(v: boolean) {
         <DialogDescription>
           {{
             employeeName
-              ? `Ambil atau unggah foto wajah ${employeeName} (foto yang sama dengan saat enrollment).`
+              ? `Ambil atau unggah foto wajah ${employeeName} (gunakan foto yang sama dengan saat pendaftaran wajah).`
               : 'Ambil atau unggah foto wajah untuk verifikasi check-in.'
           }}
         </DialogDescription>

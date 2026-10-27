@@ -43,7 +43,7 @@ const onSubmit = handleSubmit(async (values) => {
   <Card class="pt-1">
     <CardHeader class="text-center pt-5">
       <CardTitle class="text-xl">Daftar Hadirin</CardTitle>
-      <CardDescription>Buat akun baru, lalu buat atau join workspace.</CardDescription>
+      <CardDescription>Buat akun baru, lalu buat atau gabung perusahaan.</CardDescription>
     </CardHeader>
     <CardContent>
       <Form :validation-schema="schema" as="div">

@@ -42,20 +42,20 @@ function startEditProfile() {
 }
 
 function saveProfile() {
-  toast.message('Update profil akan tersedia setelah endpoint PATCH /auth/me aktif di backend')
+  toast.message('Perubahan profil belum tersedia. Fitur ini segera hadir.')
   editingName.value = false
 }
 
 function updateUsername() {
-  toast.message('Update username akan tersedia setelah endpoint auth/profile siap di backend')
+  toast.message('Perubahan username belum tersedia. Fitur ini segera hadir.')
 }
 
 function addEmail() {
-  toast.message('Tambah email akan tersedia setelah endpoint auth/email siap di backend')
+  toast.message('Penambahan email belum tersedia. Fitur ini segera hadir.')
 }
 
 function setPassword() {
-  toast.message('Set password akan tersedia setelah endpoint auth/password di backend')
+  toast.message('Pengaturan kata sandi belum tersedia. Fitur ini segera hadir.')
 }
 
 watch(() => props.open, (isOpen) => {

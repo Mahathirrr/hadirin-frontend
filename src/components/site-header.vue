@@ -42,9 +42,9 @@ async function refreshWorkspace() {
   refreshing.value = true
   try {
     await auth.fetchMe()
-    toast.success('Data workspace diperbarui')
+    toast.success('Data perusahaan diperbarui')
   } catch {
-    toast.error('Gagal memuat ulang data workspace')
+    toast.error('Gagal memuat ulang data perusahaan')
   } finally {
     refreshing.value = false
   }
@@ -118,7 +118,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
           variant="ghost"
           size="icon"
           class="cursor-pointer text-white hover:bg-white/10 hover:text-white"
-          aria-label="Muat ulang workspace"
+          aria-label="Muat ulang data"
           :disabled="refreshing"
           @click="refreshWorkspace"
         >

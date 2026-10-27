@@ -35,7 +35,7 @@ async function submit() {
     toast.success('Workspace berhasil dibuat')
     emit('update:open', false)
   } catch (error) {
-    toast.error(error instanceof Error ? error.message : 'Gagal membuat workspace')
+    toast.error(error instanceof Error ? error.message : 'Gagal membuat perusahaan')
   } finally {
     submitting.value = false
   }
@@ -46,15 +46,15 @@ async function submit() {
   <Dialog :open="props.open" @update:open="emit('update:open', $event)">
     <DialogContent class="z-[130] sm:max-w-lg">
       <DialogHeader>
-        <DialogTitle>Buat workspace baru</DialogTitle>
+        <DialogTitle>Buat perusahaan baru</DialogTitle>
         <DialogDescription>
-          Masukkan nama workspace yang ingin Anda tambahkan. Anda akan langsung berpindah ke workspace baru ini.
+          Masukkan nama perusahaan yang ingin Anda tambahkan. Anda akan langsung berpindah ke perusahaan baru ini.
         </DialogDescription>
       </DialogHeader>
       <Input v-model="name" placeholder="Contoh: Presence Ops" @keyup.enter="submit" />
       <DialogFooter>
         <Button :disabled="submitting || !name.trim()" @click="submit">
-          Buat workspace baru
+          Buat perusahaan baru
         </Button>
       </DialogFooter>
     </DialogContent>

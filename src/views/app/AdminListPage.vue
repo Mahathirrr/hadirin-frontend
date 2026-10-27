@@ -57,7 +57,7 @@ onMounted(async () => {
       </CardHeader>
       <CardContent>
         <div v-if="loading" class="py-6 text-center text-sm text-muted-foreground">Memuat...</div>
-        <EmptyState v-else-if="!rows.length" title="Belum ada data" description="Data akan muncul setelah workspace mulai digunakan." />
+        <EmptyState v-else-if="!rows.length" title="Belum ada data" description="Data akan muncul setelah perusahaan mulai digunakan." />
         <Table v-else>
           <TableHeader>
             <TableRow>

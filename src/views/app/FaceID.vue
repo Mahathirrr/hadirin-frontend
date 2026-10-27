@@ -57,6 +57,8 @@ const legacyRevokedCount = computed(() =>
   (enrollments.value ?? []).filter((e) => e.sync_status === 'legacy_invalid_template').length,
 )
 
+const faceStatusLabel = computed(() => (faceEnabled.value ? 'Aktif' : 'Nonaktif'))
+
 function enrollmentEmployeeName(row: Record<string, unknown>): string {
   const emp = row.employee as { name?: string } | undefined
   return emp?.name ?? `#${String(row.employee_id ?? '')}`
@@ -164,17 +166,12 @@ async function refreshAll() {
 </script>
 
 <template>
-  <PageShell title="Face ID" description="Enrollment wajah karyawan untuk verifikasi absensi workspace.">
+  <PageShell title="Face ID" description="Daftarkan wajah karyawan untuk verifikasi saat absensi.">
     <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-      <StatCard label="Enrollment aktif" :value="activeCount" :icon="ScanFace" />
+      <StatCard label="Pendaftaran aktif" :value="activeCount" :icon="ScanFace" />
       <StatCard label="Perlu tindak lanjut" :value="pendingCount" :icon="ShieldCheck" />
       <StatCard label="Karyawan" :value="employees?.length ?? 0" :icon="Users" />
-      <StatCard
-        label="Engine"
-        :value="settingsRes?.data.face_engine ?? 'remote'"
-        :icon="Fingerprint"
-        hint="Sidecar embedding production"
-      />
+      <StatCard label="Status fitur" :value="faceStatusLabel" :icon="Fingerprint" />
     </div>
 
     <Card
@@ -182,8 +179,8 @@ async function refreshAll() {
       class="rounded-xl border-amber-500/40 bg-amber-500/5 shadow-none"
     >
       <CardContent class="pt-4 text-sm text-muted-foreground">
-        {{ legacyRevokedCount }} enrollment lama (data demo) tidak valid untuk engine embedding.
-        Enroll ulang foto wajah karyawan agar check-in Face ID berfungsi.
+        {{ legacyRevokedCount }} pendaftaran wajah lama perlu diperbarui.
+        Daftarkan ulang foto wajah karyawan agar check-in Face ID berfungsi.
       </CardContent>
     </Card>
 

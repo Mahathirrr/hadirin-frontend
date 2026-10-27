@@ -56,12 +56,12 @@ function signOut() {
       <DropdownMenuSeparator />
       <DropdownMenuItem class="cursor-pointer gap-2" @select="openAccount($event as Event)">
         <Settings class="size-4" />
-        Manage account
+        Kelola akun
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem class="cursor-pointer gap-2 text-destructive focus:text-destructive" @select="signOut">
         <LogOut class="size-4" />
-        Sign out
+        Keluar
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

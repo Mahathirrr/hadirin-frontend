@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { HelpCircle, MessageSquare } from 'lucide-vue-next'
+import { ArrowRight, HelpCircle } from 'lucide-vue-next'
+import { RouterLink } from 'vue-router'
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
@@ -15,33 +16,39 @@ interface FaqItem {
 const faqItems: FaqItem[] = [
   {
     value: 'item-1',
-    question: 'Bagaimana Hadirin mencegah kecurangan titip absen dan pemalsuan foto?',
-    answer: 'Admin mendaftarkan foto karyawan (template hash di server). Saat check-in wajah, backend memverifikasi foto dengan template, lalu menerbitkan token Redis sekali pakai sebelum absensi disimpan. Ini mencegah check-in tanpa verifikasi terbaru, bukan pengganti modul computer vision berat di perangkat.',
+    question: 'Apa itu Hadirin?',
+    answer:
+      'Hadirin adalah aplikasi presensi untuk perusahaan: absensi harian, geofence, cuti, shift, laporan mingguan, dan verifikasi wajah opsional. Cocok untuk kantor, pabrik, retail, sekolah, dan tim lapangan.',
   },
   {
     value: 'item-2',
-    question: 'Bagaimana cara kerja Geofence dan apakah bisa dimanipulasi Fake GPS?',
-    answer: 'Admin menetapkan titik koordinat dan radius. Jika geofence aktif, check-in membutuhkan koordinat di dalam salah satu area. Scanner anomali backend juga menandai check-in di luar geofence, check-in ganda, dan pola keterlambatan berulang.',
+    question: 'Bagaimana cara karyawan melakukan absensi?',
+    answer:
+      'Karyawan check-in lewat GPS di area yang Anda tentukan, scan QR di perangkat yang didaftarkan, atau verifikasi wajah jika fitur tersebut diaktifkan oleh admin perusahaan.',
   },
   {
     value: 'item-3',
-    question: 'Bisakah Hadirin digunakan untuk mengelola banyak cabang kantor sekaligus?',
-    answer: 'Tentu. Hadirin mendukung fitur Multi-Geofence tanpa batas. Anda dapat mendaftarkan kantor pusat, gudang logistik, pabrik, serta puluhan cabang outlet ritel. Setiap karyawan dapat diatur agar hanya diizinkan absen di cabang tempat mereka ditugaskan.',
+    question: 'Bisakah dipakai untuk banyak cabang?',
+    answer:
+      'Ya. Anda dapat menambah beberapa titik lokasi kerja dan melihat ringkasan kehadiran per cabang dari dashboard.',
   },
   {
     value: 'item-4',
-    question: 'Bagaimana mengekspor data absensi untuk HR atau payroll?',
-    answer: 'Laporan mingguan dapat digenerate dari dashboard dan diunduh sebagai CSV. Data absensi harian, cuti, dan log audit tersedia lewat API workspace yang sama untuk integrasi lanjutan (payroll/ERP) saat fitur tersebut diaktifkan.',
+    question: 'Bagaimana langganan dan pembayaran?',
+    answer:
+      'Setelah daftar, pilih paket sesuai jumlah karyawan dan fitur yang dibutuhkan. Pembayaran dalam Rupiah per periode langganan, melalui halaman Langganan setelah Anda masuk.',
   },
   {
     value: 'item-5',
-    question: 'Apakah data biometrik dan privasi karyawan terjamin keamanannya?',
-    answer: 'Keamanan data adalah prioritas tertinggi kami. Seluruh transmisi dan penyimpanan data dienkripsi dengan standar AES-256 dan TLS 1.3. Kami mematuhi regulasi Undang-Undang Perlindungan Data Pribadi (UU PDP) dan tidak pernah membagikan data kepada pihak ketiga.',
+    question: 'Bagaimana pengajuan dan persetujuan cuti?',
+    answer:
+      'Karyawan mengajukan cuti lewat aplikasi. Admin atau pemilik akun perusahaan menyetujui atau menolak sesuai kebijakan internal Anda.',
   },
   {
     value: 'item-6',
-    question: 'Apakah tim di lapangan tetap bisa absen saat koneksi sinyal lemah?',
-    answer: 'Ya. Hadirin dilengkapi fitur offline sync cerdas. Waktu absensi dan koordinat GPS akan dikunci secara aman dengan stempel waktu kriptografis di perangkat, lalu disinkronkan otomatis ke server saat ponsel kembali terhubung ke jaringan internet.',
+    question: 'Bagaimana mendapatkan laporan kehadiran?',
+    answer:
+      'Unduh laporan mingguan dalam format CSV dari dashboard. Data absensi dan cuti siap dipakai untuk rekapitulasi kehadiran tim.',
   },
 ]
 </script>
@@ -49,22 +56,20 @@ const faqItems: FaqItem[] = [
 <template>
   <section id="faq" class="relative py-24 sm:py-32">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Section Header -->
       <ScrollReveal animation="fade-up">
         <div class="mx-auto mb-16 max-w-3xl text-center">
-        <Badge variant="outline" class="mb-4 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider">
-          Tanya Jawab
-        </Badge>
-        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-foreground">
-          Pertanyaan yang Sering Diajukan
-        </h2>
-        <p class="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
-          Temukan jawaban atas pertanyaan umum seputar fitur, keamanan biometrik, dan implementasi Hadirin di perusahaan Anda.
-        </p>
+          <Badge variant="outline" class="mb-4 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider">
+            Tanya jawab
+          </Badge>
+          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-foreground">
+            Pertanyaan yang sering diajukan
+          </h2>
+          <p class="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
+            Jawaban singkat seputar absensi, langganan, cuti, dan laporan untuk tim HR dan operasional.
+          </p>
         </div>
       </ScrollReveal>
 
-      <!-- FAQ Accordion -->
       <div class="mx-auto max-w-4xl">
         <Accordion type="single" collapsible class="space-y-4">
           <AccordionItem
@@ -89,21 +94,20 @@ const faqItems: FaqItem[] = [
           </AccordionItem>
         </Accordion>
 
-        <!-- Help Banner -->
         <ScrollReveal animation="fade-up" :delay="100">
           <div class="mt-12 flex flex-col items-center justify-between gap-4 landing-card p-6 sm:flex-row sm:p-8">
-          <div>
-            <h4 class="text-base sm:text-lg font-semibold text-foreground">Masih punya pertanyaan lain?</h4>
-            <p class="mt-1 text-xs sm:text-sm text-muted-foreground">
-              Tim spesialis kami siap membantu menjelaskan solusi presensi yang paling cocok untuk tim Anda.
-            </p>
-          </div>
-          <Button variant="outline" class="cursor-pointer shrink-0" as-child>
-            <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer">
-              <MessageSquare class="mr-2 size-4" />
-              <span>Hubungi Kami via WhatsApp</span>
-            </a>
-          </Button>
+            <div>
+              <h4 class="text-base sm:text-lg font-semibold text-foreground">Masih punya pertanyaan?</h4>
+              <p class="mt-1 text-xs sm:text-sm text-muted-foreground">
+                Daftar akun dan kelola presensi tim Anda dari dashboard Hadirin.
+              </p>
+            </div>
+            <Button variant="outline" class="cursor-pointer shrink-0" as-child>
+              <RouterLink to="/auth/sign-up">
+                <span>Daftar akun</span>
+                <ArrowRight class="ml-2 size-4" />
+              </RouterLink>
+            </Button>
           </div>
         </ScrollReveal>
       </div>

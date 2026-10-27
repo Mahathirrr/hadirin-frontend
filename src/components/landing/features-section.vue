@@ -15,24 +15,21 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
 <template>
   <section id="features" class="relative py-24 sm:py-32 bg-muted/20">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Section Header -->
       <ScrollReveal animation="fade-up">
         <div class="mx-auto max-w-3xl text-center">
-        <Badge variant="outline" class="mb-4 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider">
-          Fitur Komprehensif
-        </Badge>
-        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-foreground">
-          Dari Check-in Hingga Laporan Mingguan, Semuanya Terlacak
-        </h2>
-        <p class="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
-          Semua instrumen yang dibutuhkan tim HR dan operasional untuk mengelola absensi karyawan tanpa celah kecurangan dan tanpa antrean manual.
-        </p>
+          <Badge variant="outline" class="mb-4 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider">
+            Fitur produk
+          </Badge>
+          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-foreground">
+            Dari check-in hingga laporan mingguan, semuanya terlacak
+          </h2>
+          <p class="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
+            Absensi GPS, QR, dan wajah, geofence multi-lokasi, cuti & persetujuan, shift, laporan CSV, serta peringatan anomali kehadiran.
+          </p>
         </div>
       </ScrollReveal>
 
-      <!-- Bento Grid -->
       <div class="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-3">
-        <!-- Bento 1: Face ID (Span 2) -->
         <div data-aos="fade-up" data-aos-delay="0" class="group relative flex flex-col justify-between overflow-hidden landing-card p-6 sm:p-8 md:col-span-2">
           <div>
             <div class="flex items-center justify-between">
@@ -45,14 +42,13 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
             </div>
 
             <h3 class="mt-6 text-xl sm:text-2xl font-bold text-foreground">
-              Face ID dengan enrollment & token sekali pakai
+              Face ID dengan pendaftaran wajah
             </h3>
             <p class="mt-2 text-sm text-muted-foreground leading-relaxed max-w-xl">
-              Admin mendaftarkan foto karyawan; saat check-in, backend memverifikasi template, lalu menerbitkan token Redis ber TTL pendek sebelum absensi dicatat.
+              Admin mendaftarkan foto karyawan. Setiap check-in wajah diverifikasi terlebih dahulu agar absensi hanya tercatat setelah wajah cocok dengan data terdaftar.
             </p>
           </div>
 
-          <!-- Interactive UI Simulation -->
           <div class="mt-6 rounded-2xl border border-border/70 bg-muted/40 p-4 sm:p-6">
             <div class="grid gap-4 sm:grid-cols-2 items-center">
               <div class="flex items-center gap-4 rounded-xl bg-card p-4 border border-border/60 shadow-sm">
@@ -61,15 +57,15 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
                   <span class="absolute -top-1 -right-1 size-3 rounded-full bg-foreground ring-2 ring-card" />
                 </div>
                 <div>
-                  <p class="text-xs font-bold text-foreground">Scan Wajah Berhasil</p>
+                  <p class="text-xs font-bold text-foreground">Scan wajah berhasil</p>
                   <p class="text-[11px] text-muted-foreground">Template cocok</p>
-                  <p class="text-[11px] text-foreground font-medium">Token verifikasi aktif</p>
+                  <p class="text-[11px] text-foreground font-medium">Verifikasi wajah berhasil</p>
                 </div>
               </div>
 
               <div class="space-y-2 text-xs">
                 <div class="flex items-center justify-between rounded-lg bg-card/60 px-3 py-2 border border-border/40">
-                  <span class="text-muted-foreground">TTL token</span>
+                  <span class="text-muted-foreground">Masa verifikasi</span>
                   <span class="font-semibold text-foreground">5 menit</span>
                 </div>
                 <div class="flex items-center justify-between rounded-lg bg-card/60 px-3 py-2 border border-border/40">
@@ -81,7 +77,6 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
           </div>
         </div>
 
-        <!-- Bento 2: Geofence GPS Presisi -->
         <div data-aos="fade-up" data-aos-delay="80" class="group relative flex flex-col justify-between overflow-hidden landing-card p-6 sm:p-8 md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
@@ -94,14 +89,13 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
             </div>
 
             <h3 class="mt-6 text-xl font-bold text-foreground">
-              Geofence Radius Presisi
+              Geofence radius presisi
             </h3>
             <p class="mt-2 text-sm text-muted-foreground leading-relaxed">
               Tentukan radius absensi di setiap kantor, pabrik, atau cabang toko. Karyawan hanya bisa clock-in saat berada di dalam perimeter.
             </p>
           </div>
 
-          <!-- Geofence Visual Widget -->
           <div class="mt-6 rounded-2xl border border-border/70 bg-muted/40 p-4">
             <div class="flex items-center justify-between text-xs font-medium pb-3 border-b border-border/50">
               <span class="text-foreground font-semibold">HQ Jakarta Barat</span>
@@ -112,14 +106,13 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
                 ✓
               </div>
               <div>
-                <p class="text-xs font-semibold text-foreground">Jarak: 28m dari Titik</p>
+                <p class="text-xs font-semibold text-foreground">Jarak: 28m dari titik</p>
                 <p class="text-[11px] text-muted-foreground">Absensi diizinkan</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Bento 3: Deteksi Anomaly & Anti-Fake GPS -->
         <div data-aos="fade-up" data-aos-delay="160" class="group relative flex flex-col justify-between overflow-hidden landing-card p-6 sm:p-8 md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
@@ -127,7 +120,7 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
                 <ShieldAlert class="size-6" />
               </span>
               <span class="rounded-full border border-border bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
-                Keamanan AI
+                Peringatan otomatis
               </span>
             </div>
 
@@ -135,27 +128,27 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
               Deteksi anomali absensi
             </h3>
             <p class="mt-2 text-sm text-muted-foreground leading-relaxed">
-              Scanner backend mendeteksi check-in ganda, keterlambatan berulang, pelanggaran geofence, absensi saat cuti, dan shift tanpa check-out.
+              Hadirin menandai pola yang perlu ditinjau, seperti check-in ganda, keterlambatan berulang, absensi di luar geofence,
+              kehadiran saat cuti disetujui, check-in di luar jam kerja, atau lokasi tidak sesuai area kerja.
             </p>
           </div>
 
           <div class="mt-6 space-y-2 rounded-2xl border border-border/70 bg-muted/40 p-3.5 text-xs">
             <div class="flex items-center justify-between rounded-lg bg-card px-3 py-2 border border-border/40">
-              <span class="text-muted-foreground">Mock GPS App</span>
-              <span class="font-semibold text-foreground">Terblokir</span>
+              <span class="text-muted-foreground">Di luar geofence</span>
+              <span class="font-semibold text-foreground">Peringatan</span>
             </div>
             <div class="flex items-center justify-between rounded-lg bg-card px-3 py-2 border border-border/40">
-              <span class="text-muted-foreground">Root / Jailbreak</span>
-              <span class="font-semibold text-foreground">Ditolak</span>
+              <span class="text-muted-foreground">Check-in ganda</span>
+              <span class="font-semibold text-foreground">Peringatan</span>
             </div>
             <div class="flex items-center justify-between rounded-lg bg-card px-3 py-2 border border-border/40">
-              <span class="text-muted-foreground">Integrity Check</span>
-              <span class="font-semibold text-foreground">100% Aman</span>
+              <span class="text-muted-foreground">Belum check-out</span>
+              <span class="font-semibold text-foreground">Peringatan</span>
             </div>
           </div>
         </div>
 
-        <!-- Bento 4: Cuti & Perizinan 1-Klik -->
         <div data-aos="fade-up" data-aos-delay="240" class="group relative flex flex-col justify-between overflow-hidden landing-card p-6 sm:p-8 md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
@@ -168,33 +161,24 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
             </div>
 
             <h3 class="mt-6 text-xl font-bold text-foreground">
-              Pengajuan Cuti & Lembur
+              Pengajuan cuti & persetujuan
             </h3>
             <p class="mt-2 text-sm text-muted-foreground leading-relaxed">
-              Karyawan ajukan cuti atau lembur dalam hitungan detik. Manajer menerima notifikasi dan menyetujui langsung dari smartphone.
+              Karyawan mengajukan cuti lewat aplikasi. Persetujuan bertingkat: admin lalu pemilik akun perusahaan, sesuai kebijakan Anda.
             </p>
           </div>
 
           <div class="mt-6 rounded-2xl border border-border/70 bg-muted/40 p-3.5 space-y-2">
             <div class="rounded-xl bg-card p-3 border border-border/50 shadow-sm">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-foreground">Cuti Tahunan (2 Hari)</span>
+                <span class="text-xs font-bold text-foreground">Cuti tahunan (2 hari)</span>
                 <span class="text-[10px] text-muted-foreground font-semibold bg-muted px-2 py-0.5 rounded">Menunggu</span>
               </div>
-              <p class="mt-1 text-[11px] text-muted-foreground">Rafi Pratama • Tim Backend</p>
-              <div class="mt-2.5 flex gap-2">
-                <button class="flex-1 rounded-md bg-foreground py-1 text-[11px] font-semibold text-background hover:bg-foreground/90 transition-colors">
-                  Setujui
-                </button>
-                <button class="rounded-md border border-border px-3 py-1 text-[11px] font-medium text-muted-foreground hover:bg-muted transition-colors">
-                  Tolak
-                </button>
-              </div>
+              <p class="mt-1 text-[11px] text-muted-foreground">Rafi Pratama · Operasional</p>
             </div>
           </div>
         </div>
 
-        <!-- Bento 5: Ekspor Payroll (Col Span 1 or 2) -->
         <div data-aos="fade-up" data-aos-delay="320" class="group relative flex flex-col justify-between overflow-hidden landing-card p-6 sm:p-8 md:col-span-1">
           <div>
             <div class="flex items-center justify-between">
@@ -202,30 +186,30 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
                 <FileSpreadsheet class="size-6" />
               </span>
               <span class="rounded-full border border-border bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
-                1-Klik Rekap
+                Unduh CSV
               </span>
             </div>
 
             <h3 class="mt-6 text-xl font-bold text-foreground">
-              Rekapitulasi Siap Payroll
+              Laporan mingguan (CSV)
             </h3>
             <p class="mt-2 text-sm text-muted-foreground leading-relaxed">
-              Ekspor rekapitulasi kehadiran, keterlambatan, dan lembur langsung ke format Excel, CSV, atau sinkronisasi otomatis ke software penggajian.
+              Buat laporan mingguan per perusahaan dan unduh CSV dari dashboard. Cocok untuk rekapitulasi kehadiran dan cuti tim.
             </p>
           </div>
 
           <div class="mt-6 rounded-2xl border border-border/70 bg-muted/40 p-4">
             <div class="flex items-center justify-between text-xs">
-              <span class="text-muted-foreground">Periode:</span>
-              <span class="font-semibold text-foreground">1 - 31 September</span>
+              <span class="text-muted-foreground">Format:</span>
+              <span class="font-semibold text-foreground">CSV (unduh)</span>
             </div>
             <div class="mt-3 flex items-center justify-between rounded-xl bg-card p-2.5 border border-border/60">
               <div class="flex items-center gap-2 text-xs">
                 <Download class="size-4 text-primary" />
-                <span class="font-medium text-foreground">rekap_kehadiran.xlsx</span>
+                <span class="font-medium text-foreground">laporan_mingguan.csv</span>
               </div>
               <span class="text-[10px] font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                Siap Unduh
+                Dari menu Laporan
               </span>
             </div>
           </div>

@@ -36,7 +36,7 @@ const steps: GuideStep[] = [
     label: 'Langkah 1',
     title: 'Baca ringkasan operasional dulu',
     description:
-      'Gunakan halaman ringkasan untuk melihat status kehadiran, anomali, dan ritme workspace sebelum mengambil keputusan berikutnya.',
+      'Gunakan halaman ringkasan untuk melihat status kehadiran, anomali, dan tren tim sebelum mengambil keputusan berikutnya.',
     actionLabel: 'Buka ringkasan',
     route: ROUTES.summary,
   },
@@ -45,17 +45,17 @@ const steps: GuideStep[] = [
     label: 'Langkah 2',
     title: 'Undang dan rapikan akses tim',
     description:
-      'Tambah anggota baru, cek role admin atau karyawan, lalu pastikan semua orang masuk ke workspace yang benar sejak awal.',
+      'Tambah anggota baru, atur peran admin atau karyawan, dan pastikan semua orang terdaftar di perusahaan yang benar.',
     actionLabel: 'Kelola anggota',
     route: ROUTES.workspace,
   },
   {
     id: 3,
     label: 'Langkah 3',
-    title: 'Aktifkan device QR dan aturan lokasi',
+    title: 'Aktifkan perangkat QR dan aturan lokasi',
     description:
-      'Sambungkan device QR, verifikasi heartbeat, lalu rapikan geofence agar flow scan di lapangan konsisten dan aman.',
-    actionLabel: 'Siapkan device QR',
+      'Daftarkan perangkat QR, atur geofence, dan pastikan absensi di lapangan berjalan konsisten.',
+    actionLabel: 'Siapkan perangkat QR',
     route: ROUTES.qrDevices,
   },
   {

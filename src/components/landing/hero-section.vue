@@ -16,46 +16,46 @@ import { Button } from '@/components/ui/button'
     <div class="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
       <ScrollReveal animation="fade-up" :duration="800">
         <div class="mx-auto max-w-4xl text-center">
-        <div class="mb-8 flex justify-center">
-          <Badge variant="outline" class="rounded-full border-border bg-card/80 px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur-sm">
-            Hadirin 2.0 - Face ID & Multi-Geofence
-          </Badge>
-        </div>
-
-        <h1 class="text-4xl font-bold tracking-tight sm:text-6xl lg:text-[4.25rem] lg:leading-[1.08] text-foreground">
-          Bikin Absen Karyawan Jadi
-          <span class="block sm:inline sm:ml-2 text-foreground/80">
-            Otomatis & Akurat
-          </span>
-        </h1>
-
-        <p class="mx-auto mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-          Tinggalkan mesin fingerprint lawas dan absensi manual yang rentan titip absen. Hadirin menghadirkan verifikasi wajah biometrik, geofence presisi, dan rekap otomatis dalam satu dashboard modern.
-        </p>
-
-        <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-          <Button size="lg" class="h-12 px-8 text-base font-semibold cursor-pointer" as-child>
-            <RouterLink to="/auth/sign-up">
-              <span>Buat Akun Gratis</span>
-              <ArrowRight class="ml-2 size-4" />
-            </RouterLink>
-          </Button>
-
-          <Button variant="outline" size="lg" class="h-12 px-8 text-base font-medium cursor-pointer" as-child>
-            <a href="#features">Pelajari Fitur</a>
-          </Button>
-        </div>
-
-        <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
-          <div class="flex items-center gap-2">
-            <CheckCircle2 class="size-4 text-foreground/70" />
-            <span>Face ID + token verifikasi Redis</span>
+          <div class="mb-8 flex justify-center">
+            <Badge variant="outline" class="rounded-full border-border bg-card/80 px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur-sm">
+              Presensi GPS, QR, Face ID & geofence
+            </Badge>
           </div>
-          <div class="flex items-center gap-2">
-            <ShieldCheck class="size-4 text-foreground/70" />
-            <span>Geofence & deteksi anomali</span>
+
+          <h1 class="text-4xl font-bold tracking-tight sm:text-6xl lg:text-[4.25rem] lg:leading-[1.08] text-foreground">
+            Bikin absen karyawan jadi
+            <span class="block sm:inline sm:ml-2 text-foreground/80">
+              otomatis & akurat
+            </span>
+          </h1>
+
+          <p class="mx-auto mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
+            Kelola check-in/out, geofence, cuti, shift, dan laporan mingguan CSV dari satu dashboard, dengan verifikasi wajah opsional dan peringatan anomali kehadiran.
+          </p>
+
+          <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+            <Button size="lg" class="h-12 px-8 text-base font-semibold cursor-pointer" as-child>
+              <RouterLink to="/auth/sign-up">
+                <span>Daftar Akun</span>
+                <ArrowRight class="ml-2 size-4" />
+              </RouterLink>
+            </Button>
+
+            <Button variant="outline" size="lg" class="h-12 px-8 text-base font-medium cursor-pointer" as-child>
+              <a href="#features">Pelajari Fitur</a>
+            </Button>
           </div>
-        </div>
+
+          <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
+            <div class="flex items-center gap-2">
+              <CheckCircle2 class="size-4 text-foreground/70" />
+              <span>Face ID dengan verifikasi wajah</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <ShieldCheck class="size-4 text-foreground/70" />
+              <span>Geofence & deteksi anomali</span>
+            </div>
+          </div>
         </div>
       </ScrollReveal>
 

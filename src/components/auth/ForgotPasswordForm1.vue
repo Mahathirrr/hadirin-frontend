@@ -62,7 +62,7 @@ async function onSubmit() {
       </CardHeader>
       <CardContent>
         <div v-if="!enabled" class="grid gap-4 text-sm text-muted-foreground">
-          <p>Reset password lewat email belum aktif di server. Hubungi admin workspace atau masuk dengan Google jika akun Anda terhubung.</p>
+          <p>Reset kata sandi lewat email belum tersedia. Hubungi admin perusahaan Anda atau masuk dengan Google jika akun terhubung.</p>
           <RouterLink :to="ROUTES.signIn" class="text-center underline underline-offset-4">
             Kembali ke masuk
           </RouterLink>

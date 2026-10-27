@@ -13,45 +13,39 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
 const useCases = [
   {
     icon: Building2,
-    title: 'Kantor & Startup Modern',
-    subtitle: 'WFO, WFH & Hybrid',
-    description: 'Validasi kehadiran fleksibel berdasarkan radius GPS kantor atau IP jaringan terdaftar untuk tim hybrid.',
-    stat: 'Efisiensi Waktu HR 85%',
+    title: 'Kantor & tim hybrid',
+    subtitle: 'WFO & remote',
+    description: 'Batasi absensi ke area kantor yang ditentukan. Karyawan check-in dari browser atau ponsel saat berada di lokasi kerja.',
   },
   {
     icon: Factory,
-    title: 'Pabrik & Manufaktur',
-    subtitle: 'Multi-Shift 24/7',
-    description: 'Atur pergantian shift pagi, siang, dan malam dengan toleransi keterlambatan dan rotasi regu kerja.',
-    stat: 'Kapasitas 1.000+ Operator',
+    title: 'Pabrik & manufaktur',
+    subtitle: 'Shift & roster',
+    description: 'Atur shift dan roster karyawan. Dapat peringatan otomatis untuk check-in di luar jam kerja atau lupa check-out.',
   },
   {
     icon: Store,
-    title: 'Retail & FnB Multi-Cabang',
-    subtitle: 'Outlet & Restoran',
-    description: 'Pantau kehadiran kasir, barista, dan staf toko di puluhan cabang secara terpusat dari satu dashboard owner.',
-    stat: 'Monitoring Real-time Cabang',
+    title: 'Retail multi-cabang',
+    subtitle: 'Banyak geofence',
+    description: 'Kelola banyak cabang dalam satu akun perusahaan dan pantau ringkasan kehadiran per lokasi dari dashboard.',
   },
   {
     icon: Truck,
-    title: 'Tim Lapangan & Logistik',
-    subtitle: 'Sales & Kurir Mobile',
-    description: 'Absensi clock-in langsung di lokasi klien atau rute pengantaran dengan verifikasi foto selfie dan titik GPS.',
-    stat: 'Pelacakan Rute Akurat',
+    title: 'Tim lapangan',
+    subtitle: 'GPS & lokasi',
+    description: 'Check-in dengan GPS, pantau lokasi tim di lapangan, dan verifikasi wajah jika diaktifkan oleh admin.',
   },
   {
     icon: GraduationCap,
-    title: 'Sekolah & Yayasan',
-    subtitle: 'Pendidik & Staf',
-    description: 'Rekap kehadiran guru, dosen, dan staf administrasi dengan integrasi laporan kehadiran bulanan.',
-    stat: 'Laporan Kehadiran Instan',
+    title: 'Sekolah & yayasan',
+    subtitle: 'Staf & pengajar',
+    description: 'Rekap kehadiran harian, cuti, dan unduhan laporan mingguan CSV untuk administrasi.',
   },
   {
     icon: HeartPulse,
-    title: 'Klinik & Layanan Kesehatan',
-    subtitle: 'Dokter & Tenaga Medis',
-    description: 'Manajemen jadwal shift jaga perawat dan dokter spesialis dengan kepatuhan jam kerja medis ketat.',
-    stat: 'Jadwal Jaga Terstruktur',
+    title: 'Klinik & layanan kesehatan',
+    subtitle: 'Shift jaga',
+    description: 'Kelola shift jaga, cuti, dan kepatuhan jam kerja dengan persetujuan cuti bertingkat dan riwayat perubahan.',
   },
 ]
 </script>
@@ -62,13 +56,13 @@ const useCases = [
       <ScrollReveal animation="fade-up">
         <div class="mx-auto max-w-3xl text-center">
           <Badge variant="outline" class="mb-4 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider">
-            Solusi Industri
+            Contoh pemakaian
           </Badge>
           <h2 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-foreground">
-            Dirancang untuk Ragam Ritme Kerja di Berbagai Industri
+            Satu platform, berbagai pola kerja
           </h2>
           <p class="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
-            Setiap sektor memiliki dinamika kerja yang unik. Hadirin menyesuaikan alur presensi dengan model bisnis Anda.
+            Satu aplikasi untuk berbagai pola kerja: kantor, shift pabrik, retail multi-cabang, hingga tim di lapangan.
           </p>
         </div>
       </ScrollReveal>
@@ -79,29 +73,23 @@ const useCases = [
           :key="item.title"
           data-aos="fade-up"
           :data-aos-delay="index * 70"
-          class="flex flex-col justify-between landing-card p-6 sm:p-8"
+          class="flex flex-col landing-card p-6 sm:p-8"
         >
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="flex size-12 items-center justify-center rounded-2xl border border-border bg-muted text-foreground">
-                <component :is="item.icon" class="size-6" />
-              </span>
-              <span class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-                {{ item.subtitle }}
-              </span>
-            </div>
-
-            <h3 class="mt-6 text-xl font-bold text-foreground tracking-tight">
-              {{ item.title }}
-            </h3>
-            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {{ item.description }}
-            </p>
+          <div class="flex items-center justify-between">
+            <span class="flex size-12 items-center justify-center rounded-2xl border border-border bg-muted text-foreground">
+              <component :is="item.icon" class="size-6" />
+            </span>
+            <span class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+              {{ item.subtitle }}
+            </span>
           </div>
 
-          <div class="mt-6 pt-4 border-t border-border/50 text-xs">
-            <span class="font-semibold text-foreground/90">{{ item.stat }}</span>
-          </div>
+          <h3 class="mt-6 text-xl font-bold text-foreground tracking-tight">
+            {{ item.title }}
+          </h3>
+          <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+            {{ item.description }}
+          </p>
         </div>
       </div>
     </div>

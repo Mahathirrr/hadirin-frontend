@@ -36,13 +36,13 @@ const data = {
       label: 'OPERASIONAL',
       items: [
         { title: 'Ringkasan', url: ROUTES.summary, icon: LayoutDashboard },
-        { title: 'Work Plans & Reports', url: ROUTES.workPlans, icon: ClipboardList },
+        { title: 'Rencana & laporan kerja', url: ROUTES.workPlans, icon: ClipboardList },
         { title: 'Laporan', url: ROUTES.reports, icon: FileText },
         { title: 'Pengajuan Cuti', url: ROUTES.leaveRequests, icon: ScrollText },
         { title: 'Monitoring Lokasi', url: ROUTES.locationMonitoring, icon: MapPin },
-        { title: 'Log audit', url: ROUTES.auditLogs, icon: ScrollText },
-        { title: 'Deteksi Anomaly', url: ROUTES.anomalyDetection, icon: Radar },
-        { title: 'Device QR', url: ROUTES.qrDevices, icon: QrCode },
+        { title: 'Riwayat aktivitas', url: ROUTES.auditLogs, icon: ScrollText },
+        { title: 'Deteksi anomali', url: ROUTES.anomalyDetection, icon: Radar },
+        { title: 'Perangkat QR', url: ROUTES.qrDevices, icon: QrCode },
         { title: 'Face ID', url: ROUTES.faceId, icon: ScanFace },
         { title: 'Karyawan', url: ROUTES.employees, icon: Users },
       ],
@@ -50,7 +50,7 @@ const data = {
     {
       label: 'PENGATURAN',
       items: [
-        { title: 'Workspace', url: ROUTES.workspace, icon: Settings },
+        { title: 'Perusahaan', url: ROUTES.workspace, icon: Settings },
         { title: 'Geofence', url: ROUTES.geofence, icon: MapPin },
         { title: 'Shift & Roster', url: ROUTES.shiftRoster, icon: CalendarRange },
       ],

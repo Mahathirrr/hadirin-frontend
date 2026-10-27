@@ -109,7 +109,7 @@ async function removeAssignment(id: number) {
     description="Kelola jam kerja shift dan penugasan karyawan per periode."
   >
     <div v-if="!isAdmin" class="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-      Hanya admin workspace yang dapat mengelola shift dan roster.
+      Hanya admin perusahaan yang dapat mengelola shift dan roster.
     </div>
 
     <div v-else class="grid gap-4 lg:grid-cols-2">

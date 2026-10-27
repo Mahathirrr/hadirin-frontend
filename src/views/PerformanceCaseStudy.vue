@@ -28,7 +28,7 @@ onMounted(async () => {
     before.value = b
     after.value = a
   } catch {
-    loadError.value = 'Data benchmark belum tersedia di /public/perf/.'
+    loadError.value = 'Data perbandingan kecepatan belum tersedia.'
   }
 })
 
@@ -53,10 +53,10 @@ const dashImprovement = computed(() => {
     <header class="border-b bg-card/40 px-4 py-6">
       <div class="mx-auto flex max-w-4xl flex-col gap-2">
         <RouterLink :to="ROUTES.landing" class="text-sm text-muted-foreground hover:underline">← Hadirin</RouterLink>
-        <h1 class="text-2xl font-semibold tracking-tight">Studi performa (engineering)</h1>
+        <h1 class="text-2xl font-semibold tracking-tight">Kecepatan & stabilitas</h1>
         <p class="text-muted-foreground text-sm max-w-2xl">
-          Pengukuran nyata di production — query sargable, index Postgres, cache Redis dashboard.
-          Detail lengkap di repo backend: <code class="text-xs">docs/PERFORMANCE.md</code>.
+          Ringkasan hasil pengukuran waktu muat halaman ringkasan dan daftar absensi setelah penyesuaian produk.
+          Angka di bawah membantu tim admin merasakan respons aplikasi saat dipakai sehari-hari.
         </p>
       </div>
     </header>
@@ -66,8 +66,8 @@ const dashImprovement = computed(() => {
 
       <Card v-if="dashImprovement != null">
         <CardHeader>
-          <CardTitle>Dashboard summary (warm p50)</CardTitle>
-          <CardDescription>Request berulang setelah warmup — pola buka halaman ringkasan</CardDescription>
+          <CardTitle>Halaman ringkasan</CardTitle>
+          <CardDescription>Waktu muat rata-rata setelah beberapa kali dibuka (pola pemakaian harian)</CardDescription>
         </CardHeader>
         <CardContent class="space-y-4">
           <div class="flex flex-wrap items-end gap-6">
@@ -84,7 +84,7 @@ const dashImprovement = computed(() => {
           </div>
           <img
             src="/perf/hadirin-performance-diagram.svg"
-            alt="Diagram alur optimasi Hadirin"
+            alt="Ilustrasi alur peningkatan kecepatan Hadirin"
             class="w-full rounded-lg border bg-white p-2 dark:invert dark:brightness-90"
             width="920"
             height="420"
@@ -94,19 +94,18 @@ const dashImprovement = computed(() => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Urutan keputusan</CardTitle>
+          <CardTitle>Yang kami prioritaskan</CardTitle>
         </CardHeader>
         <CardContent class="space-y-3 text-sm text-muted-foreground">
-          <p><strong class="text-foreground">1. Query sargable</strong> — hindari <code>DATE(created_at)</code> agar index terpakai.</p>
-          <p><strong class="text-foreground">2. Index komposit</strong> — filter multi-tenant <code>workspace_id</code> + waktu/status.</p>
-          <p><strong class="text-foreground">3. Cache Redis</strong> — dashboard banyak agregat; TTL 45s (trade-off freshness vs latensi).</p>
-          <p><strong class="text-foreground">Frontend</strong> — code splitting route, lazy images, memo chart (LCP landing).</p>
+          <p><strong class="text-foreground">Respons dashboard:</strong> ringkasan kehadiran terasa lebih cepat saat dibuka berulang.</p>
+          <p><strong class="text-foreground">Daftar absensi:</strong> pencarian dan scroll harian lebih ringan.</p>
+          <p><strong class="text-foreground">Pengalaman landing:</strong> halaman utama tetap ringan saat pertama kali dibuka.</p>
         </CardContent>
       </Card>
 
       <Card v-if="before && after">
         <CardHeader>
-          <CardTitle>Attendance list (warm p50)</CardTitle>
+          <CardTitle>Daftar absensi harian</CardTitle>
         </CardHeader>
         <CardContent class="flex gap-8 text-sm">
           <span>Sebelum: <strong class="tabular-nums">{{ findAtt(before)?.warm_excluding_first.p50_ms }} ms</strong></span>

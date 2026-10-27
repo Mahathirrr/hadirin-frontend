@@ -59,7 +59,7 @@ async function simulate() {
   <div class="mx-auto flex max-w-lg flex-col gap-4 p-6">
     <Card>
       <CardHeader>
-        <CardTitle>Checkout langganan</CardTitle>
+        <CardTitle>Pembayaran langganan</CardTitle>
       </CardHeader>
       <CardContent class="flex flex-col gap-4">
         <p v-if="sandbox" class="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
@@ -68,9 +68,9 @@ async function simulate() {
         <p v-if="loading" class="text-muted-foreground text-sm">Menyiapkan invoice…</p>
         <template v-else-if="order">
           <p class="text-sm">Total: <strong>Rp {{ order.order.amount_idr.toLocaleString('id-ID') }}</strong></p>
-          <Button class="w-full cursor-pointer" @click="pay">Bayar di Mayar</Button>
+          <Button class="w-full cursor-pointer" @click="pay">Lanjut ke pembayaran</Button>
           <Button v-if="sandbox" variant="outline" class="w-full cursor-pointer" @click="simulate">
-            Selesaikan uji (sandbox)
+            Selesaikan pembayaran uji coba
           </Button>
         </template>
       </CardContent>

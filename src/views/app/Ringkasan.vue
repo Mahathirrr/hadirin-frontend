@@ -104,7 +104,7 @@ const toneDot: Record<string, string> = {
 <template>
   <PageShell
     title="Ringkasan Operasional"
-    :description="`Ringkasan kehadiran dan aktivitas workspace ${auth.workspaceName}.`"
+    :description="`Ringkasan kehadiran dan aktivitas ${auth.workspaceName}.`"
   >
     <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard

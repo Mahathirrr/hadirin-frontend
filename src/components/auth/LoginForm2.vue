@@ -55,7 +55,7 @@ async function onSubmit() {
 
 function loginWithGoogle() {
   if (!googleEnabled.value) {
-    toast.error('Google OAuth belum dikonfigurasi di server')
+    toast.error('Masuk dengan Google belum tersedia. Gunakan email dan kata sandi.')
     return
   }
   window.location.href = api.googleAuthStartUrl()
@@ -75,7 +75,7 @@ function loginWithGoogle() {
     <div class="flex flex-col items-center gap-2 text-center">
       <h1 class="text-2xl font-bold">Masuk ke akun Hadirin</h1>
       <p class="text-muted-foreground text-sm text-balance">
-        Gunakan email dan password workspace Anda untuk mengakses dashboard presensi.
+        Masuk dengan email dan kata sandi untuk mengakses dashboard presensi.
       </p>
     </div>
 

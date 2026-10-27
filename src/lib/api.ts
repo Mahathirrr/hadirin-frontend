@@ -169,6 +169,8 @@ export type SubscriptionPlan = {
   price_idr: number
   duration_days: number
   max_employees: number
+  features?: string[] | unknown
+  sort_order?: number
   is_active: boolean
 }
 

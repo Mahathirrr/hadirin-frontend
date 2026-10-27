@@ -34,7 +34,7 @@ const highlight = computed(() => catalog.value?.highlight)
 const highlightVerificationLabel = computed(() => {
   const h = highlight.value
   if (!h) return ''
-  if (h.face_verified) return 'Face ID terverifikasi (token sesi)'
+  if (h.face_verified) return 'Face ID terverifikasi'
   if (h.check_in_method === 'qr') return 'Check-in via QR device'
   if (h.check_in_method === 'face') return 'Check-in metode wajah'
   if (h.check_in_method) return `Check-in: ${h.check_in_method}`
@@ -168,7 +168,7 @@ const nowLabel = computed(() => {
               <UserCheck class="size-4 text-foreground" />
               <span class="text-xs sm:text-sm font-semibold text-foreground">Log Presensi Hari Ini</span>
             </div>
-            <span class="text-[11px] text-muted-foreground">Data langsung dari workspace showcase</span>
+            <span class="text-[11px] text-muted-foreground">Diperbarui otomatis</span>
           </div>
 
           <div v-if="loading" class="p-6 text-center text-sm text-muted-foreground">
