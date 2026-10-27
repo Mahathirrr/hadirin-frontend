@@ -12,6 +12,7 @@ import {
 
 import PersonAvatar from '@/components/app/person-avatar.vue'
 import { api, type PublicCatalog } from '@/lib/api'
+import { timezoneAbbrev } from '@/lib/timezone'
 import { personAvatarUrl } from '@/lib/user-avatar'
 
 const catalog = ref<PublicCatalog | null>(null)
@@ -42,14 +43,19 @@ const highlightVerificationLabel = computed(() => {
 })
 
 const attendanceRate = computed(() => {
-  const rate = stats.value?.attendance_rate ?? 0
+  const rate = Math.min(100, stats.value?.attendance_rate ?? 0)
   return `${rate.toFixed(1)}%`
 })
 
 const presentSummary = computed(() => {
-  const present = (stats.value?.today_present ?? 0) + (stats.value?.today_late ?? 0)
+  const attended =
+    stats.value?.today_attended ??
+    Math.min(
+      stats.value?.active_employees ?? 0,
+      (stats.value?.today_present ?? 0) + (stats.value?.today_late ?? 0),
+    )
   const total = stats.value?.active_employees ?? 0
-  return `${present} dari ${total} karyawan hadir`
+  return `${attended} dari ${total} karyawan hadir`
 })
 
 const onTimeSummary = computed(() => {
@@ -71,13 +77,31 @@ const faceSummary = computed(() => {
   return `${enrolled} dari ${total} karyawan terdaftar`
 })
 
+const previewTimezone = computed(
+  () => stats.value?.timezone ?? 'Asia/Jakarta',
+)
+
 const nowLabel = computed(() => {
-  return new Intl.DateTimeFormat('id-ID', {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Asia/Jakarta',
+  const tz = previewTimezone.value
+  const parts = new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
     hour12: false,
-  }).format(new Date()) + ' WIB • Shift Pagi'
+    timeZone: tz,
+  }).formatToParts(new Date())
+  const hour = Number(parts.find((p) => p.type === 'hour')?.value ?? '0')
+  const clock =
+    new Intl.DateTimeFormat('id-ID', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: tz,
+    }).format(new Date()) + ` ${timezoneAbbrev(tz)}`
+
+  let shift = 'Shift Siang'
+  if (hour >= 5 && hour < 12) shift = 'Shift Pagi'
+  else if (hour >= 16 || hour < 5) shift = 'Di luar jam masuk'
+
+  return `${clock} · ${shift}`
 })
 </script>
 
@@ -209,8 +233,8 @@ const nowLabel = computed(() => {
                   :class="[
                     'rounded-full px-2.5 py-0.5 text-[11px] font-semibold border',
                     item.on_time
-                      ? 'bg-muted text-foreground border-border'
-                      : 'bg-muted text-muted-foreground border-border',
+                      ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200'
+                      : 'border-amber-500/35 bg-amber-500/10 text-amber-900 dark:text-amber-100',
                   ]"
                 >
                   {{ item.status }}

@@ -18,6 +18,8 @@ const router = createRouter({
       name: 'engineering-performance',
       component: () => import('@/views/PerformanceCaseStudy.vue'),
     },
+    { path: ROUTES.terms, name: 'terms', component: () => import('@/views/legal/SyaratLayananPage.vue') },
+    { path: ROUTES.privacy, name: 'privacy', component: () => import('@/views/legal/KebijakanPrivasiPage.vue') },
     { path: ROUTES.signIn, name: 'sign-in', component: () => import('@/views/auth/SignIn.vue'), meta: { guest: true } },
     { path: ROUTES.signUp, name: 'sign-up', component: () => import('@/views/auth/SignUp.vue'), meta: { guest: true } },
     { path: ROUTES.forgotPassword, name: 'forgot-password', component: () => import('@/views/auth/ForgotPassword.vue'), meta: { guest: true } },

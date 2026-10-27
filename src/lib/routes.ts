@@ -25,6 +25,8 @@ export const ROUTES = {
   billingHistory: '/billing/history',
   billingAdmin: '/billing/admin',
   engineeringPerformance: '/engineering/performance',
+  terms: '/legal/syarat-layanan',
+  privacy: '/legal/kebijakan-privasi',
 } as const
 
 export type RouteName =

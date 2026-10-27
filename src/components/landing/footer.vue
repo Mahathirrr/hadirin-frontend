@@ -4,11 +4,19 @@ import { RouterLink } from 'vue-router'
 
 import Logo from '@/components/logo.vue'
 import { Button } from '@/components/ui/button'
+import { scrollToAnchor } from '@/composables/useLandingScroll'
+import { ROUTES } from '@/lib/routes'
+
+function onAnchorClick(e: MouseEvent, href: string) {
+  if (!href.startsWith('#')) return
+  e.preventDefault()
+  scrollToAnchor(href)
+}
 
 interface FooterLink {
   name: string
   href: string
-  external?: boolean
+  route?: boolean
 }
 
 const navigasi: FooterLink[] = [
@@ -19,13 +27,18 @@ const navigasi: FooterLink[] = [
 ]
 
 const produk: FooterLink[] = [
-  { name: 'Masuk ke aplikasi', href: '/auth/sign-in' },
+  { name: 'Masuk ke aplikasi', href: ROUTES.signIn, route: true },
   { name: 'Lihat harga', href: '#pricing' },
 ]
 
 const akun: FooterLink[] = [
-  { name: 'Daftar akun', href: '/auth/sign-up' },
-  { name: 'Lupa password', href: '/auth/forgot-password' },
+  { name: 'Daftar akun', href: ROUTES.signUp, route: true },
+  { name: 'Lupa password', href: ROUTES.forgotPassword, route: true },
+]
+
+const legal: FooterLink[] = [
+  { name: 'Syarat Layanan', href: ROUTES.terms, route: true },
+  { name: 'Kebijakan Privasi', href: ROUTES.privacy, route: true },
 ]
 
 const capabilities = ['GPS & QR absensi', 'Geofence', 'Face ID', 'Laporan CSV', 'Langganan']
@@ -67,7 +80,7 @@ const capabilities = ['GPS & QR absensi', 'Geofence', 'Face ID', 'Laporan CSV', 
           </Button>
         </div>
 
-        <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7 lg:pl-8">
+        <div class="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-7 lg:pl-8">
           <div class="space-y-4">
             <h4 class="text-xs font-semibold uppercase tracking-wider text-foreground">
               Navigasi
@@ -77,6 +90,7 @@ const capabilities = ['GPS & QR absensi', 'Geofence', 'Face ID', 'Laporan CSV', 
                 <a
                   :href="link.href"
                   class="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+                  @click="onAnchorClick($event, link.href)"
                 >
                   {{ link.name }}
                 </a>
@@ -90,9 +104,28 @@ const capabilities = ['GPS & QR absensi', 'Geofence', 'Face ID', 'Laporan CSV', 
             </h4>
             <ul class="space-y-2.5">
               <li v-for="link in produk" :key="link.name">
+                <component
+                  :is="link.route ? RouterLink : 'a'"
+                  :to="link.route ? link.href : undefined"
+                  :href="link.route ? undefined : link.href"
+                  class="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+                  @click="!link.route && onAnchorClick($event, link.href)"
+                >
+                  {{ link.name }}
+                </component>
+              </li>
+            </ul>
+          </div>
+
+          <div class="space-y-4">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-foreground">
+              Akun
+            </h4>
+            <ul class="space-y-2.5">
+              <li v-for="link in akun" :key="link.name">
                 <RouterLink
                   :to="link.href"
-                  class="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+                  class="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
                 >
                   {{ link.name }}
                 </RouterLink>
@@ -100,12 +133,12 @@ const capabilities = ['GPS & QR absensi', 'Geofence', 'Face ID', 'Laporan CSV', 
             </ul>
           </div>
 
-          <div class="space-y-4 col-span-2 sm:col-span-1">
+          <div class="space-y-4">
             <h4 class="text-xs font-semibold uppercase tracking-wider text-foreground">
-              Akun
+              Legal
             </h4>
             <ul class="space-y-2.5">
-              <li v-for="link in akun" :key="link.name">
+              <li v-for="link in legal" :key="link.name">
                 <RouterLink
                   :to="link.href"
                   class="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
@@ -122,9 +155,14 @@ const capabilities = ['GPS & QR absensi', 'Geofence', 'Face ID', 'Laporan CSV', 
         <p class="text-xs text-muted-foreground">
           © {{ new Date().getFullYear() }} Hadirin. Seluruh hak cipta dilindungi.
         </p>
-        <p class="text-xs text-muted-foreground/90">
-          Layanan presensi untuk perusahaan di Indonesia.
-        </p>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+          <RouterLink :to="ROUTES.terms" class="text-muted-foreground hover:text-foreground hover:underline">
+            Syarat Layanan
+          </RouterLink>
+          <RouterLink :to="ROUTES.privacy" class="text-muted-foreground hover:text-foreground hover:underline">
+            Kebijakan Privasi
+          </RouterLink>
+        </div>
       </div>
     </div>
   </footer>

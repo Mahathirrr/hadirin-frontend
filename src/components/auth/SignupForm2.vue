@@ -113,9 +113,13 @@ async function onSubmit() {
         <Checkbox id="terms" required class="mt-0.5" />
         <Label for="terms" class="text-sm font-normal leading-snug text-muted-foreground">
           Saya setuju
-          <a href="#" class="text-foreground underline underline-offset-4 hover:text-primary">Syarat Layanan</a>
+          <RouterLink :to="ROUTES.terms" target="_blank" class="text-foreground underline underline-offset-4 hover:text-primary">
+            Syarat Layanan
+          </RouterLink>
           dan
-          <a href="#" class="text-foreground underline underline-offset-4 hover:text-primary">Kebijakan Privasi</a>.
+          <RouterLink :to="ROUTES.privacy" target="_blank" class="text-foreground underline underline-offset-4 hover:text-primary">
+            Kebijakan Privasi
+          </RouterLink>.
         </Label>
       </div>
       <Button type="submit" class="w-full cursor-pointer" :disabled="auth.loading">

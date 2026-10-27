@@ -12,6 +12,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { api, type DashboardSummary, type Workspace, type WorkspaceMember } from '@/lib/api'
+import { INDONESIA_WORKSPACE_TIMEZONES, timezoneAbbrev } from '@/lib/timezone'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -31,6 +33,7 @@ const workStart = ref('08:00')
 const workEnd = ref('17:00')
 const lateThreshold = ref(15)
 const settingsInterval = ref(20)
+const timezone = ref('Asia/Jakarta')
 
 const isAdmin = computed(() =>
   auth.activeMembership?.role === 'owner' || auth.activeMembership?.role === 'admin',
@@ -72,6 +75,7 @@ async function loadAll() {
     workEnd.value = settingsRes.data.work_end_time ?? '17:00'
     lateThreshold.value = settingsRes.data.late_threshold_minutes ?? 15
     settingsInterval.value = settingsRes.data.location_interval_minutes ?? 20
+    timezone.value = settingsRes.data.timezone ?? 'Asia/Jakarta'
     if (invite.invite_code) inviteCode.value = invite.invite_code
   } catch (e) {
     toast.error(e instanceof Error ? e.message : 'Gagal memuat workspace')
@@ -119,6 +123,7 @@ async function saveSchedule() {
   savingSchedule.value = true
   try {
     await api.updateWorkspaceSettings(auth.token, auth.workspaceId, {
+      timezone: timezone.value,
       work_start_time: workStart.value,
       work_end_time: workEnd.value,
       late_threshold_minutes: lateThreshold.value,
@@ -232,13 +237,24 @@ async function deleteWorkspace() {
           </Button>
         </CardHeader>
         <CardContent class="space-y-3">
-          <div v-if="isAdmin" class="grid gap-3 sm:grid-cols-3">
+          <div v-if="isAdmin" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="grid gap-1.5 sm:col-span-2">
+              <Label>Zona waktu</Label>
+              <Select v-model="timezone">
+                <SelectTrigger><SelectValue placeholder="Zona waktu" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="z in INDONESIA_WORKSPACE_TIMEZONES" :key="z.value" :value="z.value">
+                    {{ z.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <div class="grid gap-1.5">
-              <Label for="work-start">Jam masuk</Label>
+              <Label for="work-start">Jam masuk ({{ timezoneAbbrev(timezone) }})</Label>
               <Input id="work-start" v-model="workStart" type="time" />
             </div>
             <div class="grid gap-1.5">
-              <Label for="work-end">Jam pulang</Label>
+              <Label for="work-end">Jam pulang ({{ timezoneAbbrev(timezone) }})</Label>
               <Input id="work-end" v-model="workEnd" type="time" />
             </div>
             <div class="grid gap-1.5">

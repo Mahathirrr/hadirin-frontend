@@ -17,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useWorkspaceLoader } from '@/composables/useWorkspaceData'
 import { searchAddress } from '@/lib/geocode'
 import { api, type IPWhitelistEntry } from '@/lib/api'
+import { INDONESIA_WORKSPACE_TIMEZONES } from '@/lib/timezone'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -265,15 +266,19 @@ async function saveSettings() {
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="grid gap-1.5">
-              <Label>Timezone</Label>
+              <Label>Zona waktu perusahaan</Label>
               <Select v-model="timezone" :disabled="!isAdmin" @update:model-value="markDirty">
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder="Pilih zona waktu" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Asia/Jakarta">Asia/Jakarta</SelectItem>
-                  <SelectItem value="Asia/Makassar">Asia/Makassar</SelectItem>
-                  <SelectItem value="Asia/Jayapura">Asia/Jayapura</SelectItem>
+                  <SelectItem v-for="z in INDONESIA_WORKSPACE_TIMEZONES" :key="z.value" :value="z.value">
+                    {{ z.label }}
+                  </SelectItem>
                 </SelectContent>
               </Select>
+              <p class="text-[11px] leading-snug text-muted-foreground">
+                Menentukan batas hari absensi, jam masuk/pulang, dan label laporan (WIB/WITA/WIT). Waktu check-in
+                karyawan dicatat dari server, bukan jam HP.
+              </p>
             </div>
             <div class="grid gap-3 sm:grid-cols-2">
               <div class="grid gap-1.5">

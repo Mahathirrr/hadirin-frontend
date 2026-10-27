@@ -2,6 +2,7 @@
 import { RouterLink } from 'vue-router'
 
 import Logo from '@/components/logo.vue'
+import { ROUTES } from '@/lib/routes'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -57,13 +58,13 @@ import { Label } from '@/components/ui/label'
               <Checkbox id="terms" required />
               <Label for="terms" class="text-sm">
                 I agree to the 
-                <a href="#" class="underline underline-offset-4 hover:text-primary">
-                  Terms of Service
-                </a> 
-                and 
-                <a href="#" class="underline underline-offset-4 hover:text-primary">
-                  Privacy Policy
-                </a>
+                <RouterLink :to="ROUTES.terms" target="_blank" class="underline underline-offset-4 hover:text-primary">
+                  Syarat Layanan
+                </RouterLink>
+                dan
+                <RouterLink :to="ROUTES.privacy" target="_blank" class="underline underline-offset-4 hover:text-primary">
+                  Kebijakan Privasi
+                </RouterLink>
               </Label>
             </div>
             <Button type="submit" class="w-full cursor-pointer">
@@ -123,8 +124,10 @@ import { Label } from '@/components/ui/label'
       </CardContent>
     </Card>
     <div class="text-muted-foreground text-center text-xs text-balance">
-      By clicking continue, you agree to our <a href="#">Terms of Service</a> 
-      and <a href="#">Privacy Policy</a>.
+      Dengan melanjutkan, Anda setuju dengan
+      <RouterLink :to="ROUTES.terms" class="underline underline-offset-4 hover:text-primary">Syarat Layanan</RouterLink>
+      dan
+      <RouterLink :to="ROUTES.privacy" class="underline underline-offset-4 hover:text-primary">Kebijakan Privasi</RouterLink>.
     </div>
   </div>
 </template>

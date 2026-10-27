@@ -13,7 +13,11 @@ export function scrollToAnchor(targetId: string, offset = -76) {
   if (!element) return
 
   if (lenisInstance) {
-    lenisInstance.scrollTo(element as HTMLElement, { offset, duration: 1.35 })
+    lenisInstance.scrollTo(element as HTMLElement, {
+      offset,
+      duration: 0.75,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
+    })
     return
   }
 
@@ -27,11 +31,13 @@ export function useLandingScroll() {
       return
     }
 
+    // Wheel smoothness pakai lerp (bukan duration). duration di constructor membuat scroll terasa lambat.
     lenisInstance = new Lenis({
-      duration: 1.15,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      lerp: 0.12,
       smoothWheel: true,
-      wheelMultiplier: 0.9,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.05,
+      infinite: false,
     })
 
     const raf = (time: number) => {

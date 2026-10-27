@@ -198,19 +198,23 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
             </p>
           </div>
 
-          <div class="mt-6 rounded-2xl border border-border/70 bg-muted/40 p-4">
+          <div class="mt-6 space-y-2 rounded-2xl border border-border/70 bg-muted/40 p-4">
             <div class="flex items-center justify-between text-xs">
-              <span class="text-muted-foreground">Format:</span>
-              <span class="font-semibold text-foreground">CSV (unduh)</span>
+              <span class="text-muted-foreground">Format ekspor</span>
+              <span class="font-semibold text-foreground">CSV</span>
             </div>
-            <div class="mt-3 flex items-center justify-between rounded-xl bg-card p-2.5 border border-border/60">
-              <div class="flex items-center gap-2 text-xs">
-                <Download class="size-4 text-primary" />
-                <span class="font-medium text-foreground">laporan_mingguan.csv</span>
+            <div class="rounded-xl border border-border/60 bg-card p-3 shadow-sm">
+              <div class="flex items-start gap-3">
+                <span class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Download class="size-4" />
+                </span>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-semibold text-foreground">laporan_mingguan.csv</p>
+                  <p class="mt-0.5 text-[11px] leading-snug text-muted-foreground">
+                    Dashboard → Laporan → pilih minggu → unduh
+                  </p>
+                </div>
               </div>
-              <span class="text-[10px] font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                Dari menu Laporan
-              </span>
             </div>
           </div>
         </div>

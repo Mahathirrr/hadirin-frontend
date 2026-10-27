@@ -109,10 +109,13 @@ export type PublicCatalog = {
     today_present: number
     today_late: number
     attendance_rate: number
+    today_attended?: number
     on_time_rate: number
     active_geofences: number
     face_enrolled: number
     open_anomalies: number
+    timezone?: string
+    timezone_abbrev?: string
   }
   recent_attendance: PublicCatalogAttendance[]
   highlight?: {
