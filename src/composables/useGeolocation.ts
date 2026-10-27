@@ -24,7 +24,7 @@ export function getCurrentPosition(options?: { timeoutMs?: number; maximumAgeMs?
       (err) => {
         const msg =
           err.code === err.PERMISSION_DENIED
-            ? 'Izin lokasi ditolak. Geofence aktif — izinkan lokasi untuk check-in.'
+            ? 'Izin lokasi ditolak. Geofence aktif - izinkan lokasi untuk check-in.'
             : err.code === err.TIMEOUT
               ? 'GPS timeout. Coba lagi di area terbuka.'
               : 'Gagal membaca lokasi GPS.'

@@ -10,7 +10,9 @@ import {
   UserCheck,
 } from 'lucide-vue-next'
 
+import PersonAvatar from '@/components/app/person-avatar.vue'
 import { api, type PublicCatalog } from '@/lib/api'
+import { personAvatarUrl } from '@/lib/user-avatar'
 
 const catalog = ref<PublicCatalog | null>(null)
 const loading = ref(true)
@@ -112,7 +114,7 @@ const nowLabel = computed(() => {
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold tracking-tight">{{ loading ? '—' : attendanceRate }}</span>
+              <span class="text-2xl font-bold tracking-tight">{{ loading ? '…' : attendanceRate }}</span>
             </div>
             <p class="mt-1 text-[11px] text-muted-foreground">{{ loading ? 'Memuat data…' : presentSummary }}</p>
           </div>
@@ -125,7 +127,7 @@ const nowLabel = computed(() => {
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold tracking-tight">{{ loading ? '—' : (stats?.today_present ?? 0) }}</span>
+              <span class="text-2xl font-bold tracking-tight">{{ loading ? '…' : (stats?.today_present ?? 0) }}</span>
               <span class="text-[11px] font-medium text-muted-foreground">Org hadir tepat waktu</span>
             </div>
             <p class="mt-1 text-[11px] text-muted-foreground">{{ loading ? 'Memuat data…' : onTimeSummary }}</p>
@@ -139,7 +141,7 @@ const nowLabel = computed(() => {
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold tracking-tight">{{ loading ? '—' : (stats?.face_enrolled ?? 0) }}</span>
+              <span class="text-2xl font-bold tracking-tight">{{ loading ? '…' : (stats?.face_enrolled ?? 0) }}</span>
               <span class="text-[11px] font-medium text-muted-foreground">Terdaftar</span>
             </div>
             <p class="mt-1 text-[11px] text-muted-foreground">{{ loading ? 'Memuat data…' : faceSummary }}</p>
@@ -153,7 +155,7 @@ const nowLabel = computed(() => {
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold tracking-tight">{{ loading ? '—' : (stats?.active_geofences ?? 0) }}</span>
+              <span class="text-2xl font-bold tracking-tight">{{ loading ? '…' : (stats?.active_geofences ?? 0) }}</span>
               <span class="text-[11px] font-medium text-muted-foreground">Titik</span>
             </div>
             <p class="mt-1 text-[11px] text-muted-foreground">{{ loading ? 'Memuat data…' : geofenceSummary }}</p>
@@ -182,9 +184,7 @@ const nowLabel = computed(() => {
               class="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3"
             >
               <div class="flex items-center gap-3">
-                <div class="flex size-9 items-center justify-center rounded-full bg-muted font-bold text-xs text-foreground shrink-0">
-                  {{ item.initials }}
-                </div>
+                <PersonAvatar :name="item.name" :seed="item.name" class="size-9 shrink-0" />
                 <div>
                   <div class="flex items-center gap-2">
                     <p class="text-xs sm:text-sm font-semibold text-foreground">{{ item.name }}</p>
@@ -235,10 +235,15 @@ const nowLabel = computed(() => {
       </div>
 
       <div class="mt-3 flex items-center gap-3">
-        <div class="relative size-12 rounded-full border-2 border-border bg-muted">
-          <div class="flex size-full items-center justify-center rounded-full font-bold text-sm text-foreground">
-            {{ highlight.name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase() }}
-          </div>
+        <div class="relative size-12 shrink-0">
+          <img
+            :src="personAvatarUrl(highlight.name, highlight.name)"
+            :alt="highlight.name"
+            class="size-12 rounded-full border-2 border-border object-cover bg-muted"
+            width="48"
+            height="48"
+            loading="lazy"
+          />
           <span class="absolute bottom-0 right-0 grid size-4 place-items-center rounded-full bg-foreground text-background ring-2 ring-card">
             <CheckCircle2 class="size-3" />
           </span>

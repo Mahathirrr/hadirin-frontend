@@ -90,7 +90,7 @@ const scanSuccess = computed(() =>
 )
 
 function formatTime(value: unknown) {
-  if (!value) return '—'
+  if (!value) return '-'
   const s = String(value)
   if (s.includes('T')) return s.slice(11, 16)
   return s.slice(0, 5)
@@ -155,12 +155,12 @@ function weeklyStatusLabel(status: unknown) {
 function formatWeekRange(start: unknown, end: unknown) {
   const s = String(start ?? '').slice(0, 10)
   const e = String(end ?? '').slice(0, 10)
-  if (!s || !e) return '—'
+  if (!s || !e) return '-'
   return `${s} s/d ${e}`
 }
 
 function formatGeneratedAt(value: unknown) {
-  if (!value) return '—'
+  if (!value) return '-'
   const s = String(value)
   return s.slice(0, 16).replace('T', ' ')
 }
@@ -307,7 +307,7 @@ const dataCondition = computed(() => {
               <TableRow v-for="(ev, i) in scanEvents" :key="i">
                 <TableCell class="tabular-nums">{{ String(ev.created_at).slice(11, 19) }}</TableCell>
                 <TableCell>{{ ev.action }}</TableCell>
-                <TableCell class="text-muted-foreground">{{ ev.details || '—' }}</TableCell>
+                <TableCell class="text-muted-foreground">{{ ev.details || '-' }}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

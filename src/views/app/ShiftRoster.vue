@@ -155,7 +155,7 @@ async function removeAssignment(id: number) {
             <TableBody>
               <TableRow v-for="s in shifts ?? []" :key="String(s.id)">
                 <TableCell>{{ s.name }}</TableCell>
-                <TableCell>{{ s.start_time }} – {{ s.end_time }}</TableCell>
+                <TableCell>{{ s.start_time }} - {{ s.end_time }}</TableCell>
                 <TableCell>
                   <Button variant="ghost" size="icon" class="size-8" @click="removeShift(Number(s.id))">
                     <Trash2 class="size-4 text-destructive" />

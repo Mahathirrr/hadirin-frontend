@@ -37,7 +37,7 @@ export function buildAttendanceBody(
     body.face_verification_token = opts.faceToken
   }
   if (settings.geofence_enabled && (body.latitude == null || body.longitude == null)) {
-    throw new Error('Geofence aktif — lokasi GPS wajib untuk check-in.')
+    throw new Error('Geofence aktif - lokasi GPS wajib untuk check-in.')
   }
   return body
 }

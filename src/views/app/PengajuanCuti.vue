@@ -38,7 +38,7 @@ const form = ref({
 const alphaForm = ref({
   employee_id: '',
   date: new Date().toISOString().slice(0, 10),
-  reason: 'Alfa — tidak hadir tanpa keterangan',
+  reason: 'Alfa - tidak hadir tanpa keterangan',
 })
 
 const isAdmin = isManager
@@ -156,7 +156,7 @@ async function submitAlpha() {
 
 function approvalSummary(row: Record<string, unknown>) {
   const steps = row.approval_steps as Array<{ step_order: number; required_role: string; status: string }> | undefined
-  if (!steps?.length) return '—'
+  if (!steps?.length) return '-'
   return steps.map((s) => `${s.required_role}:${s.status}`).join(' → ')
 }
 
@@ -231,7 +231,7 @@ async function review(id: number, status: 'approved' | 'rejected') {
         </div>
         <p v-else class="sm:col-span-2 text-sm text-muted-foreground">
           Mengajukan sebagai:
-          <span class="font-medium text-foreground">{{ selectableEmployees[0]?.name ?? '—' }}</span>
+          <span class="font-medium text-foreground">{{ selectableEmployees[0]?.name ?? '-' }}</span>
         </p>
         <div class="grid gap-1.5">
           <Label>Jenis</Label>
@@ -368,10 +368,10 @@ async function review(id: number, status: 'approved' | 'rejected') {
                 <TableCell class="font-medium">{{ employeeName(row) }}</TableCell>
                 <TableCell>{{ typeLabel[String(row.type)] ?? row.type }}</TableCell>
                 <TableCell class="tabular-nums text-xs">
-                  {{ String(row.start_date).slice(0, 10) }} – {{ String(row.end_date).slice(0, 10) }}
+                  {{ String(row.start_date).slice(0, 10) }} - {{ String(row.end_date).slice(0, 10) }}
                 </TableCell>
                 <TableCell class="max-w-[200px] truncate text-muted-foreground">
-                  {{ row.reason || '—' }}
+                  {{ row.reason || '-' }}
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary">{{ statusLabel[String(row.status)] ?? row.status }}</Badge>

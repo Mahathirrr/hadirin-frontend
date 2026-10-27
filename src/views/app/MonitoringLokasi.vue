@@ -66,7 +66,7 @@ const mapMarkers = computed(() =>
 )
 
 function formatTime(value: unknown) {
-  if (!value) return '—'
+  if (!value) return '-'
   return String(value).slice(11, 16)
 }
 
@@ -94,7 +94,7 @@ async function refreshAll() {
 <template>
   <PageShell
     title="Monitoring Lokasi"
-    description="Pantau posisi karyawan dengan sesi lokasi aktif. GPS indoor kurang akurat — gunakan sebagai pelengkap audit."
+    description="Pantau posisi karyawan dengan sesi lokasi aktif. GPS indoor kurang akurat - gunakan sebagai pelengkap audit."
   >
     <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard label="Sesi aktif" :value="sessions?.length ?? 0" :icon="Radio" />

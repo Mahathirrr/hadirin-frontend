@@ -86,7 +86,7 @@ const healthAlerts = computed(() => {
     ? Math.round((s.today_present / s.active_employees) * 100)
     : 0
   if (s.active_employees > 0 && presentRate < 70) {
-    items.push({ tone: 'amber', text: `Rasio kehadiran hari ini ${presentRate}% — perlu dipantau` })
+    items.push({ tone: 'amber', text: `Rasio kehadiran hari ini ${presentRate}% - perlu dipantau` })
   }
   if (items.length === 0 && s.active_employees > 0) {
     items.push({ tone: 'emerald', text: 'Operasional berjalan normal untuk workspace aktif' })

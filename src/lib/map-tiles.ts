@@ -1,5 +1,5 @@
 /**
- * Free raster tiles — no API key, no registration.
+ * Free raster tiles - no API key, no registration.
  * @see https://operations.osmfoundation.org/policies/tiles/
  */
 export const HADIRIN_MAP_TILES = {

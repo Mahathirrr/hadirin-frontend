@@ -92,7 +92,7 @@ const pairingUrl = computed(() => `${API_URL}/qr-devices/register`)
           <StatCard title="Registration code aktif" :value="regCode ? 1 : 0" />
         </div>
         <p v-if="regCode" class="mt-3 rounded-lg border bg-muted/30 p-3 font-mono text-sm">
-          Kode: <strong>{{ regCode }}</strong> — POST {{ pairingUrl }}
+          Kode: <strong>{{ regCode }}</strong> - POST {{ pairingUrl }}
         </p>
       </CardContent>
     </Card>
@@ -116,7 +116,7 @@ const pairingUrl = computed(() => `${API_URL}/qr-devices/register`)
             <TableRow v-for="d in devices" :key="String(d.id)">
               <TableCell>{{ d.name }}</TableCell>
               <TableCell class="font-mono text-xs">{{ d.device_code }}</TableCell>
-              <TableCell>{{ d.location || '—' }}</TableCell>
+              <TableCell>{{ d.location || '-' }}</TableCell>
               <TableCell>{{ d.active ? 'Aktif' : 'Nonaktif' }}</TableCell>
               <TableCell class="text-right">
                 <div class="flex justify-end gap-1">

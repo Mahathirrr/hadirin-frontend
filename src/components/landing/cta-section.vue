@@ -27,7 +27,7 @@ import { Button } from '@/components/ui/button'
           </h2>
 
           <p class="mx-auto mt-4 max-w-xl text-base sm:text-lg text-background/70 leading-relaxed">
-            Kelola kehadiran, cuti, dan rekap operasional tim dalam satu workspace Hadirin — setup cepat, tanpa ribet.
+            Kelola kehadiran, cuti, dan rekap operasional tim dalam satu workspace Hadirin - setup cepat, tanpa ribet.
           </p>
 
           <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">

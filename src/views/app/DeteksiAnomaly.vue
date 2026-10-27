@@ -117,7 +117,7 @@ function onFilterChange() {
 
 function employeeName(row: AnomalyRow) {
   const emp = row.employee as { name?: string } | undefined
-  return emp?.name ?? (row.employee_id ? `Karyawan #${row.employee_id}` : '—')
+  return emp?.name ?? (row.employee_id ? `Karyawan #${row.employee_id}` : '-')
 }
 
 function formatType(t: unknown) {
@@ -134,7 +134,7 @@ function formatType(t: unknown) {
       <StatCard title="Anomaly terbuka" :value="summary?.open ?? 0" />
       <StatCard title="Ditinjau" :value="summary?.reviewing ?? 0" />
       <StatCard title="Ditutup" :value="summary?.closed ?? 0" />
-      <StatCard title="Skor risiko" :value="summary?.risk_score ?? 0" hint="0–100, bobot severity" />
+      <StatCard title="Skor risiko" :value="summary?.risk_score ?? 0" hint="0-100, bobot severity" />
     </div>
 
     <Card class="rounded-xl shadow-none">
@@ -167,7 +167,7 @@ function formatType(t: unknown) {
       <CardContent>
         <div v-if="(summary?.high_open ?? 0) > 0" class="mb-3 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900">
           <ShieldAlert class="size-4 shrink-0" />
-          {{ summary?.high_open }} alert severity tinggi masih terbuka — prioritaskan review.
+          {{ summary?.high_open }} alert severity tinggi masih terbuka - prioritaskan review.
         </div>
 
         <div v-if="loading" class="py-8 text-center text-sm text-muted-foreground">Memuat…</div>

@@ -1,3 +1,6 @@
+/** Empty table cell (ASCII hyphen, bukan em dash). */
+export const EMPTY_CELL = '-'
+
 export function initials(value: string) {
   return value
     .split(/\s+/)

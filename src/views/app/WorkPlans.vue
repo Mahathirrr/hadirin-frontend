@@ -392,7 +392,7 @@ async function downloadWeekly(id: number) {
             <CardContent class="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5">
               <div>
                 <p class="font-medium">
-                  {{ String(w.week_start).slice(0, 10) }} – {{ String(w.week_end).slice(0, 10) }}
+                  {{ String(w.week_start).slice(0, 10) }} - {{ String(w.week_end).slice(0, 10) }}
                 </p>
                 <p class="mt-0.5 text-sm text-muted-foreground">
                   Status: {{ w.status }}

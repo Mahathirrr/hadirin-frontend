@@ -32,7 +32,7 @@ const schema = toTypedSchema(
 const formRef = ref()
 
 function onSubmit(_values: Record<string, unknown>) {
-  toast.success('Pesan diterima — tim kami akan menghubungi Anda.')
+  toast.success('Pesan diterima - tim kami akan menghubungi Anda.')
   formRef.value?.resetForm()
 }
 </script>

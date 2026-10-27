@@ -117,7 +117,7 @@ export function devMockResponse<T>(path: string, method: string): T | null {
           action: 'create',
           entity_type: 'attendance',
           entity_id: 1,
-          details: 'Ahmad Rizki — face_id (Kampus USK — Fakultas Teknik)',
+          details: 'Ahmad Rizki - face_id (Kampus USK - Fakultas Teknik)',
           created_at: new Date().toISOString(),
         },
         {
@@ -125,7 +125,7 @@ export function devMockResponse<T>(path: string, method: string): T | null {
           action: 'create',
           entity_type: 'attendance',
           entity_id: 2,
-          details: 'Siti Nurhaliza — qr (Lobby Kantor)',
+          details: 'Siti Nurhaliza - qr (Lobby Kantor)',
           created_at: new Date().toISOString(),
         },
       ],

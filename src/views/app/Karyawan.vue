@@ -96,7 +96,7 @@ const stats = computed(() => {
 })
 
 function formatTime(value: unknown) {
-  if (!value) return '—'
+  if (!value) return '-'
   return String(value).slice(11, 16)
 }
 
@@ -294,7 +294,7 @@ async function refreshAll() {
             <TableBody>
               <TableRow v-for="emp in filtered" :key="String(emp.id)">
                 <TableCell class="font-medium">{{ emp.name }}</TableCell>
-                <TableCell class="text-muted-foreground">{{ emp.department || '—' }}</TableCell>
+                <TableCell class="text-muted-foreground">{{ emp.department || '-' }}</TableCell>
                 <TableCell class="tabular-nums">
                   {{ formatTime(attendanceByEmployee.get(Number(emp.id))?.check_in) }}
                 </TableCell>

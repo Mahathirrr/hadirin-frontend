@@ -189,7 +189,7 @@ async function deleteWorkspace() {
           </CardHeader>
           <CardContent class="space-y-2">
             <div class="flex flex-col gap-2 sm:flex-row">
-              <Input :model-value="inviteCode || '—'" readonly class="min-w-0 font-mono text-sm" />
+              <Input :model-value="inviteCode || '-'" readonly class="min-w-0 font-mono text-sm" />
               <div class="flex gap-2">
                 <Button variant="outline" size="sm" :disabled="!inviteCode" @click="copyInvite">Salin</Button>
                 <Button variant="outline" size="sm" @click="resetInvite">Putar ulang</Button>
@@ -225,7 +225,7 @@ async function deleteWorkspace() {
         <CardHeader class="flex flex-row items-center justify-between">
           <div>
             <CardTitle class="text-base">Jadwal jam kerja</CardTitle>
-            <p class="mt-0.5 text-sm text-muted-foreground">Senin–Jumat mengikuti jam di bawah. Sabtu/Minggu libur.</p>
+            <p class="mt-0.5 text-sm text-muted-foreground">Senin-Jumat mengikuti jam di bawah. Sabtu/Minggu libur.</p>
           </div>
           <Button v-if="isAdmin" size="sm" :disabled="savingSchedule" @click="saveSchedule">
             {{ savingSchedule ? 'Menyimpan...' : 'Simpan jadwal' }}
@@ -261,8 +261,8 @@ async function deleteWorkspace() {
                 <TableCell>
                   <Badge :variant="row.active ? 'default' : 'secondary'">{{ row.active ? 'Kerja' : 'Libur' }}</Badge>
                 </TableCell>
-                <TableCell>{{ row.active ? row.in : '—' }}</TableCell>
-                <TableCell>{{ row.active ? row.out : '—' }}</TableCell>
+                <TableCell>{{ row.active ? row.in : '-' }}</TableCell>
+                <TableCell>{{ row.active ? row.out : '-' }}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -288,7 +288,7 @@ async function deleteWorkspace() {
             <TableBody>
               <TableRow v-for="m in members" :key="m.id">
                 <TableCell>{{ m.user?.name ?? `#${m.user_id}` }}</TableCell>
-                <TableCell>{{ m.user?.email ?? '—' }}</TableCell>
+                <TableCell>{{ m.user?.email ?? '-' }}</TableCell>
                 <TableCell>
                   <Badge variant="secondary">{{ roleLabel[m.role] ?? m.role }}</Badge>
                 </TableCell>

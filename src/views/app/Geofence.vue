@@ -292,7 +292,7 @@ async function saveSettings() {
           <CardHeader class="flex flex-row items-center justify-between">
             <div>
               <CardTitle class="text-base">IP whitelist</CardTitle>
-              <p class="text-xs text-muted-foreground">Opsional — batasi akses API dari jaringan tertentu</p>
+              <p class="text-xs text-muted-foreground">Opsional - batasi akses API dari jaringan tertentu</p>
             </div>
             <Switch v-model="ipWhitelistEnabled" :disabled="!isAdmin" @update:model-value="markDirty" />
           </CardHeader>

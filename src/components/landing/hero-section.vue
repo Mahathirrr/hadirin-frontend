@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button'
         <div class="mx-auto max-w-4xl text-center">
         <div class="mb-8 flex justify-center">
           <Badge variant="outline" class="rounded-full border-border bg-card/80 px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur-sm">
-            Hadirin 2.0 — Face ID & Multi-Geofence
+            Hadirin 2.0 - Face ID & Multi-Geofence
           </Badge>
         </div>
 

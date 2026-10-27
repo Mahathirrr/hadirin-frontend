@@ -3,8 +3,10 @@ import { RouterLink, useRoute } from 'vue-router'
 
 import LoginForm2 from '@/components/auth/LoginForm2.vue'
 import Logo from '@/components/logo.vue'
+import { dicebearAvatarUrl } from '@/lib/user-avatar'
 
 const route = useRoute()
+const testimonialAvatar = dicebearAvatarUrl('hadirin-ops-testimonial', 128)
 </script>
 
 <template>
@@ -39,7 +41,7 @@ const route = useRoute()
         </p>
         <div class="mt-4 flex items-center gap-3">
           <img
-            src="/auth/avatars/testimonial-ops.jpg"
+            :src="testimonialAvatar"
             alt="Foto Manajer Operasional"
             class="size-11 shrink-0 rounded-full border-2 border-white/25 object-cover shadow-md"
             width="44"
