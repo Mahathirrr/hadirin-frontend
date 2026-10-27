@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { CalendarRange, Plus, Trash2 } from 'lucide-vue-next'
+import { CalendarRange, Pencil, Plus, Trash2 } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 
 import EmptyState from '@/components/app/empty-state.vue'
@@ -21,6 +21,8 @@ const { isManager } = useEmployeeAccess()
 const shiftForm = ref({ name: '', start_time: '08:00', end_time: '17:00', days_of_week: '1,2,3,4,5' })
 const assignForm = ref({ employee_id: '', shift_id: '', effective_from: new Date().toISOString().slice(0, 10) })
 const saving = ref(false)
+const editingShiftId = ref<number | null>(null)
+const editShiftForm = ref({ name: '', start_time: '08:00', end_time: '17:00', days_of_week: '1,2,3,4,5' })
 
 const { data: shifts, loading: loadingShifts, load: reloadShifts } = useWorkspaceLoader(async (token, ws) =>
   api.listWorkShifts(token, ws) as Promise<Array<Record<string, unknown>>>,
@@ -68,6 +70,39 @@ async function assignShift() {
     await reloadRoster()
   } catch (e) {
     toast.error(e instanceof Error ? e.message : 'Gagal assign shift')
+  } finally {
+    saving.value = false
+  }
+}
+
+function startEditShift(s: Record<string, unknown>) {
+  editingShiftId.value = Number(s.id)
+  editShiftForm.value = {
+    name: String(s.name ?? ''),
+    start_time: String(s.start_time ?? '08:00'),
+    end_time: String(s.end_time ?? '17:00'),
+    days_of_week: String(s.days_of_week ?? '1,2,3,4,5'),
+  }
+}
+
+function cancelEditShift() {
+  editingShiftId.value = null
+}
+
+async function saveEditShift() {
+  if (!auth.token || !auth.workspaceId || editingShiftId.value == null) return
+  if (!editShiftForm.value.name.trim()) {
+    toast.error('Nama shift wajib diisi')
+    return
+  }
+  saving.value = true
+  try {
+    await api.updateWorkShift(auth.token, auth.workspaceId, editingShiftId.value, editShiftForm.value)
+    toast.success('Shift diperbarui')
+    editingShiftId.value = null
+    await reloadShifts()
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : 'Gagal memperbarui shift')
   } finally {
     saving.value = false
   }
@@ -143,6 +178,36 @@ async function removeAssignment(id: number) {
             <Plus class="mr-1 size-4" />
             Tambah shift
           </Button>
+
+          <div
+            v-if="editingShiftId != null"
+            class="space-y-2 rounded-lg border border-border/60 bg-muted/15 p-3"
+          >
+            <p class="text-sm font-medium">Edit shift</p>
+            <div class="grid gap-2 sm:grid-cols-2">
+              <div class="grid gap-1.5 sm:col-span-2">
+                <Label>Nama</Label>
+                <Input v-model="editShiftForm.name" />
+              </div>
+              <div class="grid gap-1.5">
+                <Label>Mulai</Label>
+                <Input v-model="editShiftForm.start_time" type="time" />
+              </div>
+              <div class="grid gap-1.5">
+                <Label>Selesai</Label>
+                <Input v-model="editShiftForm.end_time" type="time" />
+              </div>
+              <div class="grid gap-1.5 sm:col-span-2">
+                <Label>Hari (1=Sen … 7=Min)</Label>
+                <Input v-model="editShiftForm.days_of_week" />
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <Button size="sm" :disabled="saving" @click="saveEditShift">Simpan perubahan</Button>
+              <Button size="sm" variant="outline" @click="cancelEditShift">Batal</Button>
+            </div>
+          </div>
+
           <EmptyState v-if="!busy && !(shifts?.length)" title="Belum ada shift" compact />
           <Table v-else>
             <TableHeader>
@@ -157,9 +222,14 @@ async function removeAssignment(id: number) {
                 <TableCell>{{ s.name }}</TableCell>
                 <TableCell>{{ s.start_time }} - {{ s.end_time }}</TableCell>
                 <TableCell>
-                  <Button variant="ghost" size="icon" class="size-8" @click="removeShift(Number(s.id))">
-                    <Trash2 class="size-4 text-destructive" />
-                  </Button>
+                  <div class="flex justify-end gap-0.5">
+                    <Button variant="ghost" size="icon" class="size-8" @click="startEditShift(s)">
+                      <Pencil class="size-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" class="size-8" @click="removeShift(Number(s.id))">
+                      <Trash2 class="size-4 text-destructive" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             </TableBody>

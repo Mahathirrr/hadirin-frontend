@@ -131,8 +131,8 @@ async function refreshAll() {
       </CardHeader>
     </Card>
 
-    <div class="grid min-h-[calc(100vh-20rem)] gap-3 lg:grid-cols-[minmax(280px,340px)_1fr] lg:items-stretch">
-      <Card class="rounded-xl border-border/60 shadow-none lg:max-h-[calc(100vh-20rem)] lg:overflow-y-auto">
+    <div class="grid gap-3 lg:grid-cols-[minmax(280px,340px)_1fr] lg:items-start">
+      <Card class="rounded-xl border-border/60 shadow-none lg:max-h-[min(640px,calc(100dvh-11rem))] lg:overflow-y-auto">
         <CardHeader class="flex flex-row items-center justify-between">
           <div>
             <CardTitle class="text-base">Karyawan aktif</CardTitle>
@@ -175,13 +175,13 @@ async function refreshAll() {
         </CardContent>
       </Card>
 
-      <Card class="flex min-h-[420px] flex-col overflow-hidden rounded-xl p-0 shadow-none lg:min-h-0">
-        <CardContent class="relative min-h-[420px] flex-1 p-0 lg:min-h-[calc(100vh-20rem)]">
+      <Card class="overflow-hidden rounded-xl p-0 shadow-none">
+        <CardContent class="relative h-[min(480px,calc(100dvh-13rem))] p-0 lg:h-[min(520px,calc(100dvh-11rem))]">
           <LocationMap
             full-height
-            min-height="420px"
+            min-height="320px"
             :markers="mapMarkers"
-            class="h-full min-h-[420px] rounded-none lg:min-h-full"
+            class="h-full rounded-none"
           />
         </CardContent>
       </Card>

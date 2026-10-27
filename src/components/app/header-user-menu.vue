@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { LogOut, Settings } from 'lucide-vue-next'
 
@@ -20,22 +20,25 @@ const emit = defineEmits<{ 'open-account': [] }>()
 
 const auth = useAuthStore()
 const router = useRouter()
+const menuOpen = ref(false)
 
 const displayName = computed(() => auth.user?.name || 'Admin')
 const handle = computed(() => usernameFromEmail(auth.user?.email || 'admin@admin.com'))
 
 function openAccount(event: Event) {
+  menuOpen.value = false
   deferDialogAction(() => emit('open-account'), event)
 }
 
 function signOut() {
+  menuOpen.value = false
   auth.logout()
   router.push('/auth/sign-in')
 }
 </script>
 
 <template>
-  <DropdownMenu :modal="false">
+  <DropdownMenu v-model:open="menuOpen" :modal="false">
     <DropdownMenuTrigger
       class="cursor-pointer rounded-full transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
       aria-label="Menu akun"
@@ -43,7 +46,7 @@ function signOut() {
       <UserAvatar :user="auth.user" class="size-8" />
     </DropdownMenuTrigger>
 
-    <DropdownMenuContent align="end" class="z-[120] w-64 border-zinc-200 bg-white text-zinc-950">
+    <DropdownMenuContent align="end" class="z-[120] w-64 border-border bg-popover text-popover-foreground shadow-lg">
       <DropdownMenuLabel class="p-0 font-normal">
         <div class="flex items-center gap-3 px-2 py-2">
           <UserAvatar :user="auth.user" class="size-10 border-border/60" />

@@ -2,17 +2,17 @@
 export const INDONESIA_WORKSPACE_TIMEZONES = [
   {
     value: 'Asia/Jakarta',
-    label: 'WIB (Jakarta, Sumatera, Jawa, Kalimantan Barat/Tengah)',
+    label: 'WIB (UTC+7)',
     abbrev: 'WIB',
   },
   {
     value: 'Asia/Makassar',
-    label: 'WITA (Bali, Nusa Tenggara, Sulawesi, Kalimantan Timur/Selatan)',
+    label: 'WITA (UTC+8)',
     abbrev: 'WITA',
   },
   {
     value: 'Asia/Jayapura',
-    label: 'WIT (Maluku dan Papua)',
+    label: 'WIT (UTC+9)',
     abbrev: 'WIT',
   },
 ] as const
@@ -22,6 +22,11 @@ export type IndonesiaWorkspaceTimezone = (typeof INDONESIA_WORKSPACE_TIMEZONES)[
 export function timezoneAbbrev(iana: string | undefined): string {
   const row = INDONESIA_WORKSPACE_TIMEZONES.find((z) => z.value === iana)
   return row?.abbrev ?? 'WIB'
+}
+
+export function timezoneLabel(iana: string | undefined): string {
+  const row = INDONESIA_WORKSPACE_TIMEZONES.find((z) => z.value === iana)
+  return row?.label ?? 'WIB (UTC+7)'
 }
 
 export function formatClockInZone(isoOrDate: string | Date, iana: string): string {

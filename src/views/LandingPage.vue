@@ -23,7 +23,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-background">
+  <div class="min-h-screen overflow-x-clip bg-background">
     <LandingNavbar />
 
     <main>

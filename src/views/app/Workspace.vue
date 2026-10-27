@@ -12,8 +12,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { api, type DashboardSummary, type Workspace, type WorkspaceMember } from '@/lib/api'
-import { INDONESIA_WORKSPACE_TIMEZONES, timezoneAbbrev } from '@/lib/timezone'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import TimezoneSelect from '@/components/app/timezone-select.vue'
+import { timezoneAbbrev } from '@/lib/timezone'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -240,14 +240,7 @@ async function deleteWorkspace() {
           <div v-if="isAdmin" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div class="grid gap-1.5 sm:col-span-2">
               <Label>Zona waktu</Label>
-              <Select v-model="timezone">
-                <SelectTrigger><SelectValue placeholder="Zona waktu" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem v-for="z in INDONESIA_WORKSPACE_TIMEZONES" :key="z.value" :value="z.value">
-                    {{ z.label }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <TimezoneSelect v-model="timezone" />
             </div>
             <div class="grid gap-1.5">
               <Label for="work-start">Jam masuk ({{ timezoneAbbrev(timezone) }})</Label>

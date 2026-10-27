@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { MapPin, Search, Trash2 } from 'lucide-vue-next'
+import { MapPin, Pencil, Search, Trash2 } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 
 import EmptyState from '@/components/app/empty-state.vue'
@@ -11,13 +11,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import TimezoneSelect from '@/components/app/timezone-select.vue'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { useWorkspaceLoader } from '@/composables/useWorkspaceData'
 import { searchAddress } from '@/lib/geocode'
 import { api, type IPWhitelistEntry } from '@/lib/api'
-import { INDONESIA_WORKSPACE_TIMEZONES } from '@/lib/timezone'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -35,6 +34,9 @@ const geofences = ref<Array<Record<string, unknown>>>([])
 const ipEntries = ref<IPWhitelistEntry[]>([])
 const mapRef = ref<InstanceType<typeof LocationMap> | null>(null)
 const selectedId = ref<number | null>(null)
+const editName = ref('')
+const editRadiusM = ref('100')
+const savingGeofence = ref(false)
 
 const MAX_POINTS = 30
 
@@ -136,9 +138,42 @@ async function removeGeofence(id: number) {
   }
 }
 
+const selectedGeofence = computed(() =>
+  geofences.value.find((g) => Number(g.id) === selectedId.value) ?? null,
+)
+
+watch(selectedGeofence, (g) => {
+  if (!g) return
+  editName.value = String(g.name ?? '')
+  editRadiusM.value = String(g.radius_meters ?? radius.value)
+})
+
 function focusGeofence(g: Record<string, unknown>) {
   selectedId.value = Number(g.id)
   mapRef.value?.flyTo(Number(g.latitude), Number(g.longitude))
+}
+
+async function saveSelectedGeofence() {
+  if (!auth.token || !isAdmin.value || !selectedGeofence.value) return
+  const g = selectedGeofence.value
+  savingGeofence.value = true
+  try {
+    const updated = await api.updateGeofence(auth.token, Number(g.id), {
+      name: editName.value.trim() || String(g.name),
+      latitude: Number(g.latitude),
+      longitude: Number(g.longitude),
+      radius_meters: Number(editRadiusM) || 100,
+      active: g.active !== false,
+    })
+    geofences.value = geofences.value.map((row) =>
+      Number(row.id) === Number(g.id) ? { ...row, ...updated } : row,
+    )
+    toast.success('Titik geofence diperbarui')
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : 'Gagal menyimpan titik')
+  } finally {
+    savingGeofence.value = false
+  }
 }
 
 async function saveSettings() {
@@ -267,14 +302,7 @@ async function saveSettings() {
           <CardContent class="space-y-3">
             <div class="grid gap-1.5">
               <Label>Zona waktu perusahaan</Label>
-              <Select v-model="timezone" :disabled="!isAdmin" @update:model-value="markDirty">
-                <SelectTrigger><SelectValue placeholder="Pilih zona waktu" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem v-for="z in INDONESIA_WORKSPACE_TIMEZONES" :key="z.value" :value="z.value">
-                    {{ z.label }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <TimezoneSelect v-model="timezone" :disabled="!isAdmin" @update:model-value="markDirty" />
               <p class="text-[11px] leading-snug text-muted-foreground">
                 Menentukan batas hari absensi, jam masuk/pulang, dan label laporan (WIB/WITA/WIT). Waktu check-in
                 karyawan dicatat dari server, bukan jam HP.
@@ -290,6 +318,28 @@ async function saveSettings() {
                 <Input v-model="maxGpsAccuracy" type="number" min="1" :disabled="!isAdmin" @input="markDirty" />
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card v-if="selectedGeofence && isAdmin" class="rounded-xl border-border/60 shadow-none">
+          <CardHeader class="pb-2">
+            <CardTitle class="flex items-center gap-2 text-base">
+              <Pencil class="size-4" />
+              Edit titik terpilih
+            </CardTitle>
+          </CardHeader>
+          <CardContent class="space-y-3">
+            <div class="grid gap-1.5">
+              <Label>Nama titik</Label>
+              <Input v-model="editName" placeholder="Nama lokasi" @input="markDirty" />
+            </div>
+            <div class="grid gap-1.5">
+              <Label>Radius (m)</Label>
+              <Input v-model="editRadiusM" type="number" min="10" max="5000" @input="markDirty" />
+            </div>
+            <Button size="sm" :disabled="savingGeofence" @click="saveSelectedGeofence">
+              {{ savingGeofence ? 'Menyimpan…' : 'Simpan titik' }}
+            </Button>
           </CardContent>
         </Card>
 
@@ -315,7 +365,7 @@ async function saveSettings() {
       </div>
 
       <Card class="overflow-hidden rounded-xl p-0 shadow-none lg:sticky lg:top-24 lg:z-0">
-        <CardContent class="relative h-[min(520px,calc(100dvh-11rem))] p-0">
+        <CardContent class="relative h-[min(480px,calc(100dvh-13rem))] p-0 lg:h-[min(520px,calc(100dvh-11rem))]">
           <LocationMap
             ref="mapRef"
             full-height
@@ -334,9 +384,9 @@ async function saveSettings() {
       v-if="dirty && isAdmin"
       class="fixed inset-x-0 bottom-6 z-30 flex justify-center px-4"
     >
-      <div class="flex w-full max-w-xl items-center justify-between gap-3 rounded-full border bg-background/95 px-4 py-2.5 shadow-lg backdrop-blur">
-        <p class="text-sm text-muted-foreground">Perubahan belum disimpan</p>
-        <Button size="sm" :disabled="saving" @click="saveSettings">
+      <div class="flex w-full max-w-xl flex-col gap-2 rounded-2xl border bg-background/95 px-4 py-3 shadow-lg backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:rounded-full sm:py-2.5">
+        <p class="text-center text-sm text-muted-foreground sm:text-left">Perubahan belum disimpan</p>
+        <Button size="sm" class="w-full sm:w-auto" :disabled="saving" @click="saveSettings">
           {{ saving ? 'Menyimpan…' : 'Simpan pengaturan' }}
         </Button>
       </div>

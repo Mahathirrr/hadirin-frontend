@@ -14,7 +14,29 @@ export default defineConfig({
     trace: 'on-first-retry',
     navigationTimeout: prodSmoke ? 60_000 : 30_000,
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    {
+      name: 'mobile-iphone',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: devices['iPhone 13'].viewport,
+        userAgent: devices['iPhone 13'].userAgent,
+        deviceScaleFactor: devices['iPhone 13'].deviceScaleFactor,
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
+    {
+      name: 'mobile-narrow',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 320, height: 568 },
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
+  ],
   webServer:
     process.env.PLAYWRIGHT_SKIP_WEBSERVER || prodSmoke
       ? undefined

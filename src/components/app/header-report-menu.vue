@@ -65,9 +65,9 @@ async function generateCurrentReport(event: Event) {
     >
       <ArrowDownToLine class="size-4" />
     </DropdownMenuTrigger>
-    <DropdownMenuContent align="end" class="z-[120] w-72 border-zinc-800 bg-zinc-950 text-zinc-50">
+    <DropdownMenuContent align="end" class="z-[120] w-72 border-border bg-popover text-popover-foreground shadow-lg">
       <DropdownMenuItem
-        class="cursor-pointer gap-2 focus:bg-zinc-900 focus:text-zinc-50"
+        class="cursor-pointer gap-2"
         :disabled="loading === 'download'"
         @select="downloadLatestReport"
       >
@@ -75,7 +75,7 @@ async function generateCurrentReport(event: Event) {
         <span>Unduh report mingguan selesai terakhir</span>
       </DropdownMenuItem>
       <DropdownMenuItem
-        class="cursor-pointer gap-2 focus:bg-zinc-900 focus:text-zinc-50"
+        class="cursor-pointer gap-2"
         :disabled="loading === 'generate'"
         @select="generateCurrentReport"
       >

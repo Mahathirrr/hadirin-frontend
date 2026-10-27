@@ -9,6 +9,13 @@ import StatCard from '@/components/app/stat-card.vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -30,6 +37,13 @@ const checkInBusy = ref(false)
 const faceDialogOpen = ref(false)
 const faceCheckInEmployeeId = ref<number | null>(null)
 const faceCheckInEmployeeName = ref('')
+const editAttendanceOpen = ref(false)
+const editAttendanceId = ref<number | null>(null)
+const editCheckInLocal = ref('')
+const editCheckOutLocal = ref('')
+const editNotes = ref('')
+const editEmployeeName = ref('')
+const savingAttendanceEdit = ref(false)
 
 const { isManager, canActOnEmployee, employeesForAction, linkedEmployeeId } = useEmployeeAccess()
 const isAdmin = isManager
@@ -98,6 +112,55 @@ const stats = computed(() => {
 function formatTime(value: unknown) {
   if (!value) return '-'
   return String(value).slice(11, 16)
+}
+
+function toDatetimeLocal(iso: unknown) {
+  if (!iso) return ''
+  const d = new Date(String(iso))
+  if (Number.isNaN(d.getTime())) return ''
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+function fromDatetimeLocal(value: string) {
+  if (!value.trim()) return undefined
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return undefined
+  return d.toISOString()
+}
+
+function openEditAttendance(record: Record<string, unknown>, employeeName: string) {
+  editAttendanceId.value = Number(record.id)
+  editEmployeeName.value = employeeName
+  editCheckInLocal.value = toDatetimeLocal(record.check_in)
+  editCheckOutLocal.value = toDatetimeLocal(record.check_out)
+  editNotes.value = String(record.notes ?? '')
+  editAttendanceOpen.value = true
+}
+
+async function saveAttendanceEdit() {
+  if (!auth.token || editAttendanceId.value == null || !isAdmin.value) return
+  const body: Record<string, unknown> = {}
+  const checkIn = fromDatetimeLocal(editCheckInLocal.value)
+  const checkOut = fromDatetimeLocal(editCheckOutLocal.value)
+  if (checkIn) body.check_in = checkIn
+  if (checkOut) body.check_out = checkOut
+  if (editNotes.value.trim()) body.notes = editNotes.value.trim()
+  if (Object.keys(body).length === 0) {
+    toast.error('Isi minimal jam check-in atau check-out')
+    return
+  }
+  savingAttendanceEdit.value = true
+  try {
+    await api.patchAttendance(auth.token, editAttendanceId.value, body)
+    toast.success('Absensi diperbarui')
+    editAttendanceOpen.value = false
+    await reloadAttendance()
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : 'Gagal memperbarui absensi')
+  } finally {
+    savingAttendanceEdit.value = false
+  }
 }
 
 async function addEmployee() {
@@ -332,6 +395,14 @@ async function refreshAll() {
                       </Button>
                     </template>
                     <Button
+                      v-if="isAdmin && attendanceByEmployee.has(Number(emp.id))"
+                      variant="ghost"
+                      size="sm"
+                      @click="openEditAttendance(attendanceByEmployee.get(Number(emp.id))!, String(emp.name))"
+                    >
+                      Koreksi
+                    </Button>
+                    <Button
                       v-if="isAdmin"
                       variant="ghost"
                       size="sm"
@@ -354,5 +425,36 @@ async function refreshAll() {
       :loading="checkInBusy"
       @confirm="onFaceCheckInConfirm"
     />
+
+    <Dialog v-model:open="editAttendanceOpen">
+      <DialogContent class="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Koreksi absensi · {{ editEmployeeName }}</DialogTitle>
+        </DialogHeader>
+        <div class="grid gap-3 py-2">
+          <p class="text-sm text-muted-foreground">
+            Admin dapat mengubah jam check-in dan check-out (maks. 7 hari ke belakang, sesuai kebijakan server).
+          </p>
+          <div class="grid gap-1.5">
+            <Label>Check-in</Label>
+            <Input v-model="editCheckInLocal" type="datetime-local" />
+          </div>
+          <div class="grid gap-1.5">
+            <Label>Check-out</Label>
+            <Input v-model="editCheckOutLocal" type="datetime-local" />
+          </div>
+          <div class="grid gap-1.5">
+            <Label>Catatan</Label>
+            <Input v-model="editNotes" placeholder="Opsional" />
+          </div>
+        </div>
+        <DialogFooter class="gap-2 sm:gap-0">
+          <Button variant="outline" @click="editAttendanceOpen = false">Batal</Button>
+          <Button :disabled="savingAttendanceEdit" @click="saveAttendanceEdit">
+            {{ savingAttendanceEdit ? 'Menyimpan…' : 'Simpan' }}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </PageShell>
 </template>

@@ -14,7 +14,7 @@ const sidebar = provideSidebarConfig()
     :class="
       cn(
         sidebar.config.collapsible === 'none' ? 'sidebar-none-mode' : '',
-        'pt-[5.5rem] md:pt-(--header-height)',
+        'pt-[6.25rem] md:pt-(--header-height)',
       )
     "
     :style="{
@@ -31,9 +31,9 @@ const sidebar = provideSidebarConfig()
         :collapsible="sidebar.config.collapsible"
         :side="sidebar.config.side"
       />
-      <SidebarInset>
-        <div class="flex flex-1 flex-col">
-          <div class="@container/main flex flex-1 flex-col gap-2">
+      <SidebarInset class="min-w-0 overflow-x-clip">
+        <div class="flex min-w-0 flex-1 flex-col">
+          <div class="@container/main flex min-w-0 flex-1 flex-col gap-2">
             <div class="flex flex-col gap-3 py-3 md:gap-4 md:py-4">
               <slot />
             </div>
@@ -43,9 +43,9 @@ const sidebar = provideSidebarConfig()
       </SidebarInset>
     </template>
     <template v-else>
-      <SidebarInset>
-        <div class="flex flex-1 flex-col">
-          <div class="@container/main flex flex-1 flex-col gap-2">
+      <SidebarInset class="min-w-0 overflow-x-clip">
+        <div class="flex min-w-0 flex-1 flex-col">
+          <div class="@container/main flex min-w-0 flex-1 flex-col gap-2">
             <div class="flex flex-col gap-3 py-3 md:gap-4 md:py-4">
               <slot />
             </div>

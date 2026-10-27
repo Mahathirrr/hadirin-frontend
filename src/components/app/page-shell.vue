@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <div :class="cn('flex flex-col gap-4 px-4 lg:px-6', $props.class)">
+  <div :class="cn('flex min-w-0 flex-col gap-4 px-4 lg:px-6', $props.class)">
     <div class="space-y-0.5">
       <slot name="header">
         <h1 class="text-2xl font-bold tracking-tight md:text-3xl">{{ title }}</h1>

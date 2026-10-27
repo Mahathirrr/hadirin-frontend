@@ -58,14 +58,14 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 </script>
 
 <template>
-  <header class="fixed inset-x-0 top-0 z-40 bg-black text-white">
+  <header class="fixed inset-x-0 top-0 z-40 border-b border-white/10 bg-zinc-950/90 text-white shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-zinc-950/75">
     <div class="flex h-14 items-center gap-2 px-3 sm:gap-3 sm:px-4">
       <RouterLink
         :to="ROUTES.summary"
-        class="flex shrink-0 cursor-pointer items-center gap-2 rounded-md border-r border-white/20 px-1 py-1 pr-3 transition-colors hover:bg-white/10"
+        class="flex min-w-0 shrink cursor-pointer items-center gap-2 rounded-md border-r border-white/20 px-1 py-1 pr-2 transition-colors hover:bg-white/10 sm:pr-3"
       >
-        <Logo :size="22" class="text-white" />
-        <span class="text-sm font-semibold tracking-tight">Hadirin</span>
+        <Logo :size="22" class="shrink-0 text-white" />
+        <span class="max-w-[5rem] truncate text-sm font-semibold tracking-tight sm:max-w-none">Hadirin</span>
       </RouterLink>
 
       <SidebarTrigger class="-ml-1 cursor-pointer text-white hover:bg-white/10 hover:text-white" />
@@ -83,7 +83,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
       </div>
 
       <div class="ml-auto flex shrink-0 items-center gap-2">
-        <div class="hidden h-9 w-56 shrink-0 items-stretch overflow-hidden rounded-full border border-white/20 bg-zinc-900/90 md:flex lg:w-64">
+        <div class="hidden h-9 w-56 shrink-0 items-stretch overflow-hidden rounded-full border border-white/15 bg-white/5 md:flex lg:w-64">
           <button
             type="button"
             class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 px-3 text-left text-sm text-zinc-400 transition-colors hover:bg-white/5 hover:text-zinc-200"
@@ -126,19 +126,24 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
         </Button>
 
         <NotificationsMenu />
-        <HeaderReportMenu />
+        <div class="hidden sm:contents">
+          <HeaderReportMenu />
+        </div>
         <HeaderUserMenu @open-account="openAccountSettings" />
       </div>
     </div>
 
-    <div class="flex items-center gap-2 border-t border-white/10 px-3 py-2 text-sm text-zinc-300 md:hidden">
+    <div class="flex min-w-0 items-center gap-2 border-t border-white/10 px-3 py-2 text-sm text-zinc-300 md:hidden">
       <UserAvatar :user="auth.user" class="size-6 shrink-0" />
-      <span class="truncate">{{ auth.user?.name || 'Admin' }}</span>
-      <span class="text-white/35">/</span>
-      <WorkspaceSwitcher
-        @open-create="createWorkspaceOpen = true"
-        @open-join="joinWorkspaceOpen = true"
-      />
+      <span class="min-w-0 max-w-[38%] truncate">{{ auth.user?.name || 'Admin' }}</span>
+      <span class="shrink-0 text-white/35">/</span>
+      <div class="min-w-0 flex-1">
+        <WorkspaceSwitcher
+          class="w-full max-w-full"
+          @open-create="createWorkspaceOpen = true"
+          @open-join="joinWorkspaceOpen = true"
+        />
+      </div>
     </div>
   </header>
 
