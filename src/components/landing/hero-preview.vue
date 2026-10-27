@@ -12,6 +12,7 @@ import {
 
 import PersonAvatar from '@/components/app/person-avatar.vue'
 import { api, type PublicCatalog } from '@/lib/api'
+import { sanitizeDisplayText } from '@/lib/display-text'
 import { timezoneAbbrev } from '@/lib/timezone'
 import { personAvatarUrl } from '@/lib/user-avatar'
 
@@ -223,7 +224,7 @@ const nowLabel = computed(() => {
               <div class="flex items-center gap-4 text-xs">
                 <div class="flex items-center gap-1 text-muted-foreground">
                   <MapPin class="size-3.5" />
-                  <span class="text-[11px]">{{ item.location || 'Kantor Pusat' }}</span>
+                  <span class="text-[11px]">{{ sanitizeDisplayText(item.location) || 'Kantor Pusat' }}</span>
                 </div>
                 <div class="flex items-center gap-1.5 font-medium text-foreground">
                   <Clock class="size-3.5" />
