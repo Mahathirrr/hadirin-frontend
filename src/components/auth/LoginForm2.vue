@@ -18,7 +18,7 @@ const route = useRoute()
 const email = ref('')
 const password = ref('')
 const googleEnabled = ref(false)
-const fieldAttrs = createAuthInputAttrs()
+const fieldAttrs = createAuthInputAttrs(undefined, 'login')
 
 async function loadGoogleStatus() {
   try {
@@ -85,7 +85,7 @@ function loginWithGoogle() {
         <Input
           id="login-email"
           v-model="email"
-          placeholder="muhammad.mahathir.id@gmail.com"
+          placeholder="nama@perusahaan.com"
           required
           v-bind="fieldAttrs.email"
           @focus="enableAutofillGuard($event.target)"
@@ -122,32 +122,6 @@ function loginWithGoogle() {
         <GoogleIcon />
         Masuk dengan Google
       </Button>
-    </div>
-
-    <div class="rounded-lg border border-border/60 bg-muted/30 p-3">
-      <p class="text-center text-xs font-medium text-muted-foreground">Akun demo (foto profil aktif setelah login)</p>
-      <div class="mt-2 flex items-center justify-center gap-4">
-        <div class="flex flex-col items-center gap-1">
-          <img
-            src="/auth/avatars/demo-admin.jpg"
-            alt="Admin demo"
-            class="size-10 rounded-full border object-cover shadow-sm"
-            width="40"
-            height="40"
-          />
-          <span class="max-w-[7rem] truncate text-[10px] text-muted-foreground">Admin</span>
-        </div>
-        <div class="flex flex-col items-center gap-1">
-          <img
-            src="/auth/avatars/demo-student.jpg"
-            alt="Karyawan demo"
-            class="size-10 rounded-full border object-cover shadow-sm"
-            width="40"
-            height="40"
-          />
-          <span class="max-w-[7rem] truncate text-[10px] text-muted-foreground">Karyawan</span>
-        </div>
-      </div>
     </div>
 
     <div class="text-center text-sm">

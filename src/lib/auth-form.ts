@@ -15,56 +15,53 @@ function fieldSuffix() {
     : String(Date.now())
 }
 
-export function createAuthInputAttrs(suffix = fieldSuffix()) {
-  const base = {
-    autocomplete: 'off',
-    'data-1p-ignore': 'true',
-    'data-lpignore': 'true',
-    'data-form-type': 'other',
-    'data-auth-field': 'true',
-  } as const
+type AuthFormMode = 'login' | 'register'
+
+export function createAuthInputAttrs(suffix = fieldSuffix(), mode: AuthFormMode = 'login') {
+  const passwordAutocomplete = mode === 'login' ? 'current-password' : 'new-password'
+
+  const email = {
+    type: 'email' as const,
+    inputmode: 'email' as const,
+    autocomplete: 'email' as const,
+    autocapitalize: 'off' as const,
+    spellcheck: 'false' as const,
+    name: mode === 'login' ? 'email' : 'email',
+    'data-auth-email': 'true',
+  }
+
+  const password = {
+    type: 'password' as const,
+    autocomplete: passwordAutocomplete as 'current-password' | 'new-password',
+    name: mode === 'login' ? 'password' : 'new-password',
+  }
+
+  const name = {
+    type: 'text' as const,
+    autocomplete: 'name' as const,
+    name: 'name',
+  }
 
   return {
-    email: {
-      ...base,
-      type: 'email',
-      inputmode: 'email',
-      autocapitalize: 'off',
-      spellcheck: 'false',
-      name: `hadirin-email-${suffix}`,
-      'data-auth-email': 'true',
-    },
-    password: {
-      ...base,
-      type: 'password',
-      autocomplete: 'new-password',
-      name: `hadirin-password-${suffix}`,
-    },
-    name: {
-      ...base,
-      type: 'text',
-      name: `hadirin-name-${suffix}`,
-    },
-    firstName: {
-      ...base,
-      type: 'text',
-      name: `hadirin-first-name-${suffix}`,
-    },
+    email,
+    password,
+    name,
+    firstName: name,
     lastName: {
-      ...base,
-      type: 'text',
-      name: `hadirin-last-name-${suffix}`,
+      type: 'text' as const,
+      autocomplete: 'family-name' as const,
+      name: 'family-name',
     },
     invite: {
-      ...base,
-      type: 'text',
+      type: 'text' as const,
+      autocomplete: 'off' as const,
       name: `hadirin-invite-${suffix}`,
-      autocapitalize: 'characters',
+      autocapitalize: 'characters' as const,
     },
     workspace: {
-      ...base,
-      type: 'text',
-      name: `hadirin-workspace-${suffix}`,
+      type: 'text' as const,
+      autocomplete: 'organization' as const,
+      name: 'organization',
     },
   }
 }
