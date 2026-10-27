@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,7 @@ import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 const email = ref('')
 const password = ref('')
 const googleEnabled = ref(false)
@@ -28,6 +29,12 @@ async function loadGoogleStatus() {
 }
 
 loadGoogleStatus()
+
+onMounted(() => {
+  if (route.query.oauth_error === '1') {
+    toast.error('Login Google gagal atau dibatalkan. Coba lagi.')
+  }
+})
 
 async function onSubmit() {
   const trimmedEmail = email.value.trim()

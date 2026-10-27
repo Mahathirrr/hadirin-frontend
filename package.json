@@ -11,7 +11,11 @@
     "lint:fix": "eslint . --fix",
     "type-check": "vue-tsc --build",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:prod:geofence-face": "E2E_RUN_PROD=1 playwright test e2e/geofence-face.spec.ts",
+    "test:smoke:prod:geofence-face-api": "node e2e/prod-geofence-face-api.mjs",
+    "test:smoke:prod:google-oauth": "node e2e/prod-google-oauth-api.mjs",
+    "test:e2e:prod:google-oauth": "E2E_RUN_PROD=1 playwright test e2e/google-oauth.spec.ts"
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^7.3.1",
