@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-vue-next'
+import { ArrowRight } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
 
 import DotPattern from '@/components/dot-pattern.vue'
@@ -27,7 +27,7 @@ import { Button } from '@/components/ui/button'
             </h2>
 
             <p class="mx-auto mt-4 max-w-xl text-base sm:text-lg text-background/70 leading-relaxed">
-              Buat akun perusahaan, kelola tim, dan pilih paket langganan sesuai kebutuhan operasional Anda.
+              Daftar perusahaan, undang tim, lalu kelola absensi dan laporan dari dashboard yang sama.
             </p>
 
             <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -48,21 +48,6 @@ import { Button } from '@/components/ui/button'
               >
                 Masuk
               </RouterLink>
-            </div>
-
-            <div class="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-background/60">
-              <div class="flex items-center gap-1.5">
-                <CheckCircle2 class="size-4 text-background/80" />
-                <span>Akun email & kata sandi</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <CheckCircle2 class="size-4 text-background/80" />
-                <span>Masuk dengan Google</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <ShieldCheck class="size-4 text-background/80" />
-                <span>Paket langganan fleksibel</span>
-              </div>
             </div>
           </div>
         </div>
