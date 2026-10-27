@@ -104,7 +104,7 @@ const popularCode = 'pro'
                 {{ formatIDR(plan.price_idr) }}
               </span>
               <span class="text-xs sm:text-sm text-muted-foreground font-medium">
-                / {{ plan.duration_days }} hari · max {{ plan.max_employees }} karyawan
+                / {{ plan.duration_days }} hari, max {{ plan.max_employees }} karyawan
               </span>
             </div>
 

@@ -243,7 +243,7 @@ async function saveSettings() {
                   <p class="truncate font-medium">{{ g.name }}</p>
                   <p class="truncate text-xs text-muted-foreground">
                     {{ Number(g.latitude).toFixed(5) }}, {{ Number(g.longitude).toFixed(5) }}
-                    · {{ g.radius_meters }}m
+                    , radius {{ g.radius_meters }} m
                   </p>
                 </div>
                 <Button

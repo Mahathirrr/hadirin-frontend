@@ -65,7 +65,7 @@ function checkout(planId: number) {
       <CardHeader>
         <CardTitle>Status saat ini</CardTitle>
         <CardDescription>
-          Paket {{ subscription.plan?.name }} · berlaku hingga
+          Paket {{ subscription.plan?.name }}, berlaku hingga
           {{ new Date(subscription.current_period_end).toLocaleDateString('id-ID') }}
         </CardDescription>
       </CardHeader>

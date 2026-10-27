@@ -157,7 +157,7 @@ async function submitAlpha() {
 function approvalSummary(row: Record<string, unknown>) {
   const steps = row.approval_steps as Array<{ step_order: number; required_role: string; status: string }> | undefined
   if (!steps?.length) return '-'
-  return steps.map((s) => `${s.required_role}:${s.status}`).join(' → ')
+  return steps.map((s) => `${s.required_role}:${s.status}`).join(', ')
 }
 
 async function review(id: number, status: 'approved' | 'rejected') {

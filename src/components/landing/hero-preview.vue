@@ -101,7 +101,7 @@ const nowLabel = computed(() => {
   if (hour >= 5 && hour < 12) shift = 'Shift Pagi'
   else if (hour >= 16 || hour < 5) shift = 'Di luar jam masuk'
 
-  return `${clock} · ${shift}`
+  return `${clock}, ${shift}`
 })
 </script>
 

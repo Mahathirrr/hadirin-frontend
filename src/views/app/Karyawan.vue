@@ -219,12 +219,12 @@ async function refreshAll() {
         <div>
           <CardTitle class="text-base">Filter review harian</CardTitle>
           <p class="mt-0.5 text-sm text-muted-foreground">
-            Role: {{ roleLabel }} · Data live tanggal {{ activeDate }}
+            Role: {{ roleLabel }}, data live tanggal {{ activeDate }}
             <span v-if="workspaceSettings?.geofence_enabled" class="text-amber-700 dark:text-amber-400">
-              · Geofence aktif (GPS wajib)
+              , geofence aktif (GPS wajib)
             </span>
             <span v-if="workspaceSettings?.face_id_enabled" class="text-sky-700 dark:text-sky-400">
-              · Face ID aktif
+              , Face ID aktif
             </span>
           </p>
         </div>

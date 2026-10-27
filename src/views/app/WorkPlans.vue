@@ -298,7 +298,7 @@ async function downloadWeekly(id: number) {
               <div class="min-w-0">
                 <p class="font-medium">{{ p.title }}</p>
                 <p class="mt-0.5 text-sm text-muted-foreground">
-                  {{ employeeName(p) }} · {{ String(p.date).slice(0, 10) }}
+                  {{ employeeName(p) }}, {{ String(p.date).slice(0, 10) }}
                 </p>
                 <p v-if="p.description" class="mt-2 text-sm text-muted-foreground">{{ p.description }}</p>
               </div>
@@ -366,7 +366,7 @@ async function downloadWeekly(id: number) {
             <CardContent class="px-4 py-3.5">
               <p class="font-medium">{{ r.title }}</p>
               <p class="mt-0.5 text-sm text-muted-foreground">
-                {{ employeeName(r) }} · {{ String(r.date).slice(0, 10) }}
+                {{ employeeName(r) }}, {{ String(r.date).slice(0, 10) }}
               </p>
               <p v-if="r.content" class="mt-2 text-sm text-muted-foreground">{{ r.content }}</p>
             </CardContent>
@@ -396,7 +396,7 @@ async function downloadWeekly(id: number) {
                 </p>
                 <p class="mt-0.5 text-sm text-muted-foreground">
                   Status: {{ w.status }}
-                  <span v-if="w.generated_at"> · {{ String(w.generated_at).slice(0, 16).replace('T', ' ') }}</span>
+                  <span v-if="w.generated_at">, {{ String(w.generated_at).slice(0, 16).replace('T', ' ') }}</span>
                 </p>
               </div>
               <Button

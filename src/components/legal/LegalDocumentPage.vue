@@ -36,7 +36,7 @@ defineProps<{
 
     <main class="container mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
       <RouterLink :to="ROUTES.landing" class="text-sm text-muted-foreground hover:text-foreground hover:underline">
-        ← Kembali ke beranda
+        Kembali ke beranda
       </RouterLink>
 
       <header class="mt-6 space-y-3 border-b border-border/60 pb-8">

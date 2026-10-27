@@ -1,0 +1,20 @@
+---
+description: Aturan teks UI Bahasa Indonesia di Hadirin (hindari em dash dan double dash)
+globs:
+  - src/**/*.vue
+  - src/**/*.ts
+  - index.html
+alwaysApply: false
+---
+
+# Copy UI Hadirin (Indonesia)
+
+Jangan pakai di teks yang tampil ke pengguna:
+
+- Em dash (—) atau en dash (–)
+- Double hyphen sebagai pemisah (-- atau " - " dekoratif)
+- Panah dekoratif (→, ←) kecuali ikon komponen UI yang memang panah
+
+Gunakan sebagai pemisah: koma, titik, titik dua, atau kalimat terpisah. Contoh zona waktu: `WIB (Jakarta, Jawa)` bukan `WIB — Jakarta`.
+
+Komentar kode dan CSS (`--var`) tidak termasuk aturan ini.

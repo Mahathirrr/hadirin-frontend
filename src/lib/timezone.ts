@@ -1,18 +1,18 @@
-/** Zona waktu perusahaan — simpan & kirim ke API sebagai IANA (bukan offset manual). */
+/** Zona waktu perusahaan: simpan & kirim ke API sebagai IANA (bukan offset manual). */
 export const INDONESIA_WORKSPACE_TIMEZONES = [
   {
     value: 'Asia/Jakarta',
-    label: 'WIB — Jakarta, Sumatera, Jawa, Kalimantan (Barat/Tengah)',
+    label: 'WIB (Jakarta, Sumatera, Jawa, Kalimantan Barat/Tengah)',
     abbrev: 'WIB',
   },
   {
     value: 'Asia/Makassar',
-    label: 'WITA — Bali, Nusa Tenggara, Sulawesi, Kalimantan (Timur/Selatan)',
+    label: 'WITA (Bali, Nusa Tenggara, Sulawesi, Kalimantan Timur/Selatan)',
     abbrev: 'WITA',
   },
   {
     value: 'Asia/Jayapura',
-    label: 'WIT — Maluku & Papua',
+    label: 'WIT (Maluku dan Papua)',
     abbrev: 'WIT',
   },
 ] as const

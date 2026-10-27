@@ -52,7 +52,7 @@ const dashImprovement = computed(() => {
   <div class="min-h-screen bg-background">
     <header class="border-b bg-card/40 px-4 py-6">
       <div class="mx-auto flex max-w-4xl flex-col gap-2">
-        <RouterLink :to="ROUTES.landing" class="text-sm text-muted-foreground hover:underline">← Hadirin</RouterLink>
+        <RouterLink :to="ROUTES.landing" class="text-sm text-muted-foreground hover:underline">Kembali ke Hadirin</RouterLink>
         <h1 class="text-2xl font-semibold tracking-tight">Kecepatan & stabilitas</h1>
         <p class="text-muted-foreground text-sm max-w-2xl">
           Ringkasan hasil pengukuran waktu muat halaman ringkasan dan daftar absensi setelah penyesuaian produk.
@@ -75,7 +75,7 @@ const dashImprovement = computed(() => {
               <p class="text-xs text-muted-foreground">Sebelum</p>
               <p class="text-3xl font-bold tabular-nums">{{ findDash(before)?.warm_excluding_first.p50_ms }} ms</p>
             </div>
-            <div class="text-muted-foreground pb-1">→</div>
+            <div class="text-muted-foreground pb-1">menjadi</div>
             <div>
               <p class="text-xs text-muted-foreground">Sesudah</p>
               <p class="text-3xl font-bold tabular-nums text-emerald-600">{{ findDash(after)?.warm_excluding_first.p50_ms }} ms</p>

@@ -174,7 +174,7 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
                 <span class="text-xs font-bold text-foreground">Cuti tahunan (2 hari)</span>
                 <span class="text-[10px] text-muted-foreground font-semibold bg-muted px-2 py-0.5 rounded">Menunggu</span>
               </div>
-              <p class="mt-1 text-[11px] text-muted-foreground">Rafi Pratama · Operasional</p>
+              <p class="mt-1 text-[11px] text-muted-foreground">Rafi Pratama, Operasional</p>
             </div>
           </div>
         </div>
@@ -211,7 +211,7 @@ import ScrollReveal from '@/components/landing/scroll-reveal.vue'
                 <div class="min-w-0 flex-1">
                   <p class="truncate text-sm font-semibold text-foreground">laporan_mingguan.csv</p>
                   <p class="mt-0.5 text-[11px] leading-snug text-muted-foreground">
-                    Dashboard → Laporan → pilih minggu → unduh
+                    Menu Laporan, pilih minggu, lalu unduh
                   </p>
                 </div>
               </div>
