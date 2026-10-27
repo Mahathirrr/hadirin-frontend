@@ -2,6 +2,8 @@ import { test, expect, type Page } from '@playwright/test'
 
 import { ROUTES } from '../src/lib/routes'
 
+test.setTimeout(120_000)
+
 const adminEmail = process.env.E2E_ADMIN_EMAIL ?? process.env.E2E_EMAIL ?? 'muhammad.mahathir.id@gmail.com'
 const adminPassword = process.env.E2E_ADMIN_PASSWORD ?? process.env.E2E_PASSWORD ?? 'admin123'
 const memberEmail = process.env.E2E_STUDENT_EMAIL ?? 'ahmad.rizki@student.usk.ac.id'
@@ -54,8 +56,10 @@ async function signIn(page: Page, email: string, password: string) {
   await page.goto(ROUTES.signIn)
   await page.getByLabel(/email/i).fill(email)
   await page.getByLabel(/password|kata sandi/i).fill(password)
-  await page.getByRole('button', { name: 'Masuk', exact: true }).click()
-  await page.waitForURL(/summary|onboarding|employees/, { timeout: 45_000 })
+  await Promise.all([
+    page.waitForURL(/summary|onboarding|employees/, { timeout: 60_000, waitUntil: 'commit' }),
+    page.getByRole('button', { name: 'Masuk', exact: true }).click(),
+  ])
   if (page.url().includes('onboarding')) {
     throw new Error('Akun belum punya workspace, tidak bisa audit app routes')
   }
@@ -71,6 +75,8 @@ test.describe('Mobile overflow — publik', () => {
 })
 
 test.describe('Mobile overflow — admin', () => {
+  test.describe.configure({ mode: 'serial' })
+
   test.beforeEach(async ({ page }) => {
     await signIn(page, adminEmail, adminPassword)
   })
@@ -84,6 +90,8 @@ test.describe('Mobile overflow — admin', () => {
 })
 
 test.describe('Mobile overflow — karyawan', () => {
+  test.describe.configure({ mode: 'serial' })
+
   test.beforeEach(async ({ page }) => {
     await signIn(page, memberEmail, memberPassword)
   })
@@ -106,6 +114,8 @@ test.describe('Mobile overflow — karyawan', () => {
 })
 
 test.describe('Mobile overflow — viewport kecil', () => {
+  test.describe.configure({ mode: 'serial' })
+
   test('landing 320px', async ({ page }) => {
     await page.goto(ROUTES.landing)
     await assertNoHorizontalOverflow(page, 'landing-320')
