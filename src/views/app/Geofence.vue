@@ -197,7 +197,7 @@ async function saveSettings() {
       </CardHeader>
     </Card>
 
-    <div class="grid min-h-[calc(100vh-18rem)] gap-3 lg:grid-cols-[minmax(300px,380px)_1fr] lg:items-stretch">
+    <div class="grid gap-3 lg:grid-cols-[minmax(300px,380px)_1fr] lg:items-start">
       <div class="flex flex-col gap-3">
         <Card class="rounded-xl border-border/60 shadow-none">
           <CardHeader class="flex flex-row items-center justify-between">
@@ -314,15 +314,16 @@ async function saveSettings() {
         </Card>
       </div>
 
-      <Card class="flex min-h-[420px] flex-col overflow-hidden rounded-xl p-0 shadow-none lg:min-h-0">
-        <CardContent class="relative min-h-[420px] flex-1 p-0 lg:min-h-[calc(100vh-18rem)]">
+      <Card class="overflow-hidden rounded-xl p-0 shadow-none lg:sticky lg:top-24 lg:z-0">
+        <CardContent class="relative h-[min(520px,calc(100dvh-11rem))] p-0">
           <LocationMap
             ref="mapRef"
             full-height
-            min-height="420px"
+            min-height="320px"
             :circles="mapCircles"
+            :fit-circles="pointCount > 0"
             :interactive="isAdmin"
-            class="h-full min-h-[420px] rounded-none lg:min-h-full"
+            class="h-full rounded-none"
             @map-click="onMapClick"
           />
         </CardContent>

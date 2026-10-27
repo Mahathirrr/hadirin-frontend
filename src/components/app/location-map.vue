@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<{
   markers?: MapMarker[]
   circles?: MapCircle[]
   interactive?: boolean
+  fitCircles?: boolean
 }>(), {
   center: () => DEFAULT_MAP_CENTER,
   zoom: DEFAULT_MAP_ZOOM,
@@ -30,6 +31,7 @@ const props = withDefaults(defineProps<{
   markers: () => [],
   circles: () => [],
   interactive: false,
+  fitCircles: true,
 })
 
 const emit = defineEmits<{
@@ -40,6 +42,11 @@ const mapEl = ref<HTMLElement | null>(null)
 let map: L.Map | null = null
 let markerLayer: L.LayerGroup | null = null
 let circleLayer: L.LayerGroup | null = null
+let resizeObserver: ResizeObserver | null = null
+let scrollTimer: ReturnType<typeof setTimeout> | null = null
+let didFitBounds = false
+
+const circleColors = ['#2563eb', '#0d9488', '#7c3aed', '#ea580c', '#db2777', '#0891b2']
 
 function renderOverlays() {
   if (!map) return
@@ -51,29 +58,61 @@ function renderOverlays() {
 
   const bounds: L.LatLngExpression[] = []
 
-  for (const c of props.circles) {
-    if (!Number.isFinite(c.lat) || !Number.isFinite(c.lng)) continue
+  props.circles.forEach((c, index) => {
+    if (!Number.isFinite(c.lat) || !Number.isFinite(c.lng)) return
+    const color = circleColors[index % circleColors.length]
     L.circle([c.lat, c.lng], {
       radius: c.radiusM,
-      color: '#2563eb',
-      fillColor: '#3b82f6',
-      fillOpacity: 0.12,
+      color,
+      fillColor: color,
+      fillOpacity: 0.14,
       weight: 2,
     })
       .bindPopup(c.label ?? '')
-      .addTo(circleLayer)
+      .addTo(circleLayer!)
+    L.circleMarker([c.lat, c.lng], {
+      radius: 5,
+      color,
+      fillColor: color,
+      fillOpacity: 1,
+      weight: 2,
+    })
+      .bindPopup(c.label ?? '')
+      .addTo(markerLayer!)
     bounds.push([c.lat, c.lng])
-  }
+  })
 
   for (const m of props.markers) {
     if (!Number.isFinite(m.lat) || !Number.isFinite(m.lng)) continue
-    L.marker([m.lat, m.lng]).bindPopup(m.label ?? '').addTo(markerLayer)
+    L.circleMarker([m.lat, m.lng], {
+      radius: 6,
+      color: '#2563eb',
+      fillColor: '#2563eb',
+      fillOpacity: 1,
+      weight: 2,
+    })
+      .bindPopup(m.label ?? '')
+      .addTo(markerLayer!)
     bounds.push([m.lat, m.lng])
   }
 
-  if (bounds.length > 0) {
-    map.fitBounds(L.latLngBounds(bounds).pad(0.2))
+  if (props.fitCircles && bounds.length > 0 && !didFitBounds) {
+    if (bounds.length === 1) {
+      map.setView(bounds[0] as L.LatLngExpression, 15)
+    } else {
+      map.fitBounds(L.latLngBounds(bounds).pad(0.15), { maxZoom: 14 })
+    }
+    didFitBounds = true
   }
+}
+
+function scheduleInvalidate() {
+  if (scrollTimer) clearTimeout(scrollTimer)
+  scrollTimer = setTimeout(() => map?.invalidateSize({ animate: false }), 120)
+}
+
+function onWindowScroll() {
+  scheduleInvalidate()
 }
 
 function initMap() {
@@ -82,6 +121,7 @@ function initMap() {
   map = L.map(mapEl.value, {
     zoomControl: false,
     attributionControl: true,
+    preferCanvas: true,
   }).setView(props.center, props.zoom)
 
   L.tileLayer(HADIRIN_MAP_TILES.url, {
@@ -97,8 +137,14 @@ function initMap() {
     })
   }
 
-  setTimeout(() => map?.invalidateSize(), 120)
-  setTimeout(() => map?.invalidateSize(), 400)
+  if (mapEl.value) {
+    resizeObserver = new ResizeObserver(() => scheduleInvalidate())
+    resizeObserver.observe(mapEl.value)
+  }
+  window.addEventListener('scroll', onWindowScroll, { passive: true, capture: true })
+  window.addEventListener('resize', onWindowScroll, { passive: true })
+
+  scheduleInvalidate()
   renderOverlays()
 }
 
@@ -110,10 +156,23 @@ watch(
   },
 )
 
-watch(() => [props.markers, props.circles], () => renderOverlays(), { deep: true })
+watch(
+  () => props.circles,
+  () => {
+    didFitBounds = false
+    renderOverlays()
+  },
+  { deep: true },
+)
+
+watch(() => props.markers, () => renderOverlays(), { deep: true })
 
 onMounted(initMap)
 onUnmounted(() => {
+  if (scrollTimer) clearTimeout(scrollTimer)
+  window.removeEventListener('scroll', onWindowScroll, true)
+  window.removeEventListener('resize', onWindowScroll)
+  resizeObserver?.disconnect()
   markerLayer = null
   circleLayer = null
   map?.remove()
@@ -121,8 +180,11 @@ onUnmounted(() => {
 })
 
 defineExpose({
-  invalidateSize: () => map?.invalidateSize(),
-  flyTo: (lat: number, lng: number, zoom = 15) => map?.flyTo([lat, lng], zoom),
+  invalidateSize: () => map?.invalidateSize({ animate: false }),
+  flyTo: (lat: number, lng: number, zoom = 15) => {
+    didFitBounds = true
+    map?.flyTo([lat, lng], zoom)
+  },
 })
 </script>
 
@@ -139,11 +201,25 @@ defineExpose({
 </template>
 
 <style scoped>
+.hadirin-map {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  contain: layout paint style;
+  transform: translateZ(0);
+}
+
 .hadirin-map :deep(.leaflet-container) {
   height: 100%;
   width: 100%;
   background: hsl(var(--muted));
   font-family: inherit;
+  z-index: 0;
+}
+
+.hadirin-map :deep(.leaflet-control-container) {
+  position: relative;
+  z-index: 5;
 }
 
 .hadirin-map :deep(.leaflet-tile-pane) {
@@ -164,5 +240,9 @@ defineExpose({
   background: hsl(var(--background) / 0.85);
   color: hsl(var(--muted-foreground));
   font-size: 10px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
