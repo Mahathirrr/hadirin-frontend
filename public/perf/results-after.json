@@ -1,0 +1,53 @@
+{
+  "captured_at": "2026-10-27T13:04:25.400Z",
+  "environment": "production",
+  "api_base": "https://hadirin.showcaseproject.my.id/api",
+  "workspace_id": 1,
+  "samples_per_endpoint": 25,
+  "warmup": 3,
+  "note": "Latensi end-to-end (DNS+TLS+nginx+Go+DB/Redis). Bandingkan sebelum/sesudah deploy optimasi.",
+  "endpoints": [
+    {
+      "name": "GET /dashboard/summary",
+      "url": "https://hadirin.showcaseproject.my.id/api/dashboard/summary?workspace_id=1",
+      "cold_first_ms": 46.54,
+      "warm_excluding_first": {
+        "n": 24,
+        "min_ms": 43.4,
+        "p50_ms": 44.33,
+        "p95_ms": 47,
+        "max_ms": 49.16,
+        "avg_ms": 44.8
+      },
+      "all": {
+        "n": 25,
+        "min_ms": 43.4,
+        "p50_ms": 44.38,
+        "p95_ms": 47,
+        "max_ms": 49.16,
+        "avg_ms": 44.87
+      }
+    },
+    {
+      "name": "GET /attendance (paged)",
+      "url": "https://hadirin.showcaseproject.my.id/api/attendance?workspace_id=1&limit=20",
+      "cold_first_ms": 216.09,
+      "warm_excluding_first": {
+        "n": 24,
+        "min_ms": 109.59,
+        "p50_ms": 143.03,
+        "p95_ms": 235.02,
+        "max_ms": 291.92,
+        "avg_ms": 163.52
+      },
+      "all": {
+        "n": 25,
+        "min_ms": 109.59,
+        "p50_ms": 144.34,
+        "p95_ms": 235.02,
+        "max_ms": 291.92,
+        "avg_ms": 165.63
+      }
+    }
+  ]
+}

@@ -24,6 +24,7 @@ export const ROUTES = {
   subscriptionCheckout: '/subscription/checkout',
   billingHistory: '/billing/history',
   billingAdmin: '/billing/admin',
+  engineeringPerformance: '/engineering/performance',
 } as const
 
 export type RouteName =

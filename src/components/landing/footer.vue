@@ -15,6 +15,7 @@ const navigasi: FooterLink[] = [
   { name: 'Solusi', href: '#use-cases' },
   { name: 'Harga', href: '#pricing' },
   { name: 'FAQ', href: '#faq' },
+  { name: 'Performa (engineering)', href: '/engineering/performance' },
 ]
 
 const akun: FooterLink[] = [

@@ -13,6 +13,11 @@ const router = createRouter({
   },
   routes: [
     { path: ROUTES.landing, name: 'landing', component: () => import('@/views/LandingPage.vue') },
+    {
+      path: ROUTES.engineeringPerformance,
+      name: 'engineering-performance',
+      component: () => import('@/views/PerformanceCaseStudy.vue'),
+    },
     { path: ROUTES.signIn, name: 'sign-in', component: () => import('@/views/auth/SignIn.vue'), meta: { guest: true } },
     { path: ROUTES.signUp, name: 'sign-up', component: () => import('@/views/auth/SignUp.vue'), meta: { guest: true } },
     { path: ROUTES.forgotPassword, name: 'forgot-password', component: () => import('@/views/auth/ForgotPassword.vue'), meta: { guest: true } },

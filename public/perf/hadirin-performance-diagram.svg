@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 420" role="img" aria-label="Hadirin performance optimization flow">
+  <defs>
+    <style>
+      .title { font: 700 20px system-ui, sans-serif; fill: #0f172a; }
+      .label { font: 600 13px system-ui, sans-serif; fill: #334155; }
+      .small { font: 11px system-ui, sans-serif; fill: #64748b; }
+      .box { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.5; rx: 8; }
+      .box-after { fill: #ecfdf5; stroke: #0d9488; }
+      .arrow { stroke: #64748b; stroke-width: 2; fill: none; marker-end: url(#m); }
+      .arrow-teal { stroke: #0d9488; }
+    </style>
+    <marker id="m" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <text x="460" y="32" text-anchor="middle" class="title">Hadirin  urutan optimasi (ukur ’ query ’ index ’ cache)</text>
+
+  <text x="230" y="58" text-anchor="middle" class="label">Sebelum</text>
+  <rect class="box" x="40" y="72" width="100" height="44"/><text x="90" y="99" text-anchor="middle" class="small">Browser</text>
+  <rect class="box" x="170" y="72" width="100" height="44"/><text x="220" y="99" text-anchor="middle" class="small">Go API</text>
+  <rect class="box" x="300" y="72" width="140" height="56"/><text x="370" y="96" text-anchor="middle" class="small">PostgreSQL</text>
+  <text x="370" y="114" text-anchor="middle" class="small">DATE(created_at)</text>
+  <path class="arrow" d="M140 94 H170"/><path class="arrow" d="M270 94 H300"/>
+  <text x="230" y="150" text-anchor="middle" class="small">~15 COUNT / request · p50 dashboard ~141 ms</text>
+
+  <text x="690" y="58" text-anchor="middle" class="label">Sesudah</text>
+  <rect class="box box-after" x="500" y="72" width="100" height="44"/><text x="550" y="99" text-anchor="middle" class="small">Browser</text>
+  <rect class="box box-after" x="630" y="72" width="100" height="44"/><text x="680" y="99" text-anchor="middle" class="small">Go API</text>
+  <rect class="box box-after" x="760" y="60" width="120" height="40"/><text x="820" y="85" text-anchor="middle" class="small">Redis 45s</text>
+  <rect class="box box-after" x="760" y="108" width="120" height="48"/><text x="820" y="128" text-anchor="middle" class="small">PostgreSQL</text>
+  <text x="820" y="146" text-anchor="middle" class="small">index + range</text>
+  <path class="arrow arrow-teal" d="M600 94 H630"/><path class="arrow arrow-teal" d="M730 94 H760"/>
+  <path class="arrow arrow-teal" d="M680 116 V108"/>
+  <text x="690" y="180" text-anchor="middle" class="small">Cache hit p50 ~44 ms · attendance p50 ~143 ms</text>
+
+  <rect x="80" y="220" width="760" height="160" fill="#fff" stroke="#e2e8f0" rx="10"/>
+  <text x="100" y="248" class="label">1. Query sargable</text>
+  <text x="100" y="268" class="small">created_at &gt;= dayStart AND &lt; dayEnd  planner pakai B-tree</text>
+  <text x="100" y="298" class="label">2. Index komposit (000014)</text>
+  <text x="100" y="318" class="small">(workspace_id, created_at) partial WHERE deleted_at IS NULL</text>
+  <text x="100" y="348" class="label">3. Cache dashboard</text>
+  <text x="100" y="368" class="small">Trade-off: data summary max 45s stale · beban DB turun drastis</text>
+</svg>
