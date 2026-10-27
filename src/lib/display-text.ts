@@ -2,9 +2,12 @@
 export function sanitizeDisplayText(value: string | null | undefined): string {
   if (!value) return ''
   return value
-    .replace(/\u2014/g, ', ')
-    .replace(/\u2013/g, ', ')
+    .replace(/ \u2014 /g, ', ')
+    .replace(/ \u2013 /g, ', ')
+    .replace(/\u2014/g, ',')
+    .replace(/\u2013/g, ',')
+    .replace(/\s+,/g, ',')
+    .replace(/,\s{2,}/g, ', ')
     .replace(/\s{2,}/g, ' ')
-    .replace(/,\s*,/g, ',')
     .trim()
 }
