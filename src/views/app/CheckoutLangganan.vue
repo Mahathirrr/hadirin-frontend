@@ -63,7 +63,8 @@ async function simulate() {
       </CardHeader>
       <CardContent class="flex flex-col gap-4">
         <p v-if="sandbox" class="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
-          Mode uji coba, pembayaran tidak nyata.
+          Mode uji coba Xendit — buka halaman pembayaran, pilih metode, lalu klik banner merah
+          <strong>Simulate payment</strong> di atas halaman invoice. Setelah itu gunakan tombol di bawah atau sync di riwayat.
         </p>
         <p v-if="loading" class="text-muted-foreground text-sm">Menyiapkan invoice…</p>
         <template v-else-if="order">
