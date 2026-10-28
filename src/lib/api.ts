@@ -151,6 +151,12 @@ export type WorkspaceSettings = {
   passkey_fallback_enabled: boolean
   work_start_time?: string
   work_end_time?: string
+  work_week_schedule?: Array<{
+    day: number
+    active: boolean
+    start_time: string
+    end_time: string
+  }>
   late_threshold_minutes?: number
 }
 

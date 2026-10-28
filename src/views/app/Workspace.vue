@@ -11,11 +11,19 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { api, type DashboardSummary, type Workspace, type WorkspaceMember } from '@/lib/api'
 import TimezoneSelect from '@/components/app/timezone-select.vue'
 import { timezoneAbbrev } from '@/lib/timezone'
-import { formatWorkTimeRange, normalizeWorkTime } from '@/lib/work-time'
+import { normalizeWorkTime } from '@/lib/work-time'
+import {
+  defaultWorkWeek,
+  parseWorkWeekFromApi,
+  scheduleForSave,
+  WORK_DAY_LABELS,
+  type WorkDaySchedule,
+} from '@/lib/work-week'
 import { ROUTES } from '@/lib/routes'
 import { useAuthStore } from '@/stores/auth'
 
@@ -32,8 +40,7 @@ const workspaceName = ref('')
 const workspace = ref<Workspace | null>(null)
 const members = ref<WorkspaceMember[]>([])
 const summary = ref<DashboardSummary | null>(null)
-const workStart = ref('08:00')
-const workEnd = ref('17:00')
+const workWeek = ref<WorkDaySchedule[]>(defaultWorkWeek())
 const lateThreshold = ref(15)
 const settingsInterval = ref(20)
 const timezone = ref('Asia/Jakarta')
@@ -43,8 +50,7 @@ const scheduleBaseline = ref('')
 function snapshotSchedule() {
   return JSON.stringify({
     timezone: timezone.value,
-    workStart: normalizeWorkTime(workStart.value),
-    workEnd: normalizeWorkTime(workEnd.value),
+    workWeek: scheduleForSave(workWeek.value),
     lateThreshold: lateThreshold.value,
   })
 }
@@ -53,7 +59,7 @@ function markScheduleDirty() {
   scheduleDirty.value = snapshotSchedule() !== scheduleBaseline.value
 }
 
-watch([timezone, workStart, workEnd, lateThreshold], markScheduleDirty)
+watch([timezone, workWeek, lateThreshold], markScheduleDirty, { deep: true })
 
 const isAdmin = computed(() =>
   auth.activeMembership?.role === 'owner' || auth.activeMembership?.role === 'admin',
@@ -66,21 +72,15 @@ const roleLabel: Record<string, string> = {
   member: 'Member',
 }
 
-const displayStart = computed(() => normalizeWorkTime(workStart.value))
-const displayEnd = computed(() => normalizeWorkTime(workEnd.value))
-const scheduleSummary = computed(
-  () => `Senin-Jumat ${formatWorkTimeRange(displayStart.value, displayEnd.value)} ${timezoneAbbrev(timezone.value)}`,
-)
-
-const weekdays = computed(() => {
-  const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
-  return days.map((day, i) => ({
-    day,
-    active: i < 5,
-    in: displayStart.value,
-    out: displayEnd.value,
-  }))
+const scheduleSummary = computed(() => {
+  const active = workWeek.value.filter((d) => d.active)
+  const names = active.map((d) => WORK_DAY_LABELS[d.day]).join(', ')
+  return `${active.length} hari kerja (${names || 'belum ada'}) · zona ${timezoneAbbrev(timezone.value)}`
 })
+
+function onDayTimeChange(row: WorkDaySchedule, field: 'start_time' | 'end_time', value: string) {
+  row[field] = normalizeWorkTime(value)
+}
 
 async function loadAll() {
   if (!auth.token || !auth.workspaceId) return
@@ -97,8 +97,11 @@ async function loadAll() {
     workspaceName.value = ws.name
     members.value = memberList
     summary.value = dash
-    workStart.value = normalizeWorkTime(settingsRes.data.work_start_time, '08:00')
-    workEnd.value = normalizeWorkTime(settingsRes.data.work_end_time, '17:00')
+    workWeek.value = parseWorkWeekFromApi(
+      settingsRes.data.work_week_schedule,
+      settingsRes.data.work_start_time,
+      settingsRes.data.work_end_time,
+    )
     lateThreshold.value = settingsRes.data.late_threshold_minutes ?? 15
     settingsInterval.value = settingsRes.data.location_interval_minutes ?? 20
     timezone.value = settingsRes.data.timezone ?? 'Asia/Jakarta'
@@ -148,12 +151,16 @@ async function saveWorkspaceName() {
 
 async function saveSchedule() {
   if (!auth.token || !auth.workspaceId || !isAdmin.value) return
+  const rows = scheduleForSave(workWeek.value)
+  if (!rows.some((d) => d.active)) {
+    toast.error('Minimal satu hari kerja harus aktif')
+    return
+  }
   savingSchedule.value = true
   try {
     await api.updateWorkspaceSettings(auth.token, auth.workspaceId, {
       timezone: timezone.value,
-      work_start_time: normalizeWorkTime(workStart.value),
-      work_end_time: normalizeWorkTime(workEnd.value),
+      work_week_schedule: rows,
       late_threshold_minutes: lateThreshold.value,
     })
     toast.success('Jadwal kerja disimpan')
@@ -259,7 +266,7 @@ async function deleteWorkspace() {
         <CardHeader class="space-y-1">
           <CardTitle class="text-base">Jadwal jam kerja</CardTitle>
           <p class="text-sm text-muted-foreground">
-            Satu jam default untuk Senin-Jumat (absensi hadir/telat). Sabtu dan Minggu libur.
+            Atur jam masuk dan pulang per hari. Dipakai untuk status hadir/telat absensi.
           </p>
         </CardHeader>
         <CardContent class="space-y-4">
@@ -288,53 +295,27 @@ async function deleteWorkspace() {
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="flex items-center gap-2">
                 <Pencil class="size-4 text-muted-foreground" />
-                <h3 class="text-sm font-semibold">Edit jadwal default</h3>
+                <h3 class="text-sm font-semibold">Edit per hari</h3>
               </div>
               <Badge v-if="isAdmin && scheduleDirty" variant="secondary">Belum disimpan</Badge>
             </div>
 
-            <div class="grid max-w-2xl gap-3">
-              <div class="grid gap-1.5">
+            <div class="grid max-w-3xl gap-3 sm:grid-cols-2">
+              <div class="grid gap-1.5 sm:col-span-2">
                 <Label>Zona waktu</Label>
                 <TimezoneSelect v-model="timezone" :disabled="!isAdmin" />
               </div>
-              <div class="grid gap-3 sm:grid-cols-3">
-                <div class="grid gap-1.5">
-                  <Label for="work-start">Jam masuk ({{ timezoneAbbrev(timezone) }})</Label>
-                  <Input
-                    id="work-start"
-                    v-model="workStart"
-                    type="time"
-                    step="60"
-                    class="tabular-nums"
-                    :disabled="!isAdmin"
-                    @change="workStart = normalizeWorkTime(workStart)"
-                  />
-                </div>
-                <div class="grid gap-1.5">
-                  <Label for="work-end">Jam pulang ({{ timezoneAbbrev(timezone) }})</Label>
-                  <Input
-                    id="work-end"
-                    v-model="workEnd"
-                    type="time"
-                    step="60"
-                    class="tabular-nums"
-                    :disabled="!isAdmin"
-                    @change="workEnd = normalizeWorkTime(workEnd)"
-                  />
-                </div>
-                <div class="grid gap-1.5">
-                  <Label for="late-threshold">Toleransi telat (menit)</Label>
-                  <Input
-                    id="late-threshold"
-                    v-model.number="lateThreshold"
-                    type="number"
-                    min="0"
-                    max="120"
-                    class="tabular-nums"
-                    :disabled="!isAdmin"
-                  />
-                </div>
+              <div class="grid gap-1.5">
+                <Label for="late-threshold">Toleransi telat (menit)</Label>
+                <Input
+                  id="late-threshold"
+                  v-model.number="lateThreshold"
+                  type="number"
+                  min="0"
+                  max="120"
+                  class="tabular-nums"
+                  :disabled="!isAdmin"
+                />
               </div>
             </div>
 
@@ -362,51 +343,53 @@ async function deleteWorkspace() {
           </div>
 
           <div class="overflow-x-auto rounded-lg border border-border/60">
-            <p class="border-b border-border/60 bg-muted/20 px-3 py-2 text-xs font-medium text-muted-foreground">
-              Pratinjau per hari (Senin-Jumat memakai jam yang sama)
-            </p>
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Hari</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead class="tabular-nums">Masuk</TableHead>
-                  <TableHead class="tabular-nums">Pulang</TableHead>
+                  <TableHead>Hari kerja</TableHead>
+                  <TableHead class="tabular-nums">Jam masuk</TableHead>
+                  <TableHead class="tabular-nums">Jam pulang</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow v-for="row in weekdays" :key="row.day">
-                  <TableCell class="font-medium">{{ row.day }}</TableCell>
+                <TableRow v-for="row in workWeek" :key="row.day">
+                  <TableCell class="font-medium">{{ WORK_DAY_LABELS[row.day] }}</TableCell>
                   <TableCell>
-                    <Badge :variant="row.active ? 'default' : 'secondary'">
-                      {{ row.active ? 'Kerja' : 'Libur' }}
-                    </Badge>
+                    <div class="flex items-center gap-2">
+                      <Switch
+                        :checked="row.active"
+                        :disabled="!isAdmin"
+                        @update:checked="(v: boolean) => { row.active = v }"
+                      />
+                      <Badge :variant="row.active ? 'default' : 'secondary'">
+                        {{ row.active ? 'Kerja' : 'Libur' }}
+                      </Badge>
+                    </div>
                   </TableCell>
                   <TableCell class="tabular-nums">
-                    <template v-if="row.active && isAdmin">
-                      <Input
-                        v-model="workStart"
-                        type="time"
-                        step="60"
-                        class="h-8 w-[7.25rem] tabular-nums"
-                        @change="workStart = normalizeWorkTime(workStart)"
-                      />
-                    </template>
-                    <span v-else-if="row.active" class="text-muted-foreground">{{ row.in }}</span>
-                    <span v-else class="text-muted-foreground">-</span>
+                    <Input
+                      v-if="isAdmin"
+                      :model-value="row.start_time"
+                      type="time"
+                      step="60"
+                      class="h-8 w-[7.25rem] tabular-nums"
+                      :disabled="!row.active"
+                      @update:model-value="(v) => onDayTimeChange(row, 'start_time', String(v))"
+                    />
+                    <span v-else class="text-muted-foreground">{{ row.active ? row.start_time : '-' }}</span>
                   </TableCell>
                   <TableCell class="tabular-nums">
-                    <template v-if="row.active && isAdmin">
-                      <Input
-                        v-model="workEnd"
-                        type="time"
-                        step="60"
-                        class="h-8 w-[7.25rem] tabular-nums"
-                        @change="workEnd = normalizeWorkTime(workEnd)"
-                      />
-                    </template>
-                    <span v-else-if="row.active" class="text-muted-foreground">{{ row.out }}</span>
-                    <span v-else class="text-muted-foreground">-</span>
+                    <Input
+                      v-if="isAdmin"
+                      :model-value="row.end_time"
+                      type="time"
+                      step="60"
+                      class="h-8 w-[7.25rem] tabular-nums"
+                      :disabled="!row.active"
+                      @update:model-value="(v) => onDayTimeChange(row, 'end_time', String(v))"
+                    />
+                    <span v-else class="text-muted-foreground">{{ row.active ? row.end_time : '-' }}</span>
                   </TableCell>
                 </TableRow>
               </TableBody>
