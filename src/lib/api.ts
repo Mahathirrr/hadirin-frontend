@@ -423,10 +423,7 @@ export const api = {
   },
   weeklyReportDownloadUrl: (reportId: number) => `${API_URL}/reports/weekly/${reportId}/download`,
 
-  billingStatus: () =>
-    request<{ enabled: boolean; sandbox: boolean; provider?: string; test_mode?: boolean }>(
-      '/billing/status',
-    ),
+  billingStatus: () => request<{ enabled: boolean; sandbox: boolean }>('/billing/status'),
   listSubscriptionPlans: () => request<{ data: SubscriptionPlan[] }>('/billing/plans'),
   getSubscription: (token: string, workspaceId: number) =>
     request<WorkspaceSubscription>(`/billing/subscription?workspace_id=${workspaceId}`, { token }),
