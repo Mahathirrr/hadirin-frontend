@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 
 import PageShell from '@/components/app/page-shell.vue'
@@ -14,6 +14,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { api, type DashboardSummary, type Workspace, type WorkspaceMember } from '@/lib/api'
 import TimezoneSelect from '@/components/app/timezone-select.vue'
 import { timezoneAbbrev } from '@/lib/timezone'
+import { formatWorkTimeRange, normalizeWorkTime } from '@/lib/work-time'
+import { ROUTES } from '@/lib/routes'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -46,13 +48,19 @@ const roleLabel: Record<string, string> = {
   member: 'Member',
 }
 
+const displayStart = computed(() => normalizeWorkTime(workStart.value))
+const displayEnd = computed(() => normalizeWorkTime(workEnd.value))
+const scheduleSummary = computed(
+  () => `Senin–Jumat ${formatWorkTimeRange(displayStart.value, displayEnd.value)} ${timezoneAbbrev(timezone.value)}`,
+)
+
 const weekdays = computed(() => {
   const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
   return days.map((day, i) => ({
     day,
     active: i < 5,
-    in: workStart.value,
-    out: workEnd.value,
+    in: displayStart.value,
+    out: displayEnd.value,
   }))
 })
 
@@ -71,8 +79,8 @@ async function loadAll() {
     workspaceName.value = ws.name
     members.value = memberList
     summary.value = dash
-    workStart.value = settingsRes.data.work_start_time ?? '08:00'
-    workEnd.value = settingsRes.data.work_end_time ?? '17:00'
+    workStart.value = normalizeWorkTime(settingsRes.data.work_start_time, '08:00')
+    workEnd.value = normalizeWorkTime(settingsRes.data.work_end_time, '17:00')
     lateThreshold.value = settingsRes.data.late_threshold_minutes ?? 15
     settingsInterval.value = settingsRes.data.location_interval_minutes ?? 20
     timezone.value = settingsRes.data.timezone ?? 'Asia/Jakarta'
@@ -124,8 +132,8 @@ async function saveSchedule() {
   try {
     await api.updateWorkspaceSettings(auth.token, auth.workspaceId, {
       timezone: timezone.value,
-      work_start_time: workStart.value,
-      work_end_time: workEnd.value,
+      work_start_time: normalizeWorkTime(workStart.value),
+      work_end_time: normalizeWorkTime(workEnd.value),
       late_threshold_minutes: lateThreshold.value,
     })
     toast.success('Jadwal kerja disimpan')
@@ -226,55 +234,107 @@ async function deleteWorkspace() {
         </Card>
       </div>
 
-      <Card class="rounded-xl shadow-none">
-        <CardHeader class="flex flex-row items-center justify-between">
-          <div>
+      <Card class="rounded-xl border-border/60 shadow-none">
+        <CardHeader class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div class="min-w-0">
             <CardTitle class="text-base">Jadwal jam kerja</CardTitle>
-            <p class="mt-0.5 text-sm text-muted-foreground">Senin-Jumat mengikuti jam di bawah. Sabtu/Minggu libur.</p>
+            <p class="mt-0.5 text-sm text-muted-foreground">
+              Jam default perusahaan untuk status hadir/telat. Sabtu dan Minggu libur.
+            </p>
           </div>
-          <Button v-if="isAdmin" size="sm" :disabled="savingSchedule" @click="saveSchedule">
-            {{ savingSchedule ? 'Menyimpan...' : 'Simpan jadwal' }}
+          <Button v-if="isAdmin" size="sm" class="shrink-0" :disabled="savingSchedule" @click="saveSchedule">
+            {{ savingSchedule ? 'Menyimpan…' : 'Simpan jadwal' }}
           </Button>
         </CardHeader>
-        <CardContent class="space-y-3">
-          <div v-if="isAdmin" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="grid gap-1.5 sm:col-span-2">
+        <CardContent class="space-y-4">
+          <div
+            class="rounded-lg border border-border/60 bg-muted/20 px-3 py-2.5 text-sm"
+          >
+            <p class="font-medium tabular-nums">{{ scheduleSummary }}</p>
+            <p class="mt-1 text-muted-foreground">
+              Toleransi telat {{ lateThreshold }} menit setelah jam masuk.
+            </p>
+            <p v-if="!isAdmin" class="mt-1 text-xs text-muted-foreground">
+              Hanya admin yang dapat mengubah jadwal.
+            </p>
+          </div>
+
+          <div v-if="isAdmin" class="max-w-xl space-y-3">
+            <div class="grid gap-1.5">
               <Label>Zona waktu</Label>
               <TimezoneSelect v-model="timezone" />
             </div>
-            <div class="grid gap-1.5">
-              <Label for="work-start">Jam masuk ({{ timezoneAbbrev(timezone) }})</Label>
-              <Input id="work-start" v-model="workStart" type="time" />
+            <div class="grid gap-3 sm:grid-cols-3">
+              <div class="grid gap-1.5">
+                <Label for="work-start">Jam masuk ({{ timezoneAbbrev(timezone) }})</Label>
+                <Input
+                  id="work-start"
+                  v-model="workStart"
+                  type="time"
+                  step="60"
+                  class="tabular-nums"
+                  @change="workStart = normalizeWorkTime(workStart)"
+                />
+              </div>
+              <div class="grid gap-1.5">
+                <Label for="work-end">Jam pulang ({{ timezoneAbbrev(timezone) }})</Label>
+                <Input
+                  id="work-end"
+                  v-model="workEnd"
+                  type="time"
+                  step="60"
+                  class="tabular-nums"
+                  @change="workEnd = normalizeWorkTime(workEnd)"
+                />
+              </div>
+              <div class="grid gap-1.5">
+                <Label for="late-threshold">Toleransi telat (menit)</Label>
+                <Input
+                  id="late-threshold"
+                  v-model.number="lateThreshold"
+                  type="number"
+                  min="0"
+                  max="120"
+                  class="tabular-nums"
+                />
+              </div>
             </div>
-            <div class="grid gap-1.5">
-              <Label for="work-end">Jam pulang ({{ timezoneAbbrev(timezone) }})</Label>
-              <Input id="work-end" v-model="workEnd" type="time" />
-            </div>
-            <div class="grid gap-1.5">
-              <Label for="late-threshold">Toleransi telat (menit)</Label>
-              <Input id="late-threshold" v-model.number="lateThreshold" type="number" min="0" max="120" />
-            </div>
+            <p class="text-xs text-muted-foreground">
+              Setelah mengubah jam, klik Simpan jadwal. Untuk jam berbeda per karyawan, gunakan
+              <RouterLink :to="ROUTES.shiftRoster" class="text-primary underline-offset-2 hover:underline">
+                Shift &amp; Roster
+              </RouterLink>.
+            </p>
           </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Hari</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Jam masuk</TableHead>
-                <TableHead>Jam pulang</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow v-for="row in weekdays" :key="row.day">
-                <TableCell>{{ row.day }}</TableCell>
-                <TableCell>
-                  <Badge :variant="row.active ? 'default' : 'secondary'">{{ row.active ? 'Kerja' : 'Libur' }}</Badge>
-                </TableCell>
-                <TableCell>{{ row.active ? row.in : '-' }}</TableCell>
-                <TableCell>{{ row.active ? row.out : '-' }}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+
+          <div class="overflow-x-auto rounded-lg border border-border/60">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Hari</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead class="tabular-nums">Masuk</TableHead>
+                  <TableHead class="tabular-nums">Pulang</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow v-for="row in weekdays" :key="row.day">
+                  <TableCell class="font-medium">{{ row.day }}</TableCell>
+                  <TableCell>
+                    <Badge :variant="row.active ? 'default' : 'secondary'">
+                      {{ row.active ? 'Kerja' : 'Libur' }}
+                    </Badge>
+                  </TableCell>
+                  <TableCell class="tabular-nums text-muted-foreground">
+                    {{ row.active ? row.in : '—' }}
+                  </TableCell>
+                  <TableCell class="tabular-nums text-muted-foreground">
+                    {{ row.active ? row.out : '—' }}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
 
